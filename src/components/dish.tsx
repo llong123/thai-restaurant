@@ -34,6 +34,18 @@ export function Dish({ name, description, image, price }: DishProps) {
     onOpen();
   };
 
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1 },
+    hover: { scale: 1.05 }
+  };
+
+  const overlayVariants = {
+    hidden: { y: "100%" },
+    visible: { y: "100%" },
+    hover: { y: 0 }
+  };
+
   return (
     <>
       <MotionBox
@@ -41,12 +53,12 @@ export function Dish({ name, description, image, price }: DishProps) {
         overflow="hidden"
         borderRadius="lg"
         cursor="pointer"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-        whileHover={{ scale: 1.05 }}
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        whileHover="hover"
         whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.3 }}
         onClick={handleClick}
       >
         <Image
@@ -63,9 +75,8 @@ export function Dish({ name, description, image, price }: DishProps) {
           right={0}
           bg="rgba(0, 0, 0, 0.7)"
           p={4}
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.3 }}
+          variants={overlayVariants}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <Box as="h3" fontSize="xl" fontWeight="bold" mb={2} color="white">
             {name}
