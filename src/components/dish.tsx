@@ -1,27 +1,163 @@
-import { Card, Image } from "@chakra-ui/react";
+'use client';
 
-export default function Dish({ name }: { name: string }) {
+import { Box, Image, Text, useDisclosure } from "@chakra-ui/react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+
+const MotionBox = motion(Box);
+
+interface DishProps {
+  name: string;
+  description: string;
+  image: string;
+  price: string;
+}
+
+export function Dish({ name, description, image, price }: DishProps) {
+  const { open, onOpen, onClose } = useDisclosure();
+  const [dishDetails, setDishDetails] = useState({
+    name: name,
+    description: description,
+    ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
+    spicyLevel: "Medium",
+    price: price
+  });
+
+  const handleClick = () => {
+    setDishDetails({
+      name: name,
+      description: description,
+      ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
+      spicyLevel: "Medium",
+      price: price
+    });
+    onOpen();
+  };
+
   return (
-    <Card.Root
-      size="sm"
-      maxW="xs"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      variant={"elevated"}
-    >
-      <Image
-        src="https://polyglotpetra.com/wp-content/uploads/2024/02/Lao-Papaya-Salad-768x1024.jpg"
-        alt="Thai Food"
-        maxH={64}
-        aspectRatio={16 / 9}
-      />
-      <Card.Body gap={1}>
-        <Card.Title>{name}</Card.Title>
-        <Card.Description>
-          A spicy salad made from shredded unripe papaya.
-        </Card.Description>
-      </Card.Body>
-    </Card.Root>
+    <>
+      <MotionBox
+        position="relative"
+        overflow="hidden"
+        borderRadius="lg"
+        cursor="pointer"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.3 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleClick}
+      >
+        <Image
+          src={image}
+          alt={name}
+          w="100%"
+          h="300px"
+          objectFit="cover"
+        />
+        <MotionBox
+          position="absolute"
+          bottom={0}
+          left={0}
+          right={0}
+          bg="rgba(0, 0, 0, 0.7)"
+          p={4}
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Box as="h3" fontSize="xl" fontWeight="bold" mb={2} color="white">
+            {name}
+          </Box>
+          <Box fontSize="md" mb={2} color="white">
+            {description}
+          </Box>
+          <Box fontSize="xl" fontWeight="bold" color="white">
+            {price}
+          </Box>
+        </MotionBox>
+      </MotionBox>
+
+      {open && (
+        <MotionBox
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="rgba(0, 0, 0, 0.7)"
+          zIndex={1000}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          onClick={onClose}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <MotionBox
+            bg="white"
+            p={6}
+            borderRadius="xl"
+            maxW="500px"
+            w="90%"
+            maxH="90vh"
+            overflowY="auto"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Box position="relative" w="100%" h="200px" pb={4}>
+              <Image
+                src={image}
+                alt={name}
+                w="100%"
+                h="100%"
+                objectFit="cover"
+                borderRadius="md"
+              />
+            </Box>
+            <Box as="h3" fontSize="2xl" fontWeight="bold" mb={2} color="black">
+              {dishDetails.name}
+            </Box>
+            <Box fontSize="md" mb={4} color="black">
+              {dishDetails.description}
+            </Box>
+            <Box fontWeight="bold" mb={2} color="black">
+              Ingredients:
+            </Box>
+            <Box mb={4}>
+              {dishDetails.ingredients.map((ingredient, index) => (
+                <Box key={index} color="black">• {ingredient}</Box>
+              ))}
+            </Box>
+            <Box fontWeight="bold" mb={2} color="black">
+              Spicy Level: {dishDetails.spicyLevel}
+            </Box>
+            <Box fontWeight="bold" color="black">
+              Price: {dishDetails.price}
+            </Box>
+            <Box
+              position="absolute"
+              top={4}
+              right={4}
+              cursor="pointer"
+              onClick={onClose}
+              p={2}
+              borderRadius="full"
+              bg="rgba(0, 0, 0, 0.1)"
+              _hover={{ bg: "rgba(0, 0, 0, 0.2)" }}
+              transition="all 0.2s ease"
+            >
+              ✕
+            </Box>
+          </MotionBox>
+        </MotionBox>
+      )}
+    </>
   );
 }

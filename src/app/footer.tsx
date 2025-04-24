@@ -8,10 +8,16 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
-
 import { pacifico } from "@/components/fontVars";
+import { useTranslation } from "@/lib/translations";
+import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
+
+const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
+const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer>
       <Flex
@@ -36,16 +42,18 @@ export default function Footer() {
             pt={8}
           >
             <VStack alignSelf={"center"}>
-              <Text className={pacifico.className}>Chao Phraya</Text>
+              <ExtendedText className={pacifico.className}>
+                Chao Phraya
+              </ExtendedText>
             </VStack>
             <VStack alignItems={"start"}>
-              <Heading>Quick Links</Heading>
-              <Link href={"/"}>Home</Link>
-              <Link href={"/"}>Menu</Link>
-              <Link href={"/"}>About</Link>
+              <ExtendedHeading>{t('footer.quickLinks')}</ExtendedHeading>
+              <Link href={"/"}>{t('navigation.home')}</Link>
+              <Link href={"/"}>{t('navigation.menu')}</Link>
+              <Link href={"/"}>{t('navigation.about')}</Link>
             </VStack>
             <VStack>
-              <Heading>Follow us</Heading>
+              <ExtendedHeading>{t('footer.followUs')}</ExtendedHeading>
               <HStack>
                 <IconButton>
                   <LuFacebook></LuFacebook>
@@ -59,15 +67,15 @@ export default function Footer() {
               </HStack>
             </VStack>
           </HStack>
-          <Text
+          <ExtendedText
             width={"full"}
             borderTop={"2px solid #1F2937"}
             py={8}
             mt={8}
             textAlign={"center"}
           >
-            © 2025 Chao Phraya. All rights reserved.
-          </Text>
+            {t('footer.copyright')}
+          </ExtendedText>
         </Flex>
       </Flex>
     </footer>

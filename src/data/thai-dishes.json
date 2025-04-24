@@ -1,0 +1,108 @@
+{
+  "dishes": [
+    {
+      "id": "1",
+      "name": "Pad Thai",
+      "description": "Classic Thai stir-fried rice noodles with eggs, tofu, and peanuts",
+      "ingredients": ["Rice noodles", "Eggs", "Tofu", "Peanuts", "Bean sprouts", "Green onions"],
+      "price": "12.99",
+      "category": "Noodles",
+      "spicyLevel": 2
+    },
+    {
+      "id": "2",
+      "name": "Tom Yum Goong",
+      "description": "Spicy and sour soup with shrimp, mushrooms, and lemongrass",
+      "ingredients": ["Shrimp", "Mushrooms", "Lemongrass", "Galangal", "Kaffir lime leaves", "Chili"],
+      "price": "14.99",
+      "category": "Soup",
+      "spicyLevel": 3
+    },
+    {
+      "id": "3",
+      "name": "Som Tum",
+      "description": "Spicy green papaya salad with peanuts and dried shrimp",
+      "ingredients": ["Green papaya", "Carrots", "Peanuts", "Dried shrimp", "Thai chilies", "Lime"],
+      "price": "11.99",
+      "category": "Salad",
+      "spicyLevel": 3
+    },
+    {
+      "id": "4",
+      "name": "Massaman Curry",
+      "description": "Rich and creamy curry with tender beef and potatoes",
+      "ingredients": ["Beef", "Potatoes", "Coconut milk", "Massaman curry paste", "Peanuts", "Onions"],
+      "price": "15.99",
+      "category": "Curry",
+      "spicyLevel": 2
+    },
+    {
+      "id": "5",
+      "name": "Khao Pad",
+      "description": "Thai-style fried rice with your choice of protein",
+      "ingredients": ["Jasmine rice", "Eggs", "Green onions", "Carrots", "Peas", "Soy sauce"],
+      "price": "13.99",
+      "category": "Rice",
+      "spicyLevel": 1
+    },
+    {
+      "id": "6",
+      "name": "Larb",
+      "description": "Minced meat salad with fresh herbs and lime",
+      "ingredients": ["Ground chicken", "Fresh herbs", "Lime", "Fish sauce", "Chili", "Toasted rice powder"],
+      "price": "12.99",
+      "category": "Salad",
+      "spicyLevel": 2
+    },
+    {
+      "id": "7",
+      "name": "Green Curry",
+      "description": "Creamy coconut curry with green curry paste, vegetables, and your choice of protein.",
+      "ingredients": [
+        "Green curry paste",
+        "Coconut milk",
+        "Bamboo shoots",
+        "Thai basil",
+        "Fish sauce",
+        "Palm sugar",
+        "Kaffir lime leaves"
+      ],
+      "price": "$15.99",
+      "category": "Curries",
+      "spicyLevel": 3
+    },
+    {
+      "id": "8",
+      "name": "Pad See Ew",
+      "description": "Stir-fried wide rice noodles with soy sauce, egg, and your choice of protein.",
+      "ingredients": [
+        "Wide rice noodles",
+        "Egg",
+        "Chinese broccoli",
+        "Soy sauce",
+        "Oyster sauce",
+        "White pepper"
+      ],
+      "price": "$14.99",
+      "category": "Noodles",
+      "spicyLevel": 1
+    },
+    {
+      "id": "9",
+      "name": "Red Curry",
+      "description": "Spicy coconut curry with red curry paste, bamboo shoots, and your choice of protein.",
+      "ingredients": [
+        "Red curry paste",
+        "Coconut milk",
+        "Bamboo shoots",
+        "Thai basil",
+        "Fish sauce",
+        "Palm sugar",
+        "Kaffir lime leaves"
+      ],
+      "price": "$15.99",
+      "category": "Curries",
+      "spicyLevel": 3
+    }
+  ]
+} 
