@@ -1,25 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextApiRequest, NextApiResponse } from "next";
-import { Client } from "@notionhq/client";
-
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getAllDatabaseItems } from "@lib/notion-queries";
+import { parsePage } from "@lib/parse";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Only GET requests allowed" });
-  }
-
-  try {
-    const databaseId = process.env.NOTION_DATABASE_ID as string;
-    const response = await notion.databases.query({ database_id: databaseId });
-
-    const properties = response.results.map((result: any) => result.properties);
-    res.status(200).json(properties);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch Notion data" });
-  }
+  const pages = await getAllDatabaseItems();
+  const items = pages.map(parsePage);
+  res.status(200).json(items);
 }

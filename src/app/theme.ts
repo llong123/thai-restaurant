@@ -1,13 +1,7 @@
-import { createSystem, defineConfig } from "@chakra-ui/react";
+import { createSystem, defineConfig, defaultConfig } from "@chakra-ui/react";
 
 const customConfig = defineConfig({
-  theme: {
-    colors: {
-      brand: {
-        500: "tomato",
-      },
-    },
-  },
+  theme: {},
 });
 
 export const system = createSystem(defaultConfig, customConfig);

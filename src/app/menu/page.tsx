@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Box,
@@ -14,7 +14,11 @@ import {
 import Navigation from "@/components/navigation";
 import { useTranslation } from "@/lib/translations";
 import { pacifico } from "@/components/fontVars";
-import { ExtendedHeadingProps, ExtendedTextProps, ExtendedFlexProps } from "@/lib/types";
+import {
+  ExtendedHeadingProps,
+  ExtendedTextProps,
+  ExtendedFlexProps,
+} from "@/lib/types";
 import { Dish } from "@/components/dish";
 import dishes from "@/data/thai-dishes.json";
 import { useColorModeValue as useChakraColorModeValue } from "@/components/ui/color-mode";
@@ -24,43 +28,51 @@ const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
+import useSWR from "swr";
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function MenuPage() {
   const { t } = useTranslation();
   const bgColor = useChakraColorModeValue("white", "gray.800");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  
+
+  const { data, error } = useSWR("/api/notion", fetcher);
+
   // Extract unique categories from dishes
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();
-    dishes.dishes.forEach(dish => {
+    dishes.dishes.forEach((dish) => {
       if (dish.category) {
         uniqueCategories.add(dish.category);
       }
     });
     return Array.from(uniqueCategories);
   }, []);
-  
+
   // Filter dishes based on selected categories
   const filteredDishes = useMemo(() => {
     if (selectedCategories.length === 0) {
       return dishes.dishes;
     }
-    return dishes.dishes.filter(dish => 
-      selectedCategories.includes(dish.category)
+    return dishes.dishes.filter((dish) =>
+      selectedCategories.includes(dish.category),
     );
   }, [selectedCategories]);
-  
+
   // Handle category selection/deselection
   const toggleCategory = (category: string) => {
-    setSelectedCategories(prev => {
+    setSelectedCategories((prev) => {
       if (prev.includes(category)) {
-        return prev.filter(c => c !== category);
+        return prev.filter((c) => c !== category);
       } else {
         return [...prev, category];
       }
     });
   };
-  
+
+  if (error) return <div>Error</div>;
+  if (!data) return <div>Loading...</div>;
+
   // Clear all filters
   const clearFilters = () => {
     setSelectedCategories([]);
@@ -81,7 +93,7 @@ export default function MenuPage() {
         <ExtendedText w="full" pb={6}>
           {t("sections.menu.description")}
         </ExtendedText>
-        
+
         {/* Filter Chips */}
         <Box mb={8}>
           <Box as="h3" fontSize="lg" fontWeight="bold" mb={3}>
@@ -95,10 +107,22 @@ export default function MenuPage() {
                 py={1}
                 borderRadius="full"
                 colorScheme="gray"
-                bg={selectedCategories.includes(category) ? "gray.200" : "transparent"}
-                color={selectedCategories.includes(category) ? "gray.700" : "gray.500"}
+                bg={
+                  selectedCategories.includes(category)
+                    ? "gray.200"
+                    : "transparent"
+                }
+                color={
+                  selectedCategories.includes(category)
+                    ? "gray.700"
+                    : "gray.500"
+                }
                 border="1px solid"
-                borderColor={selectedCategories.includes(category) ? "gray.300" : "gray.300"}
+                borderColor={
+                  selectedCategories.includes(category)
+                    ? "gray.300"
+                    : "gray.300"
+                }
                 cursor="pointer"
                 onClick={() => toggleCategory(category)}
                 display="flex"
@@ -107,12 +131,12 @@ export default function MenuPage() {
               >
                 {category}
                 {selectedCategories.includes(category) && (
-                  <CloseButton 
-                    ml={1} 
+                  <CloseButton
+                    ml={1}
                     onClick={(e: React.MouseEvent) => {
                       e.stopPropagation();
                       toggleCategory(category);
-                    }} 
+                    }}
                     aria-label="Remove filter"
                     fontSize="xs"
                     borderRadius="full"
@@ -143,13 +167,12 @@ export default function MenuPage() {
             )}
           </HStack>
         </Box>
-        
+
         <ExtendedFlex justify="center" w="full">
           <SimpleGrid columns={[1, 2, 3]} gap={8} maxW="1200px" w="full">
-            {filteredDishes.map((dish) => (
-                
-              <Dish 
-                key={dish.id} 
+            {data.map((dish: any) => (
+              <Dish
+                key={dish.id}
                 name={dish.name}
                 description={dish.description}
                 image={`https://placehold.co/600x400/111827/FFFFFF?text=${encodeURIComponent(dish.name)}`}

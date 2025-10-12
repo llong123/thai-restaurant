@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Box, Image, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Image, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -20,7 +20,7 @@ export function Dish({ name, description, image, price }: DishProps) {
     description: description,
     ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
     spicyLevel: "Medium",
-    price: price
+    price: price,
   });
 
   const handleClick = () => {
@@ -29,7 +29,7 @@ export function Dish({ name, description, image, price }: DishProps) {
       description: description,
       ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
       spicyLevel: "Medium",
-      price: price
+      price: price,
     });
     onOpen();
   };
@@ -37,13 +37,13 @@ export function Dish({ name, description, image, price }: DishProps) {
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: { opacity: 1, scale: 1 },
-    hover: { scale: 1.05 }
+    hover: { scale: 1.05 },
   };
 
   const overlayVariants = {
     hidden: { y: "100%" },
     visible: { y: "100%" },
-    hover: { y: 0 }
+    hover: { y: 0 },
   };
 
   return (
@@ -61,13 +61,7 @@ export function Dish({ name, description, image, price }: DishProps) {
         transition={{ duration: 0.3 }}
         onClick={handleClick}
       >
-        <Image
-          src={image}
-          alt={name}
-          w="100%"
-          h="300px"
-          objectFit="cover"
-        />
+        <Image src={image} alt={name} w="100%" h="300px" objectFit="cover" />
         <MotionBox
           position="absolute"
           bottom={0}
@@ -143,7 +137,9 @@ export function Dish({ name, description, image, price }: DishProps) {
             </Box>
             <Box mb={4}>
               {dishDetails.ingredients.map((ingredient, index) => (
-                <Box key={index} color="black">• {ingredient}</Box>
+                <Box key={index} color="black">
+                  • {ingredient}
+                </Box>
               ))}
             </Box>
             <Box fontWeight="bold" mb={2} color="black">

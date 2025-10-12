@@ -1,5 +1,9 @@
-import { ComponentProps } from 'react';
-import { TextProps, HeadingProps, ButtonProps, FlexProps } from '@chakra-ui/react';
+import {
+  TextProps,
+  HeadingProps,
+  ButtonProps,
+  FlexProps,
+} from "@chakra-ui/react";
 
 export type TranslationKey = string;
 
@@ -46,4 +50,4 @@ export type ExtendedFlexProps = FlexProps & {
   marginRight?: string;
   flexBasis?: string;
   textAlign?: string;
-}; 
+};

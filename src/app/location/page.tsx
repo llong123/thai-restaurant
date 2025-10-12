@@ -1,44 +1,23 @@
-'use client';
+"use client";
 
-import {
-  Box,
-  Heading,
-  Text,
-  Flex,
-  Button,
-  VStack,
-  SimpleGrid,
-  List,
-  ListItem,
-  Icon,
-} from "@chakra-ui/react";
-import { useTranslation } from "@/lib/translations";
-import { pacifico } from "@/components/fontVars";
+import { Box, Heading, Text, SimpleGrid } from "@chakra-ui/react";
 import Footer from "../footer";
 import content from "@/data/content.json";
-import { ExtendedTextProps, ExtendedHeadingProps, ExtendedButtonProps, ExtendedFlexProps } from "@/lib/types";
+import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
 import Navigation from "@/components/navigation";
 import { useColorModeValue } from "@/components/ui/color-mode";
 
 // Create extended components with proper types
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
-const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
-const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function LocationPage() {
-  const { t } = useTranslation();
   const maxWidth = "8xl";
   const { location } = content;
   const bgColor = useColorModeValue("white", "gray.800");
 
   return (
-    <Box 
-      display="flex" 
-      flexDirection="column" 
-      minHeight="100vh"
-      bg={bgColor}
-    >
+    <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
       <Navigation />
 
       {/* Main Content */}
@@ -46,9 +25,7 @@ export default function LocationPage() {
         <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
           {/* Title Section */}
           <Box textAlign="center" pb={12}>
-            <ExtendedHeading size="2xl">
-              {location.title}
-            </ExtendedHeading>
+            <ExtendedHeading size="2xl">{location.title}</ExtendedHeading>
           </Box>
 
           <SimpleGrid columns={[1, null, 2]} gap={12}>
@@ -60,7 +37,9 @@ export default function LocationPage() {
                   Address
                 </ExtendedHeading>
                 <ExtendedText pb={2}>{location.address.street}</ExtendedText>
-                <ExtendedText pb={2}>{location.address.postalCode} {location.address.city}</ExtendedText>
+                <ExtendedText pb={2}>
+                  {location.address.postalCode} {location.address.city}
+                </ExtendedText>
                 <ExtendedText>{location.address.country}</ExtendedText>
               </Box>
 
@@ -129,9 +108,7 @@ export default function LocationPage() {
                 <ExtendedHeading size="lg" pb={4}>
                   {location.parking.title}
                 </ExtendedHeading>
-                <ExtendedText>
-                  {location.parking.description}
-                </ExtendedText>
+                <ExtendedText>{location.parking.description}</ExtendedText>
               </Box>
             </Box>
           </SimpleGrid>
@@ -144,4 +121,4 @@ export default function LocationPage() {
       </Box>
     </Box>
   );
-} 
+}

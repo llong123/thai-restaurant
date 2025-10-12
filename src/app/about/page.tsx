@@ -1,42 +1,23 @@
-'use client';
+"use client";
 
-import {
-  Box,
-  Heading,
-  Text,
-  Flex,
-  Button,
-  VStack,
-  SimpleGrid,
-  Image,
-} from "@chakra-ui/react";
-import { useTranslation } from "@/lib/translations";
-import { pacifico } from "@/components/fontVars";
+import { Box, Heading, Text, SimpleGrid, Image } from "@chakra-ui/react";
 import Footer from "../footer";
 import content from "@/data/content.json";
-import { ExtendedTextProps, ExtendedHeadingProps, ExtendedButtonProps, ExtendedFlexProps } from "@/lib/types";
+import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
 import Navigation from "@/components/navigation";
 import { useColorModeValue } from "@/components/ui/color-mode";
 
 // Create extended components with proper types
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
-const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
-const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function AboutPage() {
-  const { t } = useTranslation();
   const maxWidth = "8xl";
   const { about } = content;
   const bgColor = useColorModeValue("white", "gray.800");
 
   return (
-    <Box 
-      display="flex" 
-      flexDirection="column" 
-      minHeight="100vh"
-      bg={bgColor}
-    >
+    <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
       <Navigation />
 
       {/* Main Content */}
@@ -44,9 +25,7 @@ export default function AboutPage() {
         <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
           {/* Title Section */}
           <Box pb={12} textAlign="center">
-            <ExtendedHeading size="2xl">
-              {about.title}
-            </ExtendedHeading>
+            <ExtendedHeading size="2xl">{about.title}</ExtendedHeading>
           </Box>
 
           {/* Main Image and Story */}
@@ -77,9 +56,7 @@ export default function AboutPage() {
             <ExtendedHeading size="lg" pb={4}>
               {about.mission.heading}
             </ExtendedHeading>
-            <ExtendedText>
-              {about.mission.content}
-            </ExtendedText>
+            <ExtendedText>{about.mission.content}</ExtendedText>
           </Box>
 
           {/* Values */}
@@ -93,9 +70,7 @@ export default function AboutPage() {
                   <ExtendedHeading size="md" pb={4}>
                     {value.title}
                   </ExtendedHeading>
-                  <ExtendedText>
-                    {value.description}
-                  </ExtendedText>
+                  <ExtendedText>{value.description}</ExtendedText>
                 </Box>
               ))}
             </SimpleGrid>
@@ -109,4 +84,4 @@ export default function AboutPage() {
       </Box>
     </Box>
   );
-} 
+}

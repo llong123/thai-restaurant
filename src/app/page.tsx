@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   VStack,
@@ -8,17 +8,19 @@ import {
   Text,
   Button,
   HStack,
-  Link as ChakraLink,
   Box,
 } from "@chakra-ui/react";
 import { Dish } from "@/components/dish";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
-import { pacifico } from "@/components/fontVars";
 import Image from "next/image";
 import { useTranslation } from "@/lib/translations";
-import Link from "next/link";
-import { ExtendedTextProps, ExtendedHeadingProps, ExtendedButtonProps, ExtendedFlexProps } from "@/lib/types";
+import {
+  ExtendedTextProps,
+  ExtendedHeadingProps,
+  ExtendedButtonProps,
+  ExtendedFlexProps,
+} from "@/lib/types";
 import Navigation from "@/components/navigation";
 import DishCarousel from "@/components/dish-carousel";
 import AnimatedSection from "@/components/animated-section";
@@ -28,9 +30,17 @@ const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
+import useSWR from "swr";
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function Page() {
   const maxWidth = "8xl";
   const { t } = useTranslation();
+  const { data, error } = useSWR("/api/notion", fetcher);
+  console.log(data);
+
+  if (error) return <div>Error</div>;
+  if (!data) return <div>Loading...</div>;
 
   return (
     <VStack maxW={maxWidth} mx="auto" gap={0}>
@@ -40,7 +50,7 @@ export default function Page() {
       <AnimatedSection animation="fadeIn">
         <Box>
           <ExtendedFlex
-            direction={{ base: 'column', lg: 'row' }}
+            direction={{ base: "column", lg: "row" }}
             paddingX={{ base: 4, lg: 8 }}
             maxW="1200px"
             mx="auto"
@@ -50,26 +60,26 @@ export default function Page() {
           >
             <ExtendedFlex
               direction="column"
-              maxW={{ base: '100%', lg: '50%' }}
+              maxW={{ base: "100%", lg: "50%" }}
               gap={4}
             >
-              <ExtendedHeading size={{ base: 'xl', lg: '2xl' }}>
-                {t('hero.title')}
+              <ExtendedHeading size={{ base: "xl", lg: "2xl" }}>
+                {t("hero.title")}
               </ExtendedHeading>
               <ExtendedText fontSize={{ base: 16, lg: 18 }}>
-                {t('hero.description')}
+                {t("hero.description")}
               </ExtendedText>
               <ExtendedButton size="lg" mt={{ base: 4, lg: 6 }}>
-                {t('hero.cta')}
+                {t("hero.cta")}
               </ExtendedButton>
             </ExtendedFlex>
             <ExtendedFlex
               direction="column"
-              maxW={{ base: '100%', lg: '45%' }}
+              maxW={{ base: "100%", lg: "45%" }}
               gap={2}
             >
               <ExtendedText fontSize={{ base: 14, lg: 16 }}>
-                {t('hero.imageCaption')}
+                {t("hero.imageCaption")}
               </ExtendedText>
             </ExtendedFlex>
           </ExtendedFlex>
@@ -87,17 +97,17 @@ export default function Page() {
       </AnimatedSection>
 
       <AnimatedSection animation="slideInLeft">
-        <SectionComponent 
-          headingTitle={t('sections.about.title')} 
-          description={t('sections.about.description')}
+        <SectionComponent
+          headingTitle={t("sections.about.title")}
+          description={t("sections.about.description")}
         >
           <HStack>
             <ExtendedFlex direction={"column"} maxW={maxWidth} gap={4} py={32}>
               <ExtendedHeading size={{ base: "2xl", lg: "4xl" }} w={"50%"}>
-                {t('hero.title')}
+                {t("hero.title")}
               </ExtendedHeading>
               <ExtendedText fontSize={{ base: 16, lg: 20 }} w={"50%"}>
-                {t('hero.description')}
+                {t("hero.description")}
               </ExtendedText>
             </ExtendedFlex>
 
@@ -114,42 +124,42 @@ export default function Page() {
       {/* Our Menu */}
       <AnimatedSection animation="slideInRight">
         <SectionComponent
-          headingTitle={t('sections.menu.title')}
-          description={t('sections.menu.description')}
+          headingTitle={t("sections.menu.title")}
+          description={t("sections.menu.description")}
         >
           <ExtendedFlex gap="2" wrap="wrap" justify="center">
-            <Dish 
-              name="Pad Thai" 
+            <Dish
+              name="Pad Thai"
               description="Classic stir-fried rice noodles with eggs, tofu, and peanuts"
               image="https://placehold.co/600x400/111827/FFFFFF?text=Pad+Thai"
               price="€12.99"
             />
-            <Dish 
-              name="Tom Yum Goong" 
+            <Dish
+              name="Tom Yum Goong"
               description="Spicy and sour soup with shrimp and mushrooms"
               image="https://placehold.co/600x400/111827/FFFFFF?text=Tom+Yum"
               price="€14.99"
             />
-            <Dish 
-              name="Som Tum" 
+            <Dish
+              name="Som Tum"
               description="Green papaya salad with chili, lime, and peanuts"
               image="https://placehold.co/600x400/111827/FFFFFF?text=Som+Tum"
               price="€10.99"
             />
-            <Dish 
-              name="Larb" 
+            <Dish
+              name="Larb"
               description="Minced meat salad with herbs and spices"
               image="https://placehold.co/600x400/111827/FFFFFF?text=Larb"
               price="€13.99"
             />
-            <Dish 
-              name="Massaman Curry" 
+            <Dish
+              name="Massaman Curry"
               description="Rich curry with potatoes, peanuts, and tender meat"
               image="https://placehold.co/600x400/111827/FFFFFF?text=Massaman"
               price="€15.99"
             />
-            <Dish 
-              name="Khao Pad" 
+            <Dish
+              name="Khao Pad"
               description="Thai-style fried rice with your choice of protein"
               image="https://placehold.co/600x400/111827/FFFFFF?text=Khao+Pad"
               price="€11.99"
@@ -162,8 +172,8 @@ export default function Page() {
       <AnimatedSection animation="slideUp">
         <SectionComponent
           darkBg
-          headingTitle={t('sections.location.title')}
-          description={t('sections.location.description')}
+          headingTitle={t("sections.location.title")}
+          description={t("sections.location.description")}
         >
           <ExtendedFlex
             maxW={maxWidth}
@@ -188,21 +198,41 @@ export default function Page() {
                 referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
             </AspectRatio>
-            <ExtendedFlex direction="column" flexBasis={"50%"} textAlign={"left"}>
-              <ExtendedHeading size="lg">{t('sections.location.address.title')}</ExtendedHeading>
+            <ExtendedFlex
+              direction="column"
+              flexBasis={"50%"}
+              textAlign={"left"}
+            >
+              <ExtendedHeading size="lg">
+                {t("sections.location.address.title")}
+              </ExtendedHeading>
               <ExtendedText pl={4} pb={4} color={"gray.500"}>
-                {t('sections.location.address.value')}
+                {t("sections.location.address.value")}
               </ExtendedText>
-              <ExtendedHeading size="lg">{t('sections.location.fromAirport.title')}</ExtendedHeading>
+              <ExtendedHeading size="lg">
+                {t("sections.location.fromAirport.title")}
+              </ExtendedHeading>
               <ExtendedText>
-                {t('sections.location.fromAirport.description')}
+                {t("sections.location.fromAirport.description")}
               </ExtendedText>
-              <ExtendedHeading size="lg">{t('sections.location.fromStation.title')}</ExtendedHeading>
-              <ExtendedText>{t('sections.location.fromStation.description')}</ExtendedText>
-              <ExtendedHeading size="lg">{t('sections.location.openingHours.title')}</ExtendedHeading>
-              <ExtendedText>{t('sections.location.openingHours.weekdays')}</ExtendedText>
-              <ExtendedText>{t('sections.location.openingHours.saturday')}</ExtendedText>
-              <ExtendedText>{t('sections.location.openingHours.sunday')}</ExtendedText>
+              <ExtendedHeading size="lg">
+                {t("sections.location.fromStation.title")}
+              </ExtendedHeading>
+              <ExtendedText>
+                {t("sections.location.fromStation.description")}
+              </ExtendedText>
+              <ExtendedHeading size="lg">
+                {t("sections.location.openingHours.title")}
+              </ExtendedHeading>
+              <ExtendedText>
+                {t("sections.location.openingHours.weekdays")}
+              </ExtendedText>
+              <ExtendedText>
+                {t("sections.location.openingHours.saturday")}
+              </ExtendedText>
+              <ExtendedText>
+                {t("sections.location.openingHours.sunday")}
+              </ExtendedText>
             </ExtendedFlex>
           </ExtendedFlex>
         </SectionComponent>
