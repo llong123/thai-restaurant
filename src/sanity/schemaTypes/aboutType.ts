@@ -6,6 +6,14 @@ export const AboutType = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "mainImage",
+      title: "Main Image",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
       name: "title",
       title: "Title",
       type: "localeString",

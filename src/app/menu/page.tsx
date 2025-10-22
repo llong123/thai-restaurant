@@ -1,6 +1,5 @@
 // app/menu/page.tsx
 import { client } from "@/sanity/lib/client";
-import { type SanityDocument } from "next-sanity";
 import MenuClient from "./MenuClient";
 
 const DISHES_QUERY = `*[_type == "dish"]{
@@ -10,13 +9,14 @@ const DISHES_QUERY = `*[_type == "dish"]{
   ingredients,
   category,
   price,
-  spiceLevel
+  spiceLevel,
+  dishImage { asset->{url} }
 }`;
 
 export const revalidate = 30; // ✅ revalidate every 30 seconds
 
 export default async function MenuPage() {
-  const dishes = await client.fetch<SanityDocument[]>(
+  const dishes = await client.fetch(
     DISHES_QUERY,
     {},
     { next: { revalidate: 30 } },

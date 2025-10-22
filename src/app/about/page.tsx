@@ -7,7 +7,7 @@ const ABOUT_QUERY = `*[_type == "about"][0]{
   paragraph,
   paragraphInBox,
   paragraphInBoxTitle,
-  mainImage
+  mainImage { asset->{url} }
 }`;
 
 export const revalidate = 30; // ISR: re-fetch every 30s

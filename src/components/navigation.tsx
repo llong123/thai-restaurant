@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Box,
@@ -12,63 +12,98 @@ import {
 } from "@chakra-ui/react";
 import { LuMenu, LuX } from "react-icons/lu";
 import Link from "next/link";
-import { useTranslation } from "@/lib/translations";
 import { pacifico } from "@/components/fontVars";
-import { ExtendedHeadingProps, ExtendedButtonProps, ExtendedFlexProps } from "@/lib/types";
 import { useColorModeValue } from "@/components/ui/color-mode";
-
-const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
-const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
-const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
-
-const NavLink = ({ children, href }: { children: React.ReactNode; href: string }) => {
-  const hoverBg = useColorModeValue("gray.200", "gray.700");
-  
-  return (
-    <Link href={href} passHref>
-      <Box
-        px={2}
-        py={1}
-        rounded="md"
-        _hover={{
-          textDecoration: "none",
-          bg: hoverBg,
-        }}
-      >
-        {children}
-      </Box>
-    </Link>
-  );
-};
+import { useState, useEffect } from "react";
+import { LocaleString } from "@/lib/interfaces";
+import { client } from "@/sanity/lib/client";
+import { useLanguage } from "@/hooks/LanguageContext";
+import { Language } from "@/lib/types";
 
 export default function Navigation() {
   const { open, onOpen, onClose } = useDisclosure();
-  const { t } = useTranslation();
-  const bgColor = useColorModeValue('white', 'gray.900');
-  const menuBgColor = useColorModeValue('white', 'gray.800');
+  const bgColor = useColorModeValue("white", "gray.900");
+  const menuBgColor = useColorModeValue("white", "gray.800");
 
-  const links = [
-    { name: t('navigation.home'), href: '/' },
-    { name: t('navigation.menu'), href: '/menu' },
-    { name: t('navigation.about'), href: '/about' },
-    { name: t('navigation.location'), href: '/location' },
-  ];
+  const { language, setLanguage } = useLanguage();
+  const [navData, setNavData] = useState<any>(null);
+
+  // Utility for localized strings
+  const getLocaleString = (field?: LocaleString) =>
+    field?.[language as keyof LocaleString] || field?.en || "";
+
+  // Fetch navigation data
+  useEffect(() => {
+    client
+      .fetch(
+        `*[_type == "navigation"][0]{
+        siteTitle,
+        links[]{
+          name,
+          href
+        },
+        button{
+          label,
+          href
+        },
+        languages
+      }`,
+      )
+      .then((data) => setNavData(data))
+      .catch(console.error);
+  }, []);
 
   return (
-    <Box bg={bgColor} position="sticky" top={0} zIndex={10} shadow="md" w="100vw">
-      <ExtendedFlex h={16} alignItems="center" justifyContent="space-between" px={4}>
-        <ExtendedHeading
+    <Box
+      bg={bgColor}
+      position="sticky"
+      top={0}
+      zIndex={10}
+      shadow="md"
+      w="100vw"
+    >
+      <Flex h={16} align="center" justify="space-between" px={4}>
+        <Heading
           size={{ base: "2xl", lg: "4xl" }}
           className={pacifico.className}
         >
-          Chao Phraya
-        </ExtendedHeading>
-        <HStack gap={8} alignItems="center" display={["none", null, "flex"]}>
-          {links.map((link) => (
-            <NavLink key={link.href} href={link.href}>{link.name}</NavLink>
+          {navData?.siteTitle || "Site Title"}
+        </Heading>
+
+        <HStack gap={8} align="center" display={["none", null, "flex"]}>
+          {navData?.links?.map((link: any) => (
+            <Link key={link.href} href={link.href} passHref>
+              <Box px={2} py={1} rounded="md" _hover={{ bg: "gray.200" }}>
+                {getLocaleString(link.name)}
+              </Box>
+            </Link>
           ))}
-          <ExtendedButton>{t('navigation.reserve')}</ExtendedButton>
+          {navData?.button && (
+            <Link href={navData.button.href} passHref legacyBehavior>
+              <Button as="a">{getLocaleString(navData.button.label)}</Button>
+            </Link>
+          )}
+          <Box>
+            <select
+              id="language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "0.375rem",
+                border: "1px solid #ccc",
+                background: "white",
+              }}
+            >
+              {navData?.languages?.map((lang: string) => (
+                <option key={lang} value={lang}>
+                  {lang.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </Box>
         </HStack>
+
         <IconButton
           aria-label="Open Menu"
           display={["flex", null, "none"]}
@@ -76,8 +111,9 @@ export default function Navigation() {
         >
           {open ? <LuX /> : <LuMenu />}
         </IconButton>
-      </ExtendedFlex>
+      </Flex>
 
+      {/* Mobile menu */}
       <Box
         position="fixed"
         top="64px"
@@ -93,12 +129,39 @@ export default function Navigation() {
         pointerEvents={open ? "auto" : "none"}
       >
         <Stack gap={4} as="nav" p={4}>
-          {links.map((link) => (
-            <NavLink key={link.href} href={link.href}>{link.name}</NavLink>
+          {navData?.links?.map((link: any) => (
+            <Link key={link.href} href={link.href} passHref>
+              <Box px={2} py={1} rounded="md" _hover={{ bg: "gray.200" }}>
+                {getLocaleString(link.name)}
+              </Box>
+            </Link>
           ))}
-          <ExtendedButton w="full">{t('navigation.reserve')}</ExtendedButton>
+          {navData?.button && (
+            <Link href={navData.button.href} passHref legacyBehavior>
+              <Button as="a">{getLocaleString(navData.button.label)}</Button>
+            </Link>
+          )}
+          <Box>
+            <select
+              id="language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "0.375rem",
+                border: "1px solid #ccc",
+                background: "white",
+              }}
+            >
+              {navData?.languages?.map((lang: string) => (
+                <option key={lang} value={lang}>
+                  {lang.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </Box>
         </Stack>
       </Box>
     </Box>
   );
-} 
+}

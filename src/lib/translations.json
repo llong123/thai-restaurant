@@ -1,61 +1,6 @@
 {
-  "navigation": {
-    "home": "Home",
-    "menu": "Menu",
-    "about": "About",
-    "location": "Location",
-    "reserve": "Reserve a table"
-  },
-  "hero": {
-    "title": "Experience Authentic Thai Cuisine in Helsinki",
-    "description": "Discover the perfect blend of traditional flavors and modern dining at Chao Phraya. Every dish tells a story of Thailand's rich culinary heritage.",
-    "viewMenu": "View Menu",
-    "bookTable": "Book a table"
-  },
-  "sections": {
-    "signatureDishes": {
-      "title": "Our Signature Dishes",
-      "description": "Savor the authentic flavors of Thailand with our carefully curated selection of dishes, prepared by our master chefs using traditional recipes and the finest ingredients.",
-      "viewFullMenu": "View Full Menu"
-    },
-    "about": {
-      "title": "About Us",
-      "description": ""
-    },
-    "menu": {
-      "title": "Our Menu",
-      "description": "Explore our extensive selection of authentic Thai dishes",
-      "price": "Price",
-      "ingredients": "Ingredients",
-      "spicyLevel": "Spicy Level",
-      "close": "Close"
-    },
-    "location": {
-      "title": "Visit Us",
-      "description": "Located in the heart of Helsinki, we're easily accessible from all major locations.",
-      "address": {
-        "title": "Address",
-        "value": "Hämeentie 7, 00530 Helsinki"
-      },
-      "fromAirport": {
-        "title": "From Helsinki Airport",
-        "description": "Take the Ring Rail Line to Helsinki Central Station, then tram 4 or 10 to Mannerheimintie stop."
-      },
-      "fromStation": {
-        "title": "From Central Railway Station",
-        "description": "10 minutes walk or take tram 4, 7, or 10 for two stops."
-      },
-      "openingHours": {
-        "title": "Opening Hours",
-        "weekdays": "Monday - Friday: 11:00 - 22:00",
-        "saturday": "Saturday: 12:00 - 23:00",
-        "sunday": "Sunday: 12:00 - 21:00"
-      }
-    }
-  },
-  "footer": {
-    "quickLinks": "Quick Links",
-    "followUs": "Follow us",
-    "copyright": "© 2025 Chao Phraya. All rights reserved."
+  "menu": {
+    "ingredients": "Ingredients",
+    "description": "Our Menu"
   }
-} 
+}

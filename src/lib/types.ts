@@ -51,3 +51,5 @@ export type ExtendedFlexProps = FlexProps & {
   flexBasis?: string;
   textAlign?: string;
 };
+
+export type Language = "en" | "fi" | "sv";

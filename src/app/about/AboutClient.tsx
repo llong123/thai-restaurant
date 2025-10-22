@@ -4,37 +4,31 @@ import { Box, Heading, Text, SimpleGrid, Image } from "@chakra-ui/react";
 import Footer from "../footer";
 import Navigation from "@/components/navigation";
 import { useColorModeValue } from "@/components/ui/color-mode";
-import { useState } from "react";
 import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
+import { LocaleString } from "@/lib/interfaces";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 // Extended Chakra components
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 
-// Type definitions
-interface LocaleString {
-  _type: "localeString";
-  en?: string;
-  fi?: string;
-  sv?: string;
-}
-
 interface ParagraphGroup {
   _key: string;
   _type: "paragraphGroup";
   paragraphTitle: LocaleString;
-  paragraphDescription: LocaleString[];
+  paragraphDescription: LocaleString;
 }
 
 interface ValueGroup {
   _key: string;
   _type: "valueGroup";
   valueTitle: LocaleString;
-  valueDescription: LocaleString[];
+  valueDescription: LocaleString;
 }
 
 interface AboutClientProps {
   about: {
+    heroimage?: { asset: { url: string } };
     title?: LocaleString;
     paragraphInBoxTitle?: LocaleString;
     paragraph?: ParagraphGroup[];
@@ -46,7 +40,7 @@ interface AboutClientProps {
 export default function AboutClient({ about }: AboutClientProps) {
   const bgColor = useColorModeValue("white", "gray.800");
   const maxWidth = "8xl";
-  const [language, setLanguage] = useState("en");
+  const { language } = useLanguage();
 
   if (!about) return <p className="p-8">About content is not available.</p>;
 
@@ -59,26 +53,18 @@ export default function AboutClient({ about }: AboutClientProps) {
 
       <Box flex="1" w="100%">
         <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
-          {/* Language Selector */}
-          <Box mb={8}>
-            <Text mb={2}>Select Language:</Text>
-            <Box display="flex" gap={3}>
-              {["en", "fi", "sv"].map((lang) => (
-                <Box
-                  key={lang}
-                  cursor="pointer"
-                  px={3}
-                  py={1}
-                  borderWidth={1}
-                  borderRadius="md"
-                  borderColor={language === lang ? "blue.400" : "gray.300"}
-                  onClick={() => setLanguage(lang)}
-                >
-                  {lang.toUpperCase()}
-                </Box>
-              ))}
+          {/* Main Image */}
+          {about.mainImage?.asset?.url && (
+            <Box pb={16} position="relative" height="400px">
+              <Image
+                src={about.mainImage.asset.url}
+                alt={getLocaleString(about.title)}
+                objectFit="cover"
+                width="100%"
+                height="100%"
+              />
             </Box>
-          </Box>
+          )}
 
           {/* Title */}
           <Box pb={12} textAlign="center">
@@ -123,19 +109,6 @@ export default function AboutClient({ about }: AboutClientProps) {
               ))}
             </SimpleGrid>
           </Box>
-
-          {/* Main Image */}
-          {about.mainImage?.asset?.url && (
-            <Box pb={16} position="relative" height="400px">
-              <Image
-                src={about.mainImage.asset.url}
-                alt={getLocaleString(about.title)}
-                objectFit="cover"
-                width="100%"
-                height="100%"
-              />
-            </Box>
-          )}
         </Box>
       </Box>
 

@@ -1,4 +1,3 @@
-// app/menu/MenuClient.tsx
 "use client";
 
 import {
@@ -11,6 +10,8 @@ import {
   HStack,
   Badge,
   CloseButton,
+  Button,
+  Stack,
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
 import Navigation from "@/components/navigation";
@@ -19,13 +20,44 @@ import { Dish } from "@/components/dish";
 import { useTranslation } from "@/lib/translations";
 import { useColorModeValue as useChakraColorModeValue } from "@/components/ui/color-mode";
 
-export default function MenuClient({ dishes }: { dishes: any[] }) {
+import { LocaleString } from "@/lib/interfaces";
+import { useLanguage } from "@/hooks/LanguageContext";
+
+interface DishImage {
+  asset?: {
+    url: string;
+  };
+}
+
+interface DishData {
+  _id: string;
+  name: string;
+  description?: LocaleString;
+  ingredients?: string[];
+  category?: string;
+  price?: number;
+  spiceLevel?: string;
+  dishImage?: DishImage;
+}
+
+interface MenuClientProps {
+  dishes: DishData[];
+}
+
+// ---------- 🔹 Component ---------- //
+
+export default function MenuClient({ dishes }: MenuClientProps) {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const bgColor = useChakraColorModeValue("white", "gray.800");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [language, setLanguage] = useState("en"); // default language
+  const [showAll, setShowAll] = useState(false); // toggle for menu view
 
-  // Extract unique categories from dishes
+  // Utility to safely get localized text
+  const getLocaleString = (field?: LocaleString) =>
+    field?.[language] || field?.en || "";
+
+  // Unique categories
   const categories = useMemo(() => {
     const unique = new Set<string>();
     dishes.forEach((dish) => {
@@ -34,13 +66,13 @@ export default function MenuClient({ dishes }: { dishes: any[] }) {
     return Array.from(unique);
   }, [dishes]);
 
-  // Filter dishes based on selected categories
+  // Filtered dishes
   const filteredDishes = useMemo(() => {
     if (selectedCategories.length === 0) return dishes;
-    return dishes.filter((dish) => selectedCategories.includes(dish.category));
+    return dishes.filter((dish) => selectedCategories.includes(dish.category!));
   }, [dishes, selectedCategories]);
 
-  // Toggle a category filter
+  // Toggle filters
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -53,6 +85,7 @@ export default function MenuClient({ dishes }: { dishes: any[] }) {
 
   if (!dishes?.length) return <p className="p-8">No dishes found.</p>;
 
+  // ---------- 🔹 Render ---------- //
   return (
     <Box bg={bgColor} minH="100vh">
       <Navigation />
@@ -60,27 +93,11 @@ export default function MenuClient({ dishes }: { dishes: any[] }) {
         <Heading
           size={{ base: "2xl", lg: "4xl" }}
           className={pacifico.className}
-          pb={8}
+          pb={4}
         >
           {t("sections.menu.title")}
         </Heading>
         <Text pb={6}>{t("sections.menu.description")}</Text>
-
-        <Box mb={6}>
-          <Text mb={2}>Select Language:</Text>
-          <HStack spacing={3}>
-            {["en", "fi", "sv"].map((lang) => (
-              <Badge
-                key={lang}
-                cursor="pointer"
-                colorScheme={language === lang ? "blue" : "gray"}
-                onClick={() => setLanguage(lang)}
-              >
-                {lang.toUpperCase()}
-              </Badge>
-            ))}
-          </HStack>
-        </Box>
 
         {/* Filter Chips */}
         <Box mb={8}>
@@ -149,23 +166,98 @@ export default function MenuClient({ dishes }: { dishes: any[] }) {
           </HStack>
         </Box>
 
-        <Flex justify="center" w="full">
-          <SimpleGrid columns={[1, 2, 3]} gap={8} maxW="1200px" w="full">
-            {filteredDishes.map((dish) => (
-              <Dish
-                key={dish._id}
-                name={dish.name?.[language] || dish.name?.en || ""}
-                description={
-                  dish.description?.[language] || dish.description?.en || ""
-                }
-                image={`https://placehold.co/600x400/111827/FFFFFF?text=${encodeURIComponent(
-                  dish.name?.[language] || dish.name?.en || "",
-                )}`}
-                price={`€${dish.price}`}
-              />
-            ))}
-          </SimpleGrid>
-        </Flex>
+        {/* View All Dishes Button */}
+        <Box mb={8} textAlign="center">
+          <Button
+            colorScheme="primary"
+            size="lg"
+            onClick={() => setShowAll(!showAll)}
+          >
+            {showAll ? "Hide Menu" : "View All Dishes"}
+          </Button>
+        </Box>
+
+        {/* Dishes Grid or Full Menu */}
+        {showAll ? (
+          <>
+            {categories
+              .sort() // optional: sort category names alphabetically
+              .map((category) => {
+                const dishesInCategory = filteredDishes.filter(
+                  (dish) => dish.category === category,
+                );
+                if (dishesInCategory.length === 0) return null;
+
+                return (
+                  <Box key={category} mb={8}>
+                    <Heading size="lg" mb={4}>
+                      {category}{" "}
+                      {/* You can also localize category names if needed */}
+                    </Heading>
+                    <Stack spaceY={2}>
+                      {dishesInCategory.map((dish) => (
+                        <Box
+                          key={dish._id}
+                          p={4}
+                          borderWidth="1px"
+                          borderRadius="md"
+                        >
+                          <Flex justify="space-between" align="start" gap={4}>
+                            <Box>
+                              <Heading size="md">{dish.name}</Heading>
+                              <Text fontSize="sm" color="gray.600">
+                                {getLocaleString(dish.description)}
+                              </Text>
+                              {dish.ingredients?.length && (
+                                <Text fontSize="sm" color="gray.500" mt={2}>
+                                  {t("menu.ingredients")}:{" "}
+                                  {(
+                                    dish.ingredients as unknown as LocaleString[]
+                                  )
+                                    .map((ing) => getLocaleString(ing))
+                                    .filter(Boolean)
+                                    .join(", ")}
+                                </Text>
+                              )}
+                            </Box>
+                            <Box>
+                              <Text fontWeight="bold">
+                                {dish.price
+                                  ? `€${dish.price}`
+                                  : t("menu.priceUnavailable")}
+                              </Text>
+                            </Box>
+                          </Flex>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                );
+              })}
+          </>
+        ) : (
+          // Your existing grid view
+          <Flex justify="center" w="full">
+            <SimpleGrid columns={[1, 2, 3]} gap={8} maxW="1200px" w="full">
+              {filteredDishes.map((dish) => (
+                <Dish
+                  key={dish._id}
+                  name={dish.name}
+                  description={getLocaleString(dish.description)}
+                  image={
+                    dish.dishImage?.asset?.url ||
+                    `https://placehold.co/600x400/111827/FFFFFF?text=${encodeURIComponent(
+                      dish.name,
+                    )}`
+                  }
+                  price={
+                    dish.price ? `€${dish.price}` : t("menu.priceUnavailable")
+                  }
+                />
+              ))}
+            </SimpleGrid>
+          </Flex>
+        )}
       </Container>
     </Box>
   );

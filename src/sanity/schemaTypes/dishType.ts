@@ -6,6 +6,14 @@ export const DishType = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "dishImage",
+      title: "Dish Image",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
       name: "name",
       description: "Name of the dish",
       type: "string",
@@ -35,6 +43,11 @@ export const DishType = defineType({
       name: "spiceLevel",
       description: "Spice level of the dish",
       type: "number",
+    }),
+    defineField({
+      name: "signatureDish",
+      description: "Signature dish of the restaurant",
+      type: "boolean",
     }),
   ],
 });

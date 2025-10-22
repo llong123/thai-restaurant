@@ -10,7 +10,6 @@ import {
   HStack,
   Box,
 } from "@chakra-ui/react";
-import { Dish } from "@/components/dish";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
 import Image from "next/image";
@@ -84,7 +83,7 @@ export default function Page() {
           headingTitle={t("sections.signatureDishes.title")}
           description={t("sections.signatureDishes.description")}
         >
-          <DishCarousel dishes={["pad-thai", "tom-yum", "green-curry"]} />
+          <DishCarousel />
         </SectionComponent>
       </AnimatedSection>
 
@@ -110,53 +109,6 @@ export default function Page() {
               height={100}
             />
           </HStack>
-        </SectionComponent>
-      </AnimatedSection>
-
-      {/* Our Menu */}
-      <AnimatedSection animation="slideInRight">
-        <SectionComponent
-          headingTitle={t("sections.menu.title")}
-          description={t("sections.menu.description")}
-        >
-          <ExtendedFlex gap="2" wrap="wrap" justify="center">
-            <Dish
-              name="Pad Thai"
-              description="Classic stir-fried rice noodles with eggs, tofu, and peanuts"
-              image="https://placehold.co/600x400/111827/FFFFFF?text=Pad+Thai"
-              price="€12.99"
-            />
-            <Dish
-              name="Tom Yum Goong"
-              description="Spicy and sour soup with shrimp and mushrooms"
-              image="https://placehold.co/600x400/111827/FFFFFF?text=Tom+Yum"
-              price="€14.99"
-            />
-            <Dish
-              name="Som Tum"
-              description="Green papaya salad with chili, lime, and peanuts"
-              image="https://placehold.co/600x400/111827/FFFFFF?text=Som+Tum"
-              price="€10.99"
-            />
-            <Dish
-              name="Larb"
-              description="Minced meat salad with herbs and spices"
-              image="https://placehold.co/600x400/111827/FFFFFF?text=Larb"
-              price="€13.99"
-            />
-            <Dish
-              name="Massaman Curry"
-              description="Rich curry with potatoes, peanuts, and tender meat"
-              image="https://placehold.co/600x400/111827/FFFFFF?text=Massaman"
-              price="€15.99"
-            />
-            <Dish
-              name="Khao Pad"
-              description="Thai-style fried rice with your choice of protein"
-              image="https://placehold.co/600x400/111827/FFFFFF?text=Khao+Pad"
-              price="€11.99"
-            />
-          </ExtendedFlex>
         </SectionComponent>
       </AnimatedSection>
 
