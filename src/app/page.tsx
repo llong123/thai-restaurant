@@ -30,17 +30,9 @@ const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
-import useSWR from "swr";
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 export default function Page() {
   const maxWidth = "8xl";
   const { t } = useTranslation();
-  const { data, error } = useSWR("/api/notion", fetcher);
-  console.log(data);
-
-  if (error) return <div>Error</div>;
-  if (!data) return <div>Loading...</div>;
 
   return (
     <VStack maxW={maxWidth} mx="auto" gap={0}>

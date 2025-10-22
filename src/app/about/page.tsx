@@ -1,87 +1,28 @@
-"use client";
+// app/about/page.tsx
+import { client } from "@/sanity/lib/client";
+import AboutClient from "./AboutClient";
 
-import { Box, Heading, Text, SimpleGrid, Image } from "@chakra-ui/react";
-import Footer from "../footer";
-import content from "@/data/content.json";
-import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
-import Navigation from "@/components/navigation";
-import { useColorModeValue } from "@/components/ui/color-mode";
+const ABOUT_QUERY = `*[_type == "about"][0]{
+  title,
+  paragraph,
+  paragraphInBox,
+  paragraphInBoxTitle,
+  mainImage
+}`;
 
-// Create extended components with proper types
-const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
-const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
+export const revalidate = 30; // ISR: re-fetch every 30s
 
-export default function AboutPage() {
-  const maxWidth = "8xl";
-  const { about } = content;
-  const bgColor = useColorModeValue("white", "gray.800");
+export default async function AboutPage() {
+  try {
+    const about = await client.fetch(ABOUT_QUERY);
 
-  return (
-    <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
-      <Navigation />
+    if (!about) {
+      return <p className="p-8">No about content found.</p>;
+    }
 
-      {/* Main Content */}
-      <Box flex="1" w="100%">
-        <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
-          {/* Title Section */}
-          <Box pb={12} textAlign="center">
-            <ExtendedHeading size="2xl">{about.title}</ExtendedHeading>
-          </Box>
-
-          {/* Main Image and Story */}
-          <Box pb={16}>
-            <Box pb={8} position="relative" height="400px">
-              <Image
-                src={about.mainImage}
-                alt="Restaurant interior"
-                objectFit="cover"
-                width="100%"
-                height="100%"
-              />
-            </Box>
-            <Box>
-              <ExtendedHeading size="xl" pb={6}>
-                {about.story.heading}
-              </ExtendedHeading>
-              {about.story.content.map((paragraph, index) => (
-                <ExtendedText key={index} pb={4}>
-                  {paragraph}
-                </ExtendedText>
-              ))}
-            </Box>
-          </Box>
-
-          {/* Mission */}
-          <Box pb={16}>
-            <ExtendedHeading size="lg" pb={4}>
-              {about.mission.heading}
-            </ExtendedHeading>
-            <ExtendedText>{about.mission.content}</ExtendedText>
-          </Box>
-
-          {/* Values */}
-          <Box pb={16}>
-            <ExtendedHeading size="lg" pb={6}>
-              {about.values.heading}
-            </ExtendedHeading>
-            <SimpleGrid columns={[1, null, 3]} gap={8}>
-              {about.values.items.map((value, index) => (
-                <Box key={index} p={6} borderWidth="1px" borderRadius="lg">
-                  <ExtendedHeading size="md" pb={4}>
-                    {value.title}
-                  </ExtendedHeading>
-                  <ExtendedText>{value.description}</ExtendedText>
-                </Box>
-              ))}
-            </SimpleGrid>
-          </Box>
-        </Box>
-      </Box>
-
-      {/* Footer */}
-      <Box mt="auto">
-        <Footer />
-      </Box>
-    </Box>
-  );
+    return <AboutClient about={about} />;
+  } catch (err) {
+    console.error("Error fetching About document:", err);
+    return <p className="p-8">Error loading about content.</p>;
+  }
 }
