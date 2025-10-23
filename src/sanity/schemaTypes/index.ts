@@ -4,7 +4,17 @@ import { AboutType } from "./aboutType";
 import { localeString } from "./localeStringType";
 import { LocationType } from "./locationType";
 import { NavigationType } from "./navigationType";
+import { HomeType } from "./homeType";
+import { FooterType } from "./footerType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [NavigationType, LocationType, AboutType, DishType, localeString],
+  types: [
+    HomeType,
+    NavigationType,
+    LocationType,
+    AboutType,
+    DishType,
+    FooterType,
+    localeString,
+  ],
 };

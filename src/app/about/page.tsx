@@ -1,5 +1,5 @@
 // app/about/page.tsx
-import { client } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/sanityClient";
 import AboutClient from "./AboutClient";
 
 const ABOUT_QUERY = `*[_type == "about"][0]{

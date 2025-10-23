@@ -4,9 +4,8 @@ import { Box, Button, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import { Dish } from "./dish";
-import { client } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/sanityClient";
 import { useRouter } from "next/navigation";
-import { Language } from "@/lib/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 const DISHES_QUERY = `*[_type == "dish"]{
@@ -94,7 +93,7 @@ export default function DishCarousel() {
       justifyContent="center"
       spaceY="8"
     >
-      <Box position="relative" width="100%" maxW="1200px" mx="auto">
+      <Box position="relative" width="90%" maxW="1200px" mx="auto">
         <Box
           display="grid"
           gridTemplateColumns={`repeat(${slidesToShow}, 1fr)`}

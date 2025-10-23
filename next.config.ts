@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "peninsula.com",
       },
+      {
+        protocol: "https",
+        hostname: "**.cdn.sanity.io",
+      },
     ],
   },
 };

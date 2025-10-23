@@ -16,12 +16,14 @@ import { pacifico } from "@/components/fontVars";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { useState, useEffect } from "react";
 import { LocaleString } from "@/lib/interfaces";
-import { client } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/sanityClient";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Language } from "@/lib/types";
+import { usePathname } from "next/navigation";
 
-export default function Navigation() {
+export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
+  const pathname = usePathname(); // get current URL path
   const bgColor = useColorModeValue("white", "gray.900");
   const menuBgColor = useColorModeValue("white", "gray.800");
 
@@ -71,18 +73,6 @@ export default function Navigation() {
         </Heading>
 
         <HStack gap={8} align="center" display={["none", null, "flex"]}>
-          {navData?.links?.map((link: any) => (
-            <Link key={link.href} href={link.href} passHref>
-              <Box px={2} py={1} rounded="md" _hover={{ bg: "gray.200" }}>
-                {getLocaleString(link.name)}
-              </Box>
-            </Link>
-          ))}
-          {navData?.button && (
-            <Link href={navData.button.href} passHref legacyBehavior>
-              <Button as="a">{getLocaleString(navData.button.label)}</Button>
-            </Link>
-          )}
           <Box>
             <select
               id="language"
@@ -102,6 +92,41 @@ export default function Navigation() {
               ))}
             </select>
           </Box>
+
+          {navData?.links?.map((link: any) => {
+            const isActive = pathname === link.href; // check if current page
+            return (
+              <Link key={link.href} href={link.href} passHref>
+                <Box
+                  px={2}
+                  py={1}
+                  rounded="md"
+                  fontWeight={isActive ? "bold" : "normal"} // bold for active page
+                  bg={isActive ? "gray.200" : "transparent"} // subtle background for active
+                  _hover={{
+                    fontWeight: "bold", // bold on hover
+                    bg: "gray.100",
+                    cursor: "pointer",
+                  }}
+                >
+                  {getLocaleString(link.name)}
+                </Box>
+              </Link>
+            );
+          })}
+
+          {navData?.button && (
+            <Link href={navData.button.href} passHref legacyBehavior>
+              <Button
+                as="a"
+                fontWeight={
+                  pathname === navData.button.href ? "bold" : "normal"
+                }
+              >
+                {getLocaleString(navData.button.label)}
+              </Button>
+            </Link>
+          )}
         </HStack>
 
         <IconButton
@@ -129,23 +154,44 @@ export default function Navigation() {
         pointerEvents={open ? "auto" : "none"}
       >
         <Stack gap={4} as="nav" p={4}>
-          {navData?.links?.map((link: any) => (
-            <Link key={link.href} href={link.href} passHref>
-              <Box px={2} py={1} rounded="md" _hover={{ bg: "gray.200" }}>
-                {getLocaleString(link.name)}
-              </Box>
-            </Link>
-          ))}
+          {navData?.links?.map((link: any) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link key={link.href} href={link.href} passHref>
+                <Box
+                  px={2}
+                  py={1}
+                  rounded="md"
+                  fontWeight={isActive ? "bold" : "normal"}
+                  bg={isActive ? "gray.200" : "transparent"}
+                  _hover={{
+                    fontWeight: "bold",
+                    bg: "gray.100",
+                    cursor: "pointer",
+                  }}
+                >
+                  {getLocaleString(link.name)}
+                </Box>
+              </Link>
+            );
+          })}
           {navData?.button && (
             <Link href={navData.button.href} passHref legacyBehavior>
-              <Button as="a">{getLocaleString(navData.button.label)}</Button>
+              <Button
+                as="a"
+                fontWeight={
+                  pathname === navData.button.href ? "bold" : "normal"
+                }
+              >
+                {getLocaleString(navData.button.label)}
+              </Button>
             </Link>
           )}
           <Box>
             <select
               id="language"
               value={language}
-              onChange={(e) => setLanguage(e.target.value)}
+              onChange={(e) => setLanguage(e.target.value as Language)}
               style={{
                 padding: "0.5rem 1rem",
                 borderRadius: "0.375rem",

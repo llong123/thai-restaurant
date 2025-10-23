@@ -4,7 +4,7 @@ import { Box, Image, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 interface DishProps {
   name: string;

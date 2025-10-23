@@ -42,7 +42,7 @@ export default function AnimatedSection({
   };
 
   return (
-    <Box ref={elementRef as any} {...getAnimationStyle()} {...props}>
+    <Box px={16} ref={elementRef as any} {...getAnimationStyle()} {...props}>
       {children}
     </Box>
   );

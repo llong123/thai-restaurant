@@ -14,7 +14,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
-import Navigation from "@/components/navigation";
+import NavigationComponent from "@/components/NavigationComponent";
 import { pacifico } from "@/components/fontVars";
 import { Dish } from "@/components/dish";
 import { useTranslation } from "@/lib/translations";
@@ -88,7 +88,7 @@ export default function MenuClient({ dishes }: MenuClientProps) {
   // ---------- 🔹 Render ---------- //
   return (
     <Box bg={bgColor} minH="100vh">
-      <Navigation />
+      <NavigationComponent />
       <Container maxW="8xl" py={16}>
         <Heading
           size={{ base: "2xl", lg: "4xl" }}

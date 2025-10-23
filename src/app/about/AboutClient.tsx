@@ -2,7 +2,7 @@
 
 import { Box, Heading, Text, SimpleGrid, Image } from "@chakra-ui/react";
 import Footer from "../footer";
-import Navigation from "@/components/navigation";
+import NavigationComponent from "@/components/NavigationComponent";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
 import { LocaleString } from "@/lib/interfaces";
@@ -49,7 +49,7 @@ export default function AboutClient({ about }: AboutClientProps) {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
-      <Navigation />
+      <NavigationComponent />
 
       <Box flex="1" w="100%">
         <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">

@@ -1,5 +1,5 @@
 // app/menu/page.tsx
-import { client } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/sanityClient";
 import MenuClient from "./MenuClient";
 
 const DISHES_QUERY = `*[_type == "dish"]{
@@ -22,6 +22,5 @@ export default async function MenuPage() {
     { next: { revalidate: 30 } },
   );
 
-  console.log(dishes);
   return <MenuClient dishes={dishes} />;
 }

@@ -13,16 +13,20 @@ import {
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
 import Image from "next/image";
-import { useTranslation } from "@/lib/translations";
+import { client } from "@/sanity/lib/sanityClient"; // Make sure you have a Sanity client setup
 import {
   ExtendedTextProps,
   ExtendedHeadingProps,
   ExtendedButtonProps,
   ExtendedFlexProps,
 } from "@/lib/types";
-import Navigation from "@/components/navigation";
-import DishCarousel from "@/components/dish-carousel";
+import NavigationComponent from "@/components/NavigationComponent";
+import DishCarousel from "@/components/DishCarouselComponent";
 import AnimatedSection from "@/components/animated-section";
+import { Key, useEffect, useState } from "react";
+import { useLanguage } from "@/hooks/LanguageContext";
+import { LocaleString } from "@/lib/interfaces";
+import { urlFor } from "@/sanity/lib/sanityImage";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -31,156 +35,204 @@ const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function Page() {
   const maxWidth = "8xl";
-  const { t } = useTranslation();
+
+  const [homeData, setHomeData] = useState<any>(null);
+  const [locationData, setLocationData] = useState<any>(null);
+
+  const { language } = useLanguage();
+
+  const getLocale = (field?: LocaleString) =>
+    field?.[language] || field?.en || "";
+
+  useEffect(() => {
+    async function fetchHome() {
+      const query = `*[_type == "homepage"][0]{
+        hero,
+        signatureDishes,
+        about,
+        location
+      }`;
+      const data = await client.fetch(query);
+      console.log(data);
+      setHomeData(data);
+    }
+
+    async function fetchLocation() {
+      const query = `
+        *[_type == "visitUs"][0]{
+          title,
+          sections,
+          moreSections,
+          map
+        }
+      `;
+      const data = await client.fetch(query);
+      setLocationData(data);
+    }
+    fetchHome();
+    fetchLocation();
+  }, []);
+
+  if (!homeData || !locationData) return <Text>Loading...</Text>;
 
   return (
     <VStack maxW={maxWidth} mx="auto" gap={0}>
-      <Navigation />
+      <NavigationComponent />
 
       {/* Hero Section */}
-      <AnimatedSection animation="fadeIn">
-        <Box>
-          <ExtendedFlex
-            direction={{ base: "column", lg: "row" }}
-            paddingX={{ base: 4, lg: 8 }}
-            maxW="1200px"
-            mx="auto"
-            gap={8}
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <ExtendedFlex
-              direction="column"
-              maxW={{ base: "100%", lg: "50%" }}
-              gap={4}
-            >
-              <ExtendedHeading size={{ base: "xl", lg: "2xl" }}>
-                {t("hero.title")}
-              </ExtendedHeading>
-              <ExtendedText fontSize={{ base: 16, lg: 18 }}>
-                {t("hero.description")}
-              </ExtendedText>
-              <ExtendedButton size="lg" mt={{ base: 4, lg: 6 }}>
-                {t("hero.cta")}
-              </ExtendedButton>
-            </ExtendedFlex>
-            <ExtendedFlex
-              direction="column"
-              maxW={{ base: "100%", lg: "45%" }}
-              gap={2}
-            >
-              <ExtendedText fontSize={{ base: 14, lg: 16 }}>
-                {t("hero.imageCaption")}
-              </ExtendedText>
-            </ExtendedFlex>
-          </ExtendedFlex>
-        </Box>
-      </AnimatedSection>
+      <Box
+        width="100%"
+        height={{ base: "400px", lg: "600px" }}
+        position="relative"
+        display="flex"
+        alignItems="center"
+        justifyContent={{ base: "center", lg: "flex-start" }}
+        paddingX={{ base: 4, lg: 16 }}
+        borderRadius="16px"
+        overflow="hidden"
+      >
+        {/* Background Image */}
+        {homeData.hero.image && (
+          <Image
+            src={urlFor(homeData.hero.image).width(1920).height(1080).url()}
+            alt={getLocale(homeData.hero.imageCaption) || "Hero image"}
+            fill
+            style={{
+              objectFit: "cover",
+              zIndex: -1, // put image behind the text
+            }}
+          />
+        )}
 
-      {/* Popular dishes */}
+        {/* Overlay (optional, for better readability) */}
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          width="100%"
+          height="100%"
+          bg="rgba(0,0,0,0.4)" // dark overlay
+          zIndex={0}
+        />
+
+        {/* Hero Text */}
+        <ExtendedFlex
+          direction="column"
+          gap={4}
+          maxW={{ base: "90%", lg: "50%" }}
+          color="white"
+          zIndex={1}
+        >
+          <ExtendedHeading size={{ base: "xl", lg: "4xl" }}>
+            {getLocale(homeData.hero.title)}
+          </ExtendedHeading>
+          <ExtendedText fontSize={{ base: 14, lg: 20 }}>
+            {getLocale(homeData.hero.description)}
+          </ExtendedText>
+          <ExtendedButton size="lg" mt={{ base: 4, lg: 8 }}>
+            {getLocale(homeData.hero.cta)}
+          </ExtendedButton>
+        </ExtendedFlex>
+      </Box>
+
+      {/* Signature Dishes */}
       <AnimatedSection animation="slideUp">
         <SectionComponent
-          headingTitle={t("sections.signatureDishes.title")}
-          description={t("sections.signatureDishes.description")}
+          headingTitle={getLocale(homeData.signatureDishes.title)}
+          description={getLocale(homeData.signatureDishes.description)}
         >
           <DishCarousel />
         </SectionComponent>
       </AnimatedSection>
 
+      {/* About Section */}
       <AnimatedSection animation="slideInLeft">
         <SectionComponent
-          headingTitle={t("sections.about.title")}
-          description={t("sections.about.description")}
+          headingTitle={getLocale(homeData.about.title)}
+          description={" "}
         >
-          <HStack>
-            <ExtendedFlex direction={"column"} maxW={maxWidth} gap={4} py={32}>
-              <ExtendedHeading size={{ base: "2xl", lg: "4xl" }} w={"50%"}>
-                {t("hero.title")}
-              </ExtendedHeading>
-              <ExtendedText fontSize={{ base: 16, lg: 20 }} w={"50%"}>
-                {t("hero.description")}
+          <HStack gapX={8} px={8}>
+            <ExtendedFlex direction={"column"} maxW={maxWidth} gap="8">
+              <ExtendedText fontSize={{ base: 12, lg: 16 }} w={"100%"}>
+                {getLocale(homeData.about.description)}
               </ExtendedText>
             </ExtendedFlex>
 
-            <Image
-              src="https://placehold.co/500x100"
-              alt="About us restaurant image"
-              width={500}
-              height={100}
-            />
+            {/* About Image */}
+            {homeData.about.image && (
+              <Image
+                src={urlFor(homeData.about.image).width(500).height(300).url()}
+                alt={getLocale(homeData.about.imageCaption) || "About image"}
+                width={500}
+                height={300}
+                style={{ borderRadius: "16px" }}
+              />
+            )}
           </HStack>
         </SectionComponent>
       </AnimatedSection>
 
-      {/* Find Us */}
-      <AnimatedSection animation="slideUp">
-        <SectionComponent
-          darkBg
-          headingTitle={t("sections.location.title")}
-          description={t("sections.location.description")}
-        >
-          <ExtendedFlex
-            maxW={maxWidth}
-            width={"100%"}
-            gap={16}
-            paddingX={8}
-            direction={{ base: "column-reverse", lg: "row" }}
+      {/* Location Section */}
+      {locationData && (
+        <AnimatedSection animation="slideUp">
+          <SectionComponent
+            darkBg
+            headingTitle={getLocale(locationData.title)}
+            description={getLocale(locationData.title)}
           >
-            <AspectRatio
-              borderRadius={16}
-              overflow={"hidden"}
-              width={"100%"}
-              maxH={"300px"}
-              ratio={1 / 1}
-              flexBasis={"50%"}
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1983.9515746665063!2d24.952672178088346!3d60.18153377503828!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46920bd5bc995bc1%3A0x785b19e065883db0!2sH%C3%A4meentie%207%2C%2000530%20Helsinki!5e0!3m2!1sfi!2sfi!4v1742577370577!5m2!1sfi!2sfi"
-                width="600"
-                height="200"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </AspectRatio>
             <ExtendedFlex
-              direction="column"
-              flexBasis={"50%"}
-              textAlign={"left"}
+              maxW={maxWidth}
+              width={"100%"}
+              gap={16}
+              paddingX={8}
+              direction={{ base: "column-reverse", lg: "row" }}
             >
-              <ExtendedHeading size="lg">
-                {t("sections.location.address.title")}
-              </ExtendedHeading>
-              <ExtendedText pl={4} pb={4} color={"gray.500"}>
-                {t("sections.location.address.value")}
-              </ExtendedText>
-              <ExtendedHeading size="lg">
-                {t("sections.location.fromAirport.title")}
-              </ExtendedHeading>
-              <ExtendedText>
-                {t("sections.location.fromAirport.description")}
-              </ExtendedText>
-              <ExtendedHeading size="lg">
-                {t("sections.location.fromStation.title")}
-              </ExtendedHeading>
-              <ExtendedText>
-                {t("sections.location.fromStation.description")}
-              </ExtendedText>
-              <ExtendedHeading size="lg">
-                {t("sections.location.openingHours.title")}
-              </ExtendedHeading>
-              <ExtendedText>
-                {t("sections.location.openingHours.weekdays")}
-              </ExtendedText>
-              <ExtendedText>
-                {t("sections.location.openingHours.saturday")}
-              </ExtendedText>
-              <ExtendedText>
-                {t("sections.location.openingHours.sunday")}
-              </ExtendedText>
+              <AspectRatio
+                borderRadius={16}
+                overflow={"hidden"}
+                width={"100%"}
+                maxH={"300px"}
+                ratio={1 / 1}
+                flexBasis={"50%"}
+              >
+                {/* Map iframe */}
+                {locationData.map?.embedUrl && (
+                  <iframe
+                    src={locationData.map.embedUrl}
+                    width="600"
+                    height="200"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                )}
+              </AspectRatio>
+              <ExtendedFlex
+                direction="column"
+                flexBasis={"50%"}
+                textAlign={"left"}
+              >
+                {locationData.sections.map((section: any, i: number) => (
+                  <Box key={i} pb={8}>
+                    <ExtendedHeading size="lg">
+                      {getLocale(section.title)}
+                    </ExtendedHeading>
+
+                    {section.info.map(
+                      (
+                        line: LocaleString | undefined,
+                        j: Key | null | undefined,
+                      ) => (
+                        <ExtendedText key={j}>{getLocale(line)}</ExtendedText>
+                      ),
+                    )}
+                  </Box>
+                ))}
+              </ExtendedFlex>
             </ExtendedFlex>
-          </ExtendedFlex>
-        </SectionComponent>
-      </AnimatedSection>
+          </SectionComponent>
+        </AnimatedSection>
+      )}
+
       <Footer />
     </VStack>
   );

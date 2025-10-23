@@ -2,7 +2,7 @@
 
 import { Box, Heading, Text, SimpleGrid } from "@chakra-ui/react";
 import Footer from "../footer";
-import Navigation from "@/components/navigation";
+import NavigationComponent from "@/components/NavigationComponent";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -38,7 +38,7 @@ export default function LocationClient({ visitUs }: { visitUs: VisitUs }) {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
-      <Navigation />
+      <NavigationComponent />
 
       <Box flex="1" w="100%">
         <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
