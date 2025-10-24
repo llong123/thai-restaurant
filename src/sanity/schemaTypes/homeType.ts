@@ -2,7 +2,7 @@ import { defineType, defineField } from "sanity";
 
 export const HomeType = defineType({
   name: "homepage",
-  title: "Homepage",
+  title: "Home Page",
   type: "document",
 
   fields: [
@@ -26,6 +26,11 @@ export const HomeType = defineType({
           name: "cta",
           title: "Call to Action Text",
           type: "localeString",
+        }),
+        defineField({
+          name: "ctaUrl",
+          title: "Call to Action URL",
+          type: "url",
         }),
         defineField({
           name: "image",
@@ -81,57 +86,6 @@ export const HomeType = defineType({
           title: "About Image",
           type: "image",
           options: { hotspot: true },
-        }),
-      ],
-    }),
-
-    // LOCATION SECTION
-    defineField({
-      name: "location",
-      title: "Location Section",
-      type: "object",
-      fields: [
-        defineField({
-          name: "title",
-          title: "Title",
-          type: "localeString",
-        }),
-        defineField({
-          name: "description",
-          title: "Description",
-          type: "localeString",
-        }),
-        defineField({
-          name: "address",
-          title: "Address",
-          type: "localeString",
-        }),
-        defineField({
-          name: "mapEmbed",
-          title: "Google Maps Embed URL",
-          type: "url",
-        }),
-        defineField({
-          name: "openingHours",
-          title: "Opening Hours",
-          type: "object",
-          fields: [
-            defineField({
-              name: "weekdays",
-              title: "Weekdays",
-              type: "localeString",
-            }),
-            defineField({
-              name: "saturday",
-              title: "Saturday",
-              type: "localeString",
-            }),
-            defineField({
-              name: "sunday",
-              title: "Sunday",
-              type: "localeString",
-            }),
-          ],
         }),
       ],
     }),

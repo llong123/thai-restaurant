@@ -6,6 +6,7 @@ import NavigationComponent from "@/components/NavigationComponent";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { MAX_WIDTH } from "@/lib/enums";
 
 // Each section in the "sections" array (e.g., Address, Contact, Opening Hours)
 interface Section {
@@ -21,13 +22,13 @@ interface MapEmbed {
 // Main VisitUs type
 interface VisitUs {
   title: LocaleString;
+  description: LocaleString;
   sections: Section[];
   moreSections: Section[];
   map?: MapEmbed;
 }
 
 export default function LocationClient({ visitUs }: { visitUs: VisitUs }) {
-  const maxWidth = "8xl";
   const bgColor = useColorModeValue("white", "gray.800");
   const { language } = useLanguage();
 
@@ -37,11 +38,16 @@ export default function LocationClient({ visitUs }: { visitUs: VisitUs }) {
   if (!visitUs) return <p className="p-8">Visit Us data not available.</p>;
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
-      <NavigationComponent />
-
-      <Box flex="1" w="100%">
-        <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      minHeight="100vh"
+      bg={bgColor}
+    >
+      <Box flex="1" w="100%" maxWidth={MAX_WIDTH.XL}>
+        <NavigationComponent />
+        <Box mx="auto" p={8} w="100%">
           {/* Title */}
           <Box textAlign="center" pb={12}>
             <Heading size="2xl">{getLocale(visitUs.title)}</Heading>

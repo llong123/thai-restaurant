@@ -61,8 +61,9 @@ export default function NavigationComponent() {
       position="sticky"
       top={0}
       zIndex={10}
-      shadow="md"
-      w="100vw"
+      shadow={{ base: "md", xl: "none" }}
+      w="100%"
+      py={2}
     >
       <Flex h={16} align="center" justify="space-between" px={4}>
         <Heading
@@ -116,7 +117,13 @@ export default function NavigationComponent() {
           })}
 
           {navData?.button && (
-            <Link href={navData.button.href} passHref legacyBehavior>
+            <Link
+              href={navData.button.href}
+              passHref
+              legacyBehavior
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button
                 as="a"
                 fontWeight={
@@ -176,7 +183,13 @@ export default function NavigationComponent() {
             );
           })}
           {navData?.button && (
-            <Link href={navData.button.href} passHref legacyBehavior>
+            <Link
+              href={navData.button.href}
+              passHref
+              legacyBehavior
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button
                 as="a"
                 fontWeight={

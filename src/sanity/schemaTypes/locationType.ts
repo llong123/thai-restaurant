@@ -2,12 +2,17 @@ import { defineType, defineField } from "sanity";
 
 export const LocationType = defineType({
   name: "visitUs",
-  title: "Visit Us",
+  title: "Visit Us Page",
   type: "document",
   fields: [
     defineField({
       name: "title",
       title: "Page Title",
+      type: "localeString",
+    }),
+    defineField({
+      name: "description",
+      title: "Page Description",
       type: "localeString",
     }),
 

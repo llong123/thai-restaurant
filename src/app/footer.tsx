@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/sanityClient";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { LocaleString } from "@/lib/interfaces";
+import { useTranslation } from "@/lib/translations";
+import { MAX_WIDTH } from "@/lib/enums";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -28,6 +30,7 @@ interface FooterData {
 
 export default function Footer() {
   const { language } = useLanguage();
+  const { t } = useTranslation(language);
   const [footerData, setFooterData] = useState<FooterData | null>(null);
 
   useEffect(() => {
@@ -59,7 +62,7 @@ export default function Footer() {
         justifyContent="center"
       >
         <Flex
-          maxW="6xl"
+          maxW={MAX_WIDTH.XL}
           w="full"
           color="white"
           justifyContent="center"
@@ -70,7 +73,7 @@ export default function Footer() {
             w="full"
             alignItems="flex-start"
             justifyContent="space-between"
-            px={8}
+            px={16}
             pt={8}
           >
             {/* Logo */}
@@ -94,7 +97,7 @@ export default function Footer() {
 
             {/* Social Links */}
             <VStack>
-              <ExtendedHeading>Follow Us</ExtendedHeading>
+              <ExtendedHeading>{t("footer.followUs")}</ExtendedHeading>
               <HStack>
                 {footerData.followUs?.map((social, index) => {
                   let Icon;

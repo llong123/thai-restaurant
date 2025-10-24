@@ -3,10 +3,11 @@
 import { Box, Button, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useState, useEffect } from "react";
-import { Dish } from "./dish";
+import { Dish } from "./DishComponent";
 import { client } from "@/sanity/lib/sanityClient";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { DishData, LocaleString } from "@/lib/interfaces";
 
 const DISHES_QUERY = `*[_type == "dish"]{
   _id,
@@ -18,28 +19,6 @@ const DISHES_QUERY = `*[_type == "dish"]{
   spiceLevel,
   dishImage { asset->{url} }
 }`;
-
-interface LocaleString {
-  _type: "localeString";
-  en?: string;
-  fi?: string;
-  sv?: string;
-}
-
-interface DishImage {
-  asset?: {
-    url: string;
-  };
-}
-
-interface DishData {
-  _id: string;
-  name: LocaleString;
-  description?: LocaleString;
-  price?: number;
-  signatureDish?: boolean;
-  dishImage?: DishImage;
-}
 
 // ---------- 🔹 Component ---------- //
 
@@ -92,6 +71,7 @@ export default function DishCarousel() {
       alignItems="center"
       justifyContent="center"
       spaceY="8"
+      w="100%"
     >
       <Box position="relative" width="90%" maxW="1200px" mx="auto">
         <Box
@@ -101,18 +81,7 @@ export default function DishCarousel() {
           width="100%"
         >
           {visibleDishes.map((dish) => (
-            <Dish
-              key={dish._id}
-              name={getLocaleString(dish.name)}
-              description={getLocaleString(dish.description)}
-              image={
-                dish.dishImage?.asset?.url ||
-                `https://placehold.co/600x400/111827/FFFFFF?text=${encodeURIComponent(
-                  getLocaleString(dish.name),
-                )}`
-              }
-              price={dish.price ? `€${dish.price.toFixed(2)}` : "N/A"}
-            />
+            <Dish key={dish._id} dish={dish} getLocale={getLocaleString} />
           ))}
         </Box>
 

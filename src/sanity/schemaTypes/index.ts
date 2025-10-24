@@ -6,9 +6,11 @@ import { LocationType } from "./locationType";
 import { NavigationType } from "./navigationType";
 import { HomeType } from "./homeType";
 import { FooterType } from "./footerType";
+import { MenuPageType } from "./menuType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    MenuPageType,
     HomeType,
     NavigationType,
     LocationType,

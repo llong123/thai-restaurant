@@ -1,6 +1,41 @@
 {
-  "menu": {
-    "ingredients": "Ingredients",
-    "description": "Our Menu"
+  "fi": {
+    "menu": {
+      "ingredients": "Ainekset",
+      "description": "Meidän Menu",
+      "spiceLevel": "Tulisuusaste",
+      "categories": "Kategoriat",
+      "hideMenu": "Piilota Menu",
+      "showMenu": "Näytä Menu"
+    },
+    "footer": {
+      "followUs": "Seuraa meitä"
+    }
+  },
+  "en": {
+    "menu": {
+      "ingredients": "Ingredients",
+      "description": "Our Menu",
+      "spiceLevel": "Spice Level",
+      "categories": "Categories",
+      "hideMenu": "Hide Menu",
+      "showMenu": "Show Menu"
+    },
+    "footer": {
+      "followUs": "Follow us"
+    }
+  },
+  "sv": {
+    "menu": {
+      "ingredients": "Ingredienser",
+      "description": "Vår meny",
+      "spiceLevel": "Styrka",
+      "categories": "Kategorier",
+      "hideMenu": "Dölj Meny",
+      "showMenu": "Visa Meny"
+    },
+    "footer": {
+      "followUs": "Följ oss"
+    }
   }
 }

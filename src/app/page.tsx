@@ -7,8 +7,8 @@ import {
   AspectRatio,
   Text,
   Button,
-  HStack,
   Box,
+  Stack,
 } from "@chakra-ui/react";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
@@ -27,6 +27,7 @@ import { Key, useEffect, useState } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { LocaleString } from "@/lib/interfaces";
 import { urlFor } from "@/sanity/lib/sanityImage";
+import { MAX_WIDTH } from "@/lib/enums";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -61,6 +62,7 @@ export default function Page() {
       const query = `
         *[_type == "visitUs"][0]{
           title,
+          description,
           sections,
           moreSections,
           map
@@ -76,7 +78,7 @@ export default function Page() {
   if (!homeData || !locationData) return <Text>Loading...</Text>;
 
   return (
-    <VStack maxW={maxWidth} mx="auto" gap={0}>
+    <VStack alignItems="center" maxW={MAX_WIDTH.XL} mx="auto" gap={0}>
       <NavigationComponent />
 
       {/* Hero Section */}
@@ -88,7 +90,7 @@ export default function Page() {
         alignItems="center"
         justifyContent={{ base: "center", lg: "flex-start" }}
         paddingX={{ base: 4, lg: 16 }}
-        borderRadius="16px"
+        borderRadius="4px"
         overflow="hidden"
       >
         {/* Background Image */}
@@ -111,7 +113,7 @@ export default function Page() {
           left={0}
           width="100%"
           height="100%"
-          bg="rgba(0,0,0,0.4)" // dark overlay
+          bg="rgba(0,0,0,0.6)" // dark overlay
           zIndex={0}
         />
 
@@ -129,7 +131,11 @@ export default function Page() {
           <ExtendedText fontSize={{ base: 14, lg: 20 }}>
             {getLocale(homeData.hero.description)}
           </ExtendedText>
-          <ExtendedButton size="lg" mt={{ base: 4, lg: 8 }}>
+          <ExtendedButton
+            size="lg"
+            mt={{ base: 4, lg: 8 }}
+            onClick={() => (window.location.href = homeData.hero.ctaUrl)}
+          >
             {getLocale(homeData.hero.cta)}
           </ExtendedButton>
         </ExtendedFlex>
@@ -151,8 +157,14 @@ export default function Page() {
           headingTitle={getLocale(homeData.about.title)}
           description={" "}
         >
-          <HStack gapX={8} px={8}>
-            <ExtendedFlex direction={"column"} maxW={maxWidth} gap="8">
+          <Stack
+            alignItems={"center"}
+            direction={{ base: "column", lg: "row" }}
+            gapX={8}
+            gapY={4}
+            px={8}
+          >
+            <ExtendedFlex maxW={maxWidth} gap="8">
               <ExtendedText fontSize={{ base: 12, lg: 16 }} w={"100%"}>
                 {getLocale(homeData.about.description)}
               </ExtendedText>
@@ -161,14 +173,14 @@ export default function Page() {
             {/* About Image */}
             {homeData.about.image && (
               <Image
-                src={urlFor(homeData.about.image).width(500).height(300).url()}
+                src={urlFor(homeData.about.image).width(1280).height(720).url()}
                 alt={getLocale(homeData.about.imageCaption) || "About image"}
-                width={500}
+                width={600}
                 height={300}
                 style={{ borderRadius: "16px" }}
               />
             )}
-          </HStack>
+          </Stack>
         </SectionComponent>
       </AnimatedSection>
 
@@ -178,7 +190,7 @@ export default function Page() {
           <SectionComponent
             darkBg
             headingTitle={getLocale(locationData.title)}
-            description={getLocale(locationData.title)}
+            description={getLocale(locationData.description)}
           >
             <ExtendedFlex
               maxW={maxWidth}
@@ -186,6 +198,7 @@ export default function Page() {
               gap={16}
               paddingX={8}
               direction={{ base: "column-reverse", lg: "row" }}
+              align={{ base: "center", lg: "flex-start" }}
             >
               <AspectRatio
                 borderRadius={16}

@@ -2,7 +2,7 @@ import { defineType, defineField } from "sanity";
 
 export const NavigationType = defineType({
   name: "navigation",
-  title: "Navigation",
+  title: "Navigation Bar",
   type: "document",
   fields: [
     defineField({

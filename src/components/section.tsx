@@ -1,5 +1,9 @@
 import { Flex, Text, Heading } from "@chakra-ui/react";
-import { ExtendedTextProps, ExtendedHeadingProps, ExtendedFlexProps } from "@/lib/types";
+import {
+  ExtendedTextProps,
+  ExtendedHeadingProps,
+  ExtendedFlexProps,
+} from "@/lib/types";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;

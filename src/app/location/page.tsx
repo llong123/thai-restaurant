@@ -5,6 +5,7 @@ import { groq } from "next-sanity";
 const VISIT_US_QUERY = groq`
   *[_type == "visitUs"][0]{
     title,
+    description,
     sections,
     moreSections,
     map

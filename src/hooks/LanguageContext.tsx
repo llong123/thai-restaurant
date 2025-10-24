@@ -1,6 +1,12 @@
 "use client";
 import { Language } from "@/lib/types";
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface LanguageContextType {
   language: Language;
@@ -15,6 +21,18 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 // Provider-komponentti
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>("fi");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const browserLang = navigator.language?.slice(0, 2).toLowerCase(); // e.g. 'en', 'fi', 'sv', 'de'
+      const supportedLangs: Language[] = ["en", "fi", "sv"];
+      if (supportedLangs.includes(browserLang as Language)) {
+        setLanguage(browserLang as Language);
+      } else {
+        setLanguage("en");
+      }
+    }
+  }, []);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

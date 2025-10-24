@@ -7,6 +7,7 @@ import { useColorModeValue } from "@/components/ui/color-mode";
 import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { MAX_WIDTH } from "@/lib/enums";
 
 // Extended Chakra components
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
@@ -39,7 +40,6 @@ interface AboutClientProps {
 
 export default function AboutClient({ about }: AboutClientProps) {
   const bgColor = useColorModeValue("white", "gray.800");
-  const maxWidth = "8xl";
   const { language } = useLanguage();
 
   if (!about) return <p className="p-8">About content is not available.</p>;
@@ -49,10 +49,9 @@ export default function AboutClient({ about }: AboutClientProps) {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
-      <NavigationComponent />
-
-      <Box flex="1" w="100%">
-        <Box maxWidth={maxWidth} mx="auto" p={8} w="100%">
+      <Box px={0} w="100%">
+        <Box maxWidth={MAX_WIDTH.XL} mx="auto" px={0} w="100%">
+          <NavigationComponent />
           {/* Main Image */}
           {about.mainImage?.asset?.url && (
             <Box pb={16} position="relative" height="400px">

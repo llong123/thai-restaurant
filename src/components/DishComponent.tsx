@@ -1,35 +1,46 @@
 "use client";
 
-import { Box, Image, useDisclosure } from "@chakra-ui/react";
+import { Box, Image as ChakraImage, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { urlFor } from "@/sanity/lib/sanityImage"; // Sanity image helper
+import { DishData, LocaleString } from "@/lib/interfaces";
+import { useTranslation } from "@/lib/translations";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const MotionBox = motion.create(Box);
 
 interface DishProps {
-  name: string;
-  description: string;
-  image: string;
-  price: string;
+  dish: DishData;
+  getLocale: (field?: LocaleString) => string;
 }
 
-export function Dish({ name, description, image, price }: DishProps) {
+export function Dish({ dish, getLocale }: DishProps) {
   const { open, onOpen, onClose } = useDisclosure();
+  const { language } = useLanguage();
   const [dishDetails, setDishDetails] = useState({
-    name: name,
-    description: description,
-    ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
-    spicyLevel: "Medium",
-    price: price,
+    name: dish.name,
+    description: getLocale(dish.description),
+    ingredients: dish.ingredients || [],
+    spiceLevel: dish.spiceLevel,
+    price: dish.price ? `${dish.price.toFixed(2)} EUR` : "N/A",
+    image: dish.dishImage
+      ? urlFor(dish.dishImage).width(500).height(300).url()
+      : "",
   });
+
+  const { t } = useTranslation(language);
 
   const handleClick = () => {
     setDishDetails({
-      name: name,
-      description: description,
-      ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
-      spicyLevel: "Medium",
-      price: price,
+      name: dish.name,
+      description: getLocale(dish.description),
+      ingredients: dish.ingredients || [],
+      spiceLevel: dish.spiceLevel,
+      price: dish.price ? `${dish.price.toFixed(2)} EUR` : "N/A",
+      image: dish.dishImage
+        ? urlFor(dish.dishImage).width(500).height(300).url()
+        : "",
     });
     onOpen();
   };
@@ -61,7 +72,15 @@ export function Dish({ name, description, image, price }: DishProps) {
         transition={{ duration: 0.3 }}
         onClick={handleClick}
       >
-        <Image src={image} alt={name} w="100%" h="300px" objectFit="cover" />
+        {dishDetails.image && (
+          <ChakraImage
+            src={dishDetails.image}
+            alt={dishDetails.name}
+            w="100%"
+            h="300px"
+            objectFit="cover"
+          />
+        )}
         <MotionBox
           position="absolute"
           bottom={0}
@@ -73,13 +92,13 @@ export function Dish({ name, description, image, price }: DishProps) {
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <Box as="h3" fontSize="xl" fontWeight="bold" mb={2} color="white">
-            {name}
+            {dishDetails.name}
           </Box>
           <Box fontSize="md" mb={2} color="white">
-            {description}
+            {dishDetails.description}
           </Box>
           <Box fontSize="xl" fontWeight="bold" color="white">
-            {price}
+            {dishDetails.price}
           </Box>
         </MotionBox>
       </MotionBox>
@@ -116,38 +135,48 @@ export function Dish({ name, description, image, price }: DishProps) {
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Box position="relative" w="100%" h="200px" pb={4}>
-              <Image
-                src={image}
-                alt={name}
-                w="100%"
-                h="100%"
-                objectFit="cover"
-                borderRadius="md"
-              />
-            </Box>
+            {dishDetails.image && (
+              <Box position="relative" w="100%" h="200px" pb={4}>
+                <ChakraImage
+                  src={dishDetails.image}
+                  alt={dishDetails.name}
+                  w="100%"
+                  h="100%"
+                  objectFit="cover"
+                  borderRadius="md"
+                />
+              </Box>
+            )}
+
             <Box as="h3" fontSize="2xl" fontWeight="bold" mb={2} color="black">
               {dishDetails.name}
             </Box>
             <Box fontSize="md" mb={4} color="black">
               {dishDetails.description}
             </Box>
-            <Box fontWeight="bold" mb={2} color="black">
-              Ingredients:
-            </Box>
-            <Box mb={4}>
-              {dishDetails.ingredients.map((ingredient, index) => (
-                <Box key={index} color="black">
-                  • {ingredient}
+
+            {dishDetails.ingredients.length > 0 && (
+              <>
+                <Box fontWeight="bold" mb={2} color="black">
+                  {t("menu.ingredients")}:
                 </Box>
-              ))}
-            </Box>
+                <Box mb={4}>
+                  {dishDetails.ingredients.map((ingredient, index) => (
+                    <Box key={index} color="black">
+                      • {getLocale(ingredient as any)}
+                    </Box>
+                  ))}
+                </Box>
+              </>
+            )}
+
             <Box fontWeight="bold" mb={2} color="black">
-              Spicy Level: {dishDetails.spicyLevel}
+              {t("menu.spiceLevel")}: {"🌶️".repeat(dishDetails.spiceLevel!)}
             </Box>
             <Box fontWeight="bold" color="black">
-              Price: {dishDetails.price}
+              {dishDetails.price}
             </Box>
+
             <Box
               position="absolute"
               top={4}
