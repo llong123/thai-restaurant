@@ -13,20 +13,14 @@ import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
 import { pacifico } from "@/components/fontVars";
 import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { client } from "@/sanity/lib/sanityClient";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { MAX_WIDTH } from "@/lib/enums";
+import { FooterData } from "@/lib/interfaces/footerData";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
-
-interface FooterData {
-  quickLinks: { label: LocaleString; url: string }[];
-  followUs: { platform: string; url: string }[];
-  copyright: LocaleString;
-}
 
 export default function Footer() {
   const { language } = useLanguage();
@@ -35,11 +29,8 @@ export default function Footer() {
 
   useEffect(() => {
     async function fetchFooter() {
-      const data = await client.fetch(`*[_type=="footer"][0]{
-        quickLinks,
-        followUs,
-        copyright
-      }`);
+      const res = await fetch("/api/footer");
+      const data: FooterData = await res.json();
       setFooterData(data);
     }
 

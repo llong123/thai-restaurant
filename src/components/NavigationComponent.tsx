@@ -16,10 +16,10 @@ import { pacifico } from "@/components/fontVars";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { useState, useEffect } from "react";
 import { LocaleString } from "@/lib/interfaces";
-import { client } from "@/sanity/lib/sanityClient";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Language } from "@/lib/types";
 import { usePathname } from "next/navigation";
+import { NavigationData } from "@/lib/interfaces/navigationData";
 
 export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
@@ -28,7 +28,7 @@ export default function NavigationComponent() {
   const menuBgColor = useColorModeValue("white", "gray.800");
 
   const { language, setLanguage } = useLanguage();
-  const [navData, setNavData] = useState<any>(null);
+  const [navData, setNavData] = useState<NavigationData | null>(null);
 
   // Utility for localized strings
   const getLocaleString = (field?: LocaleString) =>
@@ -36,23 +36,12 @@ export default function NavigationComponent() {
 
   // Fetch navigation data
   useEffect(() => {
-    client
-      .fetch(
-        `*[_type == "navigation"][0]{
-        siteTitle,
-        links[]{
-          name,
-          href
-        },
-        button{
-          label,
-          href
-        },
-        languages
-      }`,
-      )
-      .then((data) => setNavData(data))
-      .catch(console.error);
+    async function fetchNavigationData() {
+      const res = await fetch("/api/navigation");
+      const data: NavigationData = await res.json();
+      setNavData(data);
+    }
+    fetchNavigationData();
   }, []);
 
   return (

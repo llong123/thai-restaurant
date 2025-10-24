@@ -4,22 +4,11 @@ import { Box, Button, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import { Dish } from "./DishComponent";
-import { client } from "@/sanity/lib/sanityClient";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { DishData, LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 
-const DISHES_QUERY = `*[_type == "dish"]{
-  _id,
-  name,
-  description,
-  ingredients,
-  category,
-  price,
-  spiceLevel,
-  dishImage { asset->{url} }
-}`;
 
 // ---------- 🔹 Component ---------- //
 
@@ -34,11 +23,8 @@ export default function DishCarousel() {
   // Fetch signature dishes from Sanity
   useEffect(() => {
     async function fetchDishes() {
-      const data: DishData[] = await client.fetch(
-        DISHES_QUERY,
-        {},
-        { next: { revalidate: 30 } },
-      );
+      const res = await fetch("/api/dish");
+      const data: DishData[] = await res.json();
       setDishes(data);
     }
     fetchDishes();
