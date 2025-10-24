@@ -7,6 +7,8 @@ import { urlFor } from "@/sanity/lib/sanityImage"; // Sanity image helper
 import { DishData, LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { FaTimes } from "react-icons/fa";
+import { MAX_WIDTH } from "@/lib/enums";
 
 const MotionBox = motion.create(Box);
 
@@ -125,7 +127,7 @@ export function Dish({ dish, getLocale }: DishProps) {
             bg="white"
             p={6}
             borderRadius="xl"
-            maxW="500px"
+            maxWidth={MAX_WIDTH.XS}
             w="90%"
             maxH="90vh"
             overflowY="auto"
@@ -185,11 +187,10 @@ export function Dish({ dish, getLocale }: DishProps) {
               onClick={onClose}
               p={2}
               borderRadius="full"
-              bg="rgba(0, 0, 0, 0.1)"
               _hover={{ bg: "rgba(0, 0, 0, 0.2)" }}
               transition="all 0.2s ease"
             >
-              ✕
+              <FaTimes color="white" />
             </Box>
           </MotionBox>
         </MotionBox>

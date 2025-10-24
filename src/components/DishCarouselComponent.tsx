@@ -8,6 +8,7 @@ import { client } from "@/sanity/lib/sanityClient";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { DishData, LocaleString } from "@/lib/interfaces";
+import { useTranslation } from "@/lib/translations";
 
 const DISHES_QUERY = `*[_type == "dish"]{
   _id,
@@ -24,6 +25,7 @@ const DISHES_QUERY = `*[_type == "dish"]{
 
 export default function DishCarousel() {
   const { language } = useLanguage();
+  const { t } = useTranslation(language);
   const [dishes, setDishes] = useState<DishData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const slidesToShow = useBreakpointValue({ base: 1, md: 2, lg: 3 }) || 1;
@@ -117,7 +119,7 @@ export default function DishCarousel() {
         size="lg"
         onClick={() => router.push("/menu")}
       >
-        View All Dishes
+        {t("homepage.viewAllDishes")}{" "}
       </Button>
     </Box>
   );

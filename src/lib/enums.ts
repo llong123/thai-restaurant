@@ -1,7 +1,7 @@
 export enum MAX_WIDTH {
   XL = "8xl",
-  LG = "7xl",
-  MD = "6xl",
-  SM = "5xl",
-  XS = "4xl",
+  LG = "6xl",
+  MD = "4xl",
+  SM = "2xl",
+  XS = "xl",
 }

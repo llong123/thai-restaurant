@@ -10,6 +10,9 @@
     },
     "footer": {
       "followUs": "Seuraa meitä"
+    },
+    "homepage": {
+      "viewAllDishes": "Näytä kaikki"
     }
   },
   "en": {
@@ -23,6 +26,9 @@
     },
     "footer": {
       "followUs": "Follow us"
+    },
+    "homepage": {
+      "viewAllDishes": "View All"
     }
   },
   "sv": {
@@ -36,6 +42,9 @@
     },
     "footer": {
       "followUs": "Följ oss"
+    },
+    "homepage": {
+      "viewAllDishes": "Visa alla"
     }
   }
 }

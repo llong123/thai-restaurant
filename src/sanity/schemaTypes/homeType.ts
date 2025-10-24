@@ -46,6 +46,34 @@ export const HomeType = defineType({
       ],
     }),
 
+    defineField({
+      name: "alertBanner",
+      title: "Alert Banner",
+      type: "object",
+      fields: [
+        defineField({
+          name: "message",
+          title: "Message",
+          type: "localeString",
+        }),
+        defineField({
+          name: "showBanner",
+          title: "Show Banner",
+          type: "boolean",
+        }),
+        defineField({
+          name: "backgroundColor",
+          title: "Background Color (English)",
+          type: "string",
+        }),
+        defineField({
+          name: "textColor",
+          title: "Text Color (English)",
+          type: "string",
+        }),
+      ],
+    }),
+
     // SIGNATURE DISHES
     defineField({
       name: "signatureDishes",

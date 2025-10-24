@@ -28,6 +28,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import { LocaleString } from "@/lib/interfaces";
 import { urlFor } from "@/sanity/lib/sanityImage";
 import { MAX_WIDTH } from "@/lib/enums";
+import { FaTimes } from "react-icons/fa";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -42,8 +43,17 @@ export default function Page() {
 
   const { language } = useLanguage();
 
-  const getLocale = (field?: LocaleString) =>
+  const getLocaleString = (field?: LocaleString) =>
     field?.[language] || field?.en || "";
+
+  // inside your component
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    if (homeData?.alertBanner?.showBanner) {
+      setShowBanner(true); // show banner when data loads
+    }
+  }, [homeData]);
 
   useEffect(() => {
     async function fetchHome() {
@@ -51,10 +61,10 @@ export default function Page() {
         hero,
         signatureDishes,
         about,
-        location
+        location,
+        alertBanner
       }`;
       const data = await client.fetch(query);
-      console.log(data);
       setHomeData(data);
     }
 
@@ -81,6 +91,35 @@ export default function Page() {
     <VStack alignItems="center" maxW={MAX_WIDTH.XL} mx="auto" gap={0}>
       <NavigationComponent />
 
+      {homeData?.alertBanner && showBanner && (
+        <Box
+          width="100%"
+          bg={homeData.alertBanner.backgroundColor}
+          color={homeData.alertBanner.textColor}
+          textAlign="center"
+          py={6}
+          px={8}
+          borderRadius={2}
+          fontWeight="bold"
+          position="sticky"
+          top="64px" // adjust for your navbar height
+          zIndex={15}
+        >
+          {getLocaleString(homeData.alertBanner.message)}
+
+          <Box
+            position="absolute"
+            right={2}
+            top={2}
+            p={4}
+            cursor="pointer"
+            onClick={() => setShowBanner(false)} // hide banner locally
+          >
+            <FaTimes />
+          </Box>
+        </Box>
+      )}
+
       {/* Hero Section */}
       <Box
         width="100%"
@@ -97,7 +136,7 @@ export default function Page() {
         {homeData.hero.image && (
           <Image
             src={urlFor(homeData.hero.image).width(1920).height(1080).url()}
-            alt={getLocale(homeData.hero.imageCaption) || "Hero image"}
+            alt={getLocaleString(homeData.hero.imageCaption) || "Hero image"}
             fill
             style={{
               objectFit: "cover",
@@ -126,17 +165,17 @@ export default function Page() {
           zIndex={1}
         >
           <ExtendedHeading size={{ base: "xl", lg: "4xl" }}>
-            {getLocale(homeData.hero.title)}
+            {getLocaleString(homeData.hero.title)}
           </ExtendedHeading>
           <ExtendedText fontSize={{ base: 14, lg: 20 }}>
-            {getLocale(homeData.hero.description)}
+            {getLocaleString(homeData.hero.description)}
           </ExtendedText>
           <ExtendedButton
             size="lg"
             mt={{ base: 4, lg: 8 }}
             onClick={() => (window.location.href = homeData.hero.ctaUrl)}
           >
-            {getLocale(homeData.hero.cta)}
+            {getLocaleString(homeData.hero.cta)}
           </ExtendedButton>
         </ExtendedFlex>
       </Box>
@@ -144,8 +183,8 @@ export default function Page() {
       {/* Signature Dishes */}
       <AnimatedSection animation="slideUp">
         <SectionComponent
-          headingTitle={getLocale(homeData.signatureDishes.title)}
-          description={getLocale(homeData.signatureDishes.description)}
+          headingTitle={getLocaleString(homeData.signatureDishes.title)}
+          description={getLocaleString(homeData.signatureDishes.description)}
         >
           <DishCarousel />
         </SectionComponent>
@@ -154,7 +193,7 @@ export default function Page() {
       {/* About Section */}
       <AnimatedSection animation="slideInLeft">
         <SectionComponent
-          headingTitle={getLocale(homeData.about.title)}
+          headingTitle={getLocaleString(homeData.about.title)}
           description={" "}
         >
           <Stack
@@ -166,7 +205,7 @@ export default function Page() {
           >
             <ExtendedFlex maxW={maxWidth} gap="8">
               <ExtendedText fontSize={{ base: 12, lg: 16 }} w={"100%"}>
-                {getLocale(homeData.about.description)}
+                {getLocaleString(homeData.about.description)}
               </ExtendedText>
             </ExtendedFlex>
 
@@ -174,7 +213,9 @@ export default function Page() {
             {homeData.about.image && (
               <Image
                 src={urlFor(homeData.about.image).width(1280).height(720).url()}
-                alt={getLocale(homeData.about.imageCaption) || "About image"}
+                alt={
+                  getLocaleString(homeData.about.imageCaption) || "About image"
+                }
                 width={600}
                 height={300}
                 style={{ borderRadius: "16px" }}
@@ -189,8 +230,8 @@ export default function Page() {
         <AnimatedSection animation="slideUp">
           <SectionComponent
             darkBg
-            headingTitle={getLocale(locationData.title)}
-            description={getLocale(locationData.description)}
+            headingTitle={getLocaleString(locationData.title)}
+            description={getLocaleString(locationData.description)}
           >
             <ExtendedFlex
               maxW={maxWidth}
@@ -227,7 +268,7 @@ export default function Page() {
                 {locationData.sections.map((section: any, i: number) => (
                   <Box key={i} pb={8}>
                     <ExtendedHeading size="lg">
-                      {getLocale(section.title)}
+                      {getLocaleString(section.title)}
                     </ExtendedHeading>
 
                     {section.info.map(
@@ -235,7 +276,9 @@ export default function Page() {
                         line: LocaleString | undefined,
                         j: Key | null | undefined,
                       ) => (
-                        <ExtendedText key={j}>{getLocale(line)}</ExtendedText>
+                        <ExtendedText key={j}>
+                          {getLocaleString(line)}
+                        </ExtendedText>
                       ),
                     )}
                   </Box>
