@@ -20,12 +20,13 @@ import { Dish } from "@/components/DishComponent";
 import { useTranslation } from "@/lib/translations";
 import { useColorModeValue as useChakraColorModeValue } from "@/components/ui/color-mode";
 
-import { DishData, LocaleString, MenuPageData } from "@/lib/interfaces";
+import { DishData, LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { MAX_WIDTH } from "@/lib/enums";
+import { MenuPageData } from "@/lib/interfaces/menuData";
 
 interface MenuClientProps {
-  menuPageData: MenuPageData;
+  menuPageData: MenuPageData | null;
   dishes: DishData[];
 }
 

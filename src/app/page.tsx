@@ -13,7 +13,6 @@ import {
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
 import Image from "next/image";
-import { client } from "@/sanity/lib/sanityClient"; // Make sure you have a Sanity client setup
 import {
   ExtendedTextProps,
   ExtendedHeadingProps,
@@ -29,6 +28,8 @@ import { LocaleString } from "@/lib/interfaces";
 import { urlFor } from "@/sanity/lib/sanityImage";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FaTimes } from "react-icons/fa";
+import { HomepageData } from "@/lib/interfaces/homeData";
+import { LocationData } from "@/lib/interfaces/locationData";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -36,8 +37,6 @@ const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function Page() {
-  const maxWidth = "8xl";
-
   const [homeData, setHomeData] = useState<any>(null);
   const [locationData, setLocationData] = useState<any>(null);
 
@@ -56,33 +55,18 @@ export default function Page() {
   }, [homeData]);
 
   useEffect(() => {
-    async function fetchHome() {
-      const query = `*[_type == "homepage"][0]{
-        hero,
-        signatureDishes,
-        about,
-        location,
-        alertBanner
-      }`;
-      const data = await client.fetch(query);
+    async function fetchHomeData() {
+      const res = await fetch("/api/homepage");
+      const data: HomepageData = await res.json();
       setHomeData(data);
     }
-
-    async function fetchLocation() {
-      const query = `
-        *[_type == "visitUs"][0]{
-          title,
-          description,
-          sections,
-          moreSections,
-          map
-        }
-      `;
-      const data = await client.fetch(query);
+    async function fetchLocationData() {
+      const res = await fetch("/api/location");
+      const data: LocationData = await res.json();
       setLocationData(data);
     }
-    fetchHome();
-    fetchLocation();
+    fetchHomeData();
+    fetchLocationData();
   }, []);
 
   if (!homeData || !locationData) return <Text>Loading...</Text>;
@@ -203,7 +187,7 @@ export default function Page() {
             gapY={4}
             px={8}
           >
-            <ExtendedFlex maxW={maxWidth} gap="8">
+            <ExtendedFlex maxW={MAX_WIDTH.XL} gap="8">
               <ExtendedText fontSize={{ base: 12, lg: 16 }} w={"100%"}>
                 {getLocaleString(homeData.about.description)}
               </ExtendedText>
@@ -234,7 +218,7 @@ export default function Page() {
             description={getLocaleString(locationData.description)}
           >
             <ExtendedFlex
-              maxW={maxWidth}
+              maxW={MAX_WIDTH.XL}
               width={"100%"}
               gap={16}
               paddingX={8}

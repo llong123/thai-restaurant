@@ -8,34 +8,14 @@ import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { MAX_WIDTH } from "@/lib/enums";
+import { AboutData } from "@/lib/interfaces/aboutData";
 
 // Extended Chakra components
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 
-interface ParagraphGroup {
-  _key: string;
-  _type: "paragraphGroup";
-  paragraphTitle: LocaleString;
-  paragraphDescription: LocaleString;
-}
-
-interface ValueGroup {
-  _key: string;
-  _type: "valueGroup";
-  valueTitle: LocaleString;
-  valueDescription: LocaleString;
-}
-
 interface AboutClientProps {
-  about: {
-    heroimage?: { asset: { url: string } };
-    title?: LocaleString;
-    paragraphInBoxTitle?: LocaleString;
-    paragraph?: ParagraphGroup[];
-    paragraphInBox?: ValueGroup[];
-    mainImage?: { asset: { url: string } };
-  };
+  about: AboutData;
 }
 
 export default function AboutClient({ about }: AboutClientProps) {

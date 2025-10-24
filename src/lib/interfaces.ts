@@ -20,11 +20,3 @@ export interface DishData {
   spiceLevel?: number;
   dishImage?: DishImage;
 }
-
-export interface MenuPageData {
-  _id: string;
-  pageTitle: LocaleString;
-  pageDescription: LocaleString;
-  category: LocaleString;
-  categoryDescription: LocaleString;
-}

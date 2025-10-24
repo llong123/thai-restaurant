@@ -1,18 +1,19 @@
-import { client } from "@/sanity/lib/sanityClient";
+"use client";
+
 import LocationClient from "./LocationClient";
-import { groq } from "next-sanity";
+import { useEffect, useState } from "react";
+import { LocationData } from "@/lib/interfaces/locationData";
 
-const VISIT_US_QUERY = groq`
-  *[_type == "visitUs"][0]{
-    title,
-    description,
-    sections,
-    moreSections,
-    map
-  }
-`;
+export default function LocationPage() {
+  const [locationData, setLocationData] = useState<any>(null);
 
-export default async function LocationPage() {
-  const visitUsData = await client.fetch(VISIT_US_QUERY);
-  return <LocationClient visitUs={visitUsData} />;
+  useEffect(() => {
+    async function fetchLocationData() {
+      const res = await fetch("/api/location");
+      const data: LocationData = await res.json();
+      setLocationData(data);
+    }
+    fetchLocationData();
+  }, []);
+  return <LocationClient locationData={locationData} />;
 }

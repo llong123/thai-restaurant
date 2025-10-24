@@ -1,28 +1,33 @@
-// app/about/page.tsx
-import { client } from "@/sanity/lib/sanityClient";
+"use client";
+
+import { useEffect, useState } from "react";
 import AboutClient from "./AboutClient";
+import { AboutData } from "@/lib/interfaces/aboutData";
 
-const ABOUT_QUERY = `*[_type == "about"][0]{
-  title,
-  paragraph,
-  paragraphInBox,
-  paragraphInBoxTitle,
-  mainImage { asset->{url} }
-}`;
+export default function AboutPage() {
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export const revalidate = 30; // ISR: re-fetch every 30s
-
-export default async function AboutPage() {
-  try {
-    const about = await client.fetch(ABOUT_QUERY);
-
-    if (!about) {
-      return <p className="p-8">No about content found.</p>;
+  useEffect(() => {
+    async function fetchAboutData() {
+      try {
+        const res = await fetch("/api/about");
+        if (!res.ok) throw new Error("Failed to fetch about data");
+        const data: AboutData = await res.json();
+        setAboutData(data);
+      } catch (err) {
+        console.error(err);
+        setAboutData(null);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    return <AboutClient about={about} />;
-  } catch (err) {
-    console.error("Error fetching About document:", err);
-    return <p className="p-8">Error loading about content.</p>;
-  }
+    fetchAboutData();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (!aboutData) return <p>About content is not available.</p>;
+
+  return <AboutClient about={aboutData} />;
 }
