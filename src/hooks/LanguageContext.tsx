@@ -29,10 +29,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       if (supportedLangs.includes(browserLang as Language)) {
         setLanguage(browserLang as Language);
       } else {
-        setLanguage(language);
+        setLanguage("en");
       }
     }
-  }, [language]);
+  }, []);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

@@ -1,6 +1,7 @@
 import { Poppins } from "next/font/google";
 import Provider from "./provider";
 import Head from "./head";
+import { Analytics } from "@vercel/analytics/next";
 
 const poppins = Poppins({
   display: "swap",
@@ -17,7 +18,10 @@ export default function RootLayout({
     <html className={poppins.className} suppressHydrationWarning>
       <Head />
       <body>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          <Analytics />
+        </Provider>
       </body>
     </html>
   );
