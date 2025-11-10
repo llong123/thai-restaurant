@@ -39,7 +39,7 @@ interface LocationData {
 
 interface Banner {
   showBanner: boolean;
-  bannerMessage: LocaleString;
+  message: LocaleString;
   backgroundColor: string;
   textColor: string;
 }
@@ -49,5 +49,5 @@ export interface HomepageData {
   signatureDishes: SignatureDishes;
   about: About;
   location: LocationData;
-  banner?: Banner;
+  alertBanner?: Banner;
 }
