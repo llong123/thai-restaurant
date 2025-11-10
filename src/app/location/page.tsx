@@ -1,7 +1,6 @@
 "use client";
 
 import LocationClient from "./LocationClient";
-import { useEffect, useState } from "react";
 import { LocationData } from "@/lib/interfaces/locationData";
 import { useAppData } from "@/hooks/AppDataContext";
 
