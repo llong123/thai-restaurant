@@ -14,12 +14,12 @@ import { LuMenu, LuX } from "react-icons/lu";
 import Link from "next/link";
 import { pacifico } from "@/components/fontVars";
 import { useColorModeValue } from "@/components/ui/color-mode";
-import { useState, useEffect } from "react";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Language } from "@/lib/types";
 import { usePathname } from "next/navigation";
 import { NavigationData } from "@/lib/interfaces/navigationData";
+import { useAppData } from "@/hooks/AppDataContext";
 
 export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
@@ -28,21 +28,14 @@ export default function NavigationComponent() {
   const menuBgColor = useColorModeValue("white", "gray.800");
 
   const { language, setLanguage } = useLanguage();
-  const [navData, setNavData] = useState<NavigationData | null>(null);
+
+  // use centralized app data
+  const { navigation } = useAppData();
+  const navData = (navigation ?? null) as NavigationData | null;
 
   // Utility for localized strings
   const getLocaleString = (field?: LocaleString) =>
     field?.[language as keyof LocaleString] || field?.en || "";
-
-  // Fetch navigation data
-  useEffect(() => {
-    async function fetchNavigationData() {
-      const res = await fetch("/api/navigation");
-      const data: NavigationData = await res.json();
-      setNavData(data);
-    }
-    fetchNavigationData();
-  }, []);
 
   return (
     <Box

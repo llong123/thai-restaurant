@@ -3,17 +3,15 @@
 import LocationClient from "./LocationClient";
 import { useEffect, useState } from "react";
 import { LocationData } from "@/lib/interfaces/locationData";
+import { useAppData } from "@/hooks/AppDataContext";
 
 export default function LocationPage() {
-  const [locationData, setLocationData] = useState<any>(null);
+  const { location, loading } = useAppData();
+  const locationData: LocationData | null = (location ??
+    null) as LocationData | null;
 
-  useEffect(() => {
-    async function fetchLocationData() {
-      const res = await fetch("/api/location");
-      const data: LocationData = await res.json();
-      setLocationData(data);
-    }
-    fetchLocationData();
-  }, []);
+  if (loading) return <p>Loading...</p>;
+  if (!locationData) return <p>Location content is not available.</p>;
+
   return <LocationClient locationData={locationData} />;
 }

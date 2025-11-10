@@ -29,7 +29,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       if (supportedLangs.includes(browserLang as Language)) {
         setLanguage(browserLang as Language);
       } else {
-        setLanguage("en");
+        setLanguage(language);
       }
     }
   }, []);

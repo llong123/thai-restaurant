@@ -12,12 +12,13 @@ import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
 import { pacifico } from "@/components/fontVars";
 import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
-import { useEffect, useState } from "react";
+// ...existing code...
 import { useLanguage } from "@/hooks/LanguageContext";
 import { LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FooterData } from "@/lib/interfaces/footerData";
+import { useAppData } from "@/hooks/AppDataContext";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -25,21 +26,16 @@ const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 export default function Footer() {
   const { language } = useLanguage();
   const { t } = useTranslation(language);
-  const [footerData, setFooterData] = useState<FooterData | null>(null);
 
-  useEffect(() => {
-    async function fetchFooter() {
-      const res = await fetch("/api/footer");
-      const data: FooterData = await res.json();
-      setFooterData(data);
-    }
+  // use centralized app data
+  const { footer, loading } = useAppData();
+  const footerData = (footer ?? null) as FooterData | null;
 
-    fetchFooter();
-  }, []);
   const getLocale = (field?: LocaleString) =>
     field?.[language] || field?.en || "";
 
-  if (!footerData) return <Text p={8}>Loading Footer...</Text>;
+  if (loading) return <Text p={8}>Loading Footer...</Text>;
+  if (!footerData) return <Text p={8}>Footer data not available.</Text>;
 
   if (!footerData.quickLinks && !footerData.followUs)
     return <Text p={8}>Footer data not available.</Text>;
