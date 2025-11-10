@@ -29,7 +29,7 @@ export default function AboutClient({ about }: AboutClientProps) {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" bg={bgColor}>
-      <Box px={0} w="100%">
+      <Box px={[8, 16]} w="100%">
         <Box maxWidth={MAX_WIDTH.XL} mx="auto" px={0} w="100%">
           <NavigationComponent />
           {/* Main Image */}

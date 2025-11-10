@@ -30,6 +30,7 @@ import { MAX_WIDTH } from "@/lib/enums";
 import { FaTimes } from "react-icons/fa";
 import { HomepageData } from "@/lib/interfaces/homeData";
 import { LocationData } from "@/lib/interfaces/locationData";
+import { useAppData } from "@/hooks/AppDataContext";
 
 const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
@@ -37,39 +38,28 @@ const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function Page() {
-  const [homeData, setHomeData] = useState<any>(null);
-  const [locationData, setLocationData] = useState<any>(null);
+  // use centralized app data
+  const { homepage, location, loading } = useAppData();
+
+  const homeData = (homepage ?? null) as HomepageData | null;
+  const locationData = (location ?? null) as LocationData | null;
 
   const { language } = useLanguage();
 
   const getLocaleString = (field?: LocaleString) =>
     field?.[language] || field?.en || "";
 
-  // inside your component
+  // banner state
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     if (homeData?.alertBanner?.showBanner) {
-      setShowBanner(true); // show banner when data loads
+      setShowBanner(true);
     }
   }, [homeData]);
 
-  useEffect(() => {
-    async function fetchHomeData() {
-      const res = await fetch("/api/homepage");
-      const data: HomepageData = await res.json();
-      setHomeData(data);
-    }
-    async function fetchLocationData() {
-      const res = await fetch("/api/location");
-      const data: LocationData = await res.json();
-      setLocationData(data);
-    }
-    fetchHomeData();
-    fetchLocationData();
-  }, []);
-
-  if (!homeData || !locationData) return <Text>Loading...</Text>;
+  if (loading) return <Text>Loading...</Text>;
+  if (!homeData || !locationData) return <Text>Content not available.</Text>;
 
   return (
     <VStack alignItems="center" maxW={MAX_WIDTH.XL} mx="auto" gap={0}>
@@ -86,7 +76,7 @@ export default function Page() {
           borderRadius={2}
           fontWeight="bold"
           position="sticky"
-          top="64px" // adjust for your navbar height
+          top="64px"
           zIndex={15}
         >
           {getLocaleString(homeData.alertBanner.message)}
@@ -97,7 +87,7 @@ export default function Page() {
             top={2}
             p={4}
             cursor="pointer"
-            onClick={() => setShowBanner(false)} // hide banner locally
+            onClick={() => setShowBanner(false)}
           >
             <FaTimes />
           </Box>
@@ -124,19 +114,19 @@ export default function Page() {
             fill
             style={{
               objectFit: "cover",
-              zIndex: -1, // put image behind the text
+              zIndex: -1,
             }}
           />
         )}
 
-        {/* Overlay (optional, for better readability) */}
+        {/* Overlay */}
         <Box
           position="absolute"
           top={0}
           left={0}
           width="100%"
           height="100%"
-          bg="rgba(0,0,0,0.6)" // dark overlay
+          bg="rgba(0,0,0,0.6)"
           zIndex={0}
         />
 

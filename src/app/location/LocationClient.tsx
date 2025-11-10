@@ -12,7 +12,7 @@ import { LocationData } from "@/lib/interfaces/locationData";
 export default function LocationClient({
   locationData,
 }: {
-  locationData: LocationData;
+  locationData: LocationData | undefined;
 }) {
   const bgColor = useColorModeValue("white", "gray.800");
   const { language } = useLanguage();
@@ -20,7 +20,7 @@ export default function LocationClient({
   const getLocale = (field?: LocaleString) =>
     field?.[language] || field?.en || "";
 
-  if (!locationData) return <p className="p-8">Visit Us data not available.</p>;
+  console.log("LocationClient", locationData);
 
   return (
     <Box
@@ -35,13 +35,13 @@ export default function LocationClient({
         <Box mx="auto" p={8} w="100%">
           {/* Title */}
           <Box textAlign="center" pb={12}>
-            <Heading size="2xl">{getLocale(locationData.title)}</Heading>
+            <Heading size="2xl">{getLocale(locationData?.title)}</Heading>
           </Box>
 
           <SimpleGrid columns={[1, null, 2]} gap={12}>
             {/* Left Column */}
             <Box>
-              {locationData.sections.map((section, i) => (
+              {locationData?.sections?.map((section, i) => (
                 <Box key={i} pb={8}>
                   <Heading size="lg" pb={4}>
                     {getLocale(section.title)}
@@ -56,7 +56,7 @@ export default function LocationClient({
             {/* Right Column */}
             <Box>
               {/* Map */}
-              {locationData.map?.embedUrl && (
+              {locationData?.map?.embedUrl && (
                 <Box pb={8} height="300px">
                   <iframe
                     src={locationData.map.embedUrl}
@@ -71,7 +71,7 @@ export default function LocationClient({
               )}
 
               {/* More Info Sections */}
-              {locationData.moreSections?.map((section, i) => (
+              {locationData?.moreSections?.map((section, i) => (
                 <Box key={i} pb={8}>
                   <Heading size="lg" pb={4}>
                     {getLocale(section.title)}
