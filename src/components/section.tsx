@@ -1,31 +1,28 @@
-import { Flex, Text, Heading } from "@chakra-ui/react";
-import {
-  ExtendedTextProps,
-  ExtendedHeadingProps,
-  ExtendedFlexProps,
-} from "@/lib/types";
+import { Flex } from "@chakra-ui/react";
+import { ExtendedFlexProps } from "@/lib/types";
+import { useThemeColors } from "./fontVars";
+import ExtendedHeading from "./ExtendedHeading";
+import ExtendedText from "./ExtendedText";
 
-const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
-const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function SectionComponent({
   children,
   headingTitle,
   description,
-  darkBg = false,
 }: {
   children: React.ReactNode;
   headingTitle: string;
   description: string;
-  darkBg?: boolean;
 }) {
+  const { bgColor, textColor } = useThemeColors();
+
   return (
     <Flex
       width={"100vw"}
       alignItems={"center"}
       justifyContent={"center"}
-      bgColor={darkBg ? "gray.50" : "Background"}
+      bgColor={bgColor}
     >
       <ExtendedFlex
         direction={"column"}
@@ -36,10 +33,16 @@ export default function SectionComponent({
         maxW={"6xl"}
         py={16}
       >
-        <ExtendedHeading size={"4xl"} pb={1}>
+        <ExtendedHeading pb={1} color={textColor}>
           {headingTitle}
         </ExtendedHeading>
-        <ExtendedText textStyle={"sm"} pb={12} maxW={"2xl"} color={"gray.600"}>
+        <ExtendedText
+          fontSize={{ base: 10, lg: 12 }}
+          fontStyle="italic"
+          pb={12}
+          maxW={"2xl"}
+          color={textColor}
+        >
           {description}
         </ExtendedText>
         {children}

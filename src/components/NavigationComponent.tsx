@@ -7,13 +7,14 @@ import {
   IconButton,
   Button,
   Stack,
-  Heading,
+  Image,
   useDisclosure,
+  Menu,
+  Portal,
 } from "@chakra-ui/react";
-import { LuMenu, LuX } from "react-icons/lu";
+import { LuMenu, LuX, LuChevronsDown } from "react-icons/lu";
 import Link from "next/link";
-import { pacifico } from "@/components/fontVars";
-import { useColorModeValue } from "@/components/ui/color-mode";
+import { merriweather, useThemeColors } from "@/components/fontVars";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Language } from "@/lib/types";
@@ -24,10 +25,9 @@ import { useAppData } from "@/hooks/AppDataContext";
 export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
   const pathname = usePathname(); // get current URL path
-  const bgColor = useColorModeValue("white", "gray.900");
-  const menuBgColor = useColorModeValue("white", "gray.800");
 
   const { language, setLanguage } = useLanguage();
+  const { bgColor, borderColor, btnBgColor } = useThemeColors();
 
   // use centralized app data
   const { navigation } = useAppData();
@@ -48,58 +48,87 @@ export default function NavigationComponent() {
       py={2}
     >
       <Flex h={16} align="center" justify="space-between" px={4}>
-        <Heading
-          size={{ base: "2xl", lg: "4xl" }}
-          className={pacifico.className}
-        >
-          {navData?.siteTitle || "Site Title"}
-        </Heading>
+        <Box>
+          <Link href="/" passHref legacyBehavior>
+            <Box
+              as="a"
+              display="inline-block"
+              aria-label={navData?.siteTitle || "Home"}
+              px={8}
+            >
+              <Image
+                src={"/logo.png"}
+                alt={navData?.siteTitle || "Site Logo"}
+                width={100}
+                height={40}
+                style={{ objectFit: "contain", display: "block" }}
+              />
+            </Box>
+          </Link>
+        </Box>
 
         <HStack gap={8} align="center" display={["none", null, "flex"]}>
-          <Box>
-            <select
-              id="language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as Language)}
-              style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "0.375rem",
-                border: "1px solid #ccc",
-                background: "white",
-              }}
-            >
-              {navData?.languages?.map((lang: string) => (
-                <option key={lang} value={lang}>
-                  {lang.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </Box>
-
           {navData?.links?.map((link: any) => {
             const isActive = pathname === link.href; // check if current page
             return (
-              <Link key={link.href} href={link.href} passHref>
+              <Link
+                className={merriweather.className}
+                key={link.href}
+                href={link.href}
+                passHref
+              >
                 <Box
-                  px={2}
-                  py={1}
+                  px={4}
+                  py={2}
                   rounded="md"
                   fontWeight={isActive ? "bold" : "normal"} // bold for active page
-                  bg={isActive ? "gray.200" : "transparent"} // subtle background for active
+                  bg={isActive ? btnBgColor : "transparent"} // subtle background for active
                   _hover={{
-                    fontWeight: "bold", // bold on hover
-                    bg: "gray.100",
+                    bg: btnBgColor,
                     cursor: "pointer",
                   }}
+                  fontSize={{ base: "sm", lg: "md" }}
                 >
                   {getLocaleString(link.name)}
                 </Box>
               </Link>
             );
           })}
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <Button
+                variant="outline"
+                border="white"
+                borderWidth={2}
+                borderStyle={"solid"}
+                size="sm"
+              >
+                {language.toUpperCase()}&nbsp;
+                <LuChevronsDown />
+              </Button>
+            </Menu.Trigger>
+            <Portal>
+              <Menu.Positioner>
+                <Menu.Content>
+                  {navData?.languages?.map((lang: string) => (
+                    <Menu.Item
+                      className={merriweather.className}
+                      key={lang}
+                      value={lang}
+                      onClick={() => setLanguage(lang as Language)}
+                      _hover={{ bg: "white", color: "gray.800" }}
+                    >
+                      {lang.toUpperCase()}
+                    </Menu.Item>
+                  ))}
+                </Menu.Content>
+              </Menu.Positioner>
+            </Portal>
+          </Menu.Root>
 
           {navData?.button && (
             <Link
+              className={merriweather.className}
               href={navData.button.href}
               passHref
               legacyBehavior
@@ -108,6 +137,7 @@ export default function NavigationComponent() {
             >
               <Button
                 as="a"
+                className={merriweather.className}
                 fontWeight={
                   pathname === navData.button.href ? "bold" : "normal"
                 }
@@ -133,7 +163,7 @@ export default function NavigationComponent() {
         top="64px"
         left={0}
         right={0}
-        bg={menuBgColor}
+        bg={bgColor}
         shadow="lg"
         display={["block", null, "none"]}
         zIndex={10}
@@ -146,7 +176,12 @@ export default function NavigationComponent() {
           {navData?.links?.map((link: any) => {
             const isActive = pathname === link.href;
             return (
-              <Link key={link.href} href={link.href} passHref>
+              <Link
+                className={merriweather.className}
+                key={link.href}
+                href={link.href}
+                passHref
+              >
                 <Box
                   px={2}
                   py={1}
@@ -166,6 +201,7 @@ export default function NavigationComponent() {
           })}
           {navData?.button && (
             <Link
+              className={merriweather.className}
               href={navData.button.href}
               passHref
               legacyBehavior

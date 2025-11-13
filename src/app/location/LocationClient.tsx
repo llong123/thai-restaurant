@@ -3,24 +3,32 @@
 import { Box, Heading, Text, SimpleGrid } from "@chakra-ui/react";
 import Footer from "../footer";
 import NavigationComponent from "@/components/NavigationComponent";
-import { useColorModeValue } from "@/components/ui/color-mode";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { MAX_WIDTH } from "@/lib/enums";
 import { LocationData } from "@/lib/interfaces/locationData";
+import { poppins, useThemeColors } from "@/components/fontVars";
+import ExtendedHeading from "@/components/ExtendedHeading";
+import ExtendedText from "@/components/ExtendedText";
+import { useTranslation } from "@/lib/translations";
+import FullPageLoader from "@/components/FullPageLoader";
 
 export default function LocationClient({
   locationData,
+  loading,
 }: {
   locationData: LocationData | undefined;
+  loading: boolean;
 }) {
-  const bgColor = useColorModeValue("white", "gray.800");
   const { language } = useLanguage();
+  const { t } = useTranslation(language);
+
+  const { bgColor } = useThemeColors();
 
   const getLocale = (field?: LocaleString) =>
     field?.[language] || field?.en || "";
 
-  console.log("LocationClient", locationData);
+  if (loading) return <FullPageLoader message={t("loading")} />;
 
   return (
     <Box
@@ -29,31 +37,20 @@ export default function LocationClient({
       alignItems="center"
       minHeight="100vh"
       bg={bgColor}
+      px={16}
     >
       <Box flex="1" w="100%" maxWidth={MAX_WIDTH.XL}>
         <NavigationComponent />
         <Box mx="auto" p={8} w="100%">
           {/* Title */}
           <Box textAlign="center" pb={12}>
-            <Heading size="2xl">{getLocale(locationData?.title)}</Heading>
+            <ExtendedHeading as={"h2"}>
+              {getLocale(locationData?.title)}
+            </ExtendedHeading>
           </Box>
 
           <SimpleGrid columns={[1, null, 2]} gap={12}>
             {/* Left Column */}
-            <Box>
-              {locationData?.sections?.map((section, i) => (
-                <Box key={i} pb={8}>
-                  <Heading size="lg" pb={4}>
-                    {getLocale(section.title)}
-                  </Heading>
-                  {section.info.map((line, j) => (
-                    <Text key={j}>{getLocale(line)}</Text>
-                  ))}
-                </Box>
-              ))}
-            </Box>
-
-            {/* Right Column */}
             <Box>
               {/* Map */}
               {locationData?.map?.embedUrl && (
@@ -69,15 +66,29 @@ export default function LocationClient({
                   ></iframe>
                 </Box>
               )}
+              {/* Info Sections */}
+              {locationData?.sections?.map((section, i) => (
+                <Box key={i} pb={8}>
+                  <ExtendedHeading size="lg" pb={4}>
+                    {getLocale(section.title)}
+                  </ExtendedHeading>
+                  {section.info.map((line, j) => (
+                    <ExtendedText key={j}>{getLocale(line)}</ExtendedText>
+                  ))}
+                </Box>
+              ))}
+            </Box>
 
+            {/* Right Column */}
+            <Box>
               {/* More Info Sections */}
               {locationData?.moreSections?.map((section, i) => (
                 <Box key={i} pb={8}>
-                  <Heading size="lg" pb={4}>
+                  <ExtendedHeading size="lg" pb={4}>
                     {getLocale(section.title)}
-                  </Heading>
+                  </ExtendedHeading>
                   {section.info.map((line, j) => (
-                    <Text key={j}>{getLocale(line)}</Text>
+                    <ExtendedText key={j}>{getLocale(line)}</ExtendedText>
                   ))}
                 </Box>
               ))}

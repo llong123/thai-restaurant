@@ -1,27 +1,17 @@
 "use client";
 
-import {
-  Flex,
-  Text,
-  HStack,
-  VStack,
-  Heading,
-  IconButton,
-} from "@chakra-ui/react";
+import { Flex, HStack, VStack, Image, IconButton, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
-import { pacifico } from "@/components/fontVars";
-import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
-// ...existing code...
 import { useLanguage } from "@/hooks/LanguageContext";
 import { LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FooterData } from "@/lib/interfaces/footerData";
 import { useAppData } from "@/hooks/AppDataContext";
-
-const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
-const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
+import ExtendedHeading from "@/components/ExtendedHeading";
+import ExtendedText from "@/components/ExtendedText";
+import FullPageLoader from "@/components/FullPageLoader";
 
 export default function Footer() {
   const { language } = useLanguage();
@@ -34,11 +24,12 @@ export default function Footer() {
   const getLocale = (field?: LocaleString) =>
     field?.[language] || field?.en || "";
 
-  if (loading) return <Text p={8}>Loading Footer...</Text>;
-  if (!footerData) return <Text p={8}>Footer data not available.</Text>;
+  if (loading) return <FullPageLoader message={t("loading")} />;
+  if (!footerData)
+    return <ExtendedText p={8}>Footer data not available.</ExtendedText>;
 
   if (!footerData.quickLinks && !footerData.followUs)
-    return <Text p={8}>Footer data not available.</Text>;
+    return <ExtendedText p={8}>Footer data not available.</ExtendedText>;
 
   return (
     <footer>
@@ -63,17 +54,29 @@ export default function Footer() {
             px={16}
             pt={8}
           >
-            {/* Logo */}
-            <VStack alignSelf="center">
-              <ExtendedText className={pacifico.className}>
-                Chao Phraya
-              </ExtendedText>
-            </VStack>
+            <Box>
+              <Link href="/" passHref legacyBehavior>
+                <Box
+                  as="a"
+                  display="inline-block"
+                  aria-label={"Chao Phraya Helsinki"}
+                  px={8}
+                >
+                  <Image
+                    src={"/logo.png"}
+                    alt={"Chao Phraya Helsinki Logo"}
+                    width={160}
+                    height={40}
+                    style={{ objectFit: "contain", display: "block" }}
+                  />
+                </Box>
+              </Link>
+            </Box>
 
             {/* Quick Links */}
             {footerData.quickLinks && (
               <VStack alignItems="start">
-                <ExtendedHeading>Quick Links</ExtendedHeading>
+                <ExtendedHeading as={"h4"}>Quick Links</ExtendedHeading>
                 {footerData.quickLinks?.map((link, index) => (
                   <Link key={index} href={link.url}>
                     {getLocale(link.label)}
@@ -84,7 +87,9 @@ export default function Footer() {
 
             {/* Social Links */}
             <VStack>
-              <ExtendedHeading>{t("footer.followUs")}</ExtendedHeading>
+              <ExtendedHeading as={"h6"} size={{ base: "md", lg: "xl" }}>
+                {t("footer.followUs")}
+              </ExtendedHeading>
               <HStack>
                 {footerData.followUs?.map((social, index) => {
                   let Icon;

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { DishData, LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
-
+import FullPageLoader from "./FullPageLoader";
 
 // ---------- 🔹 Component ---------- //
 
@@ -36,7 +36,7 @@ export default function DishCarousel() {
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex + slidesToShow >= dishes.length ? 0 : prevIndex + slidesToShow,
+      prevIndex + slidesToShow >= dishes.length ? 0 : prevIndex + slidesToShow
     );
   };
 
@@ -44,13 +44,14 @@ export default function DishCarousel() {
     setCurrentIndex((prevIndex) =>
       prevIndex - slidesToShow < 0
         ? Math.max(0, dishes.length - slidesToShow)
-        : prevIndex - slidesToShow,
+        : prevIndex - slidesToShow
     );
   };
 
   const visibleDishes = dishes.slice(currentIndex, currentIndex + slidesToShow);
 
-  if (!dishes.length) return <p>Loading signature dishes...</p>;
+  if (!dishes.length)
+    return <FullPageLoader message={"Loading signature dishes..."} />;
 
   return (
     <Box

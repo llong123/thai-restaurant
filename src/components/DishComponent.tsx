@@ -9,6 +9,9 @@ import { useTranslation } from "@/lib/translations";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { FaTimes } from "react-icons/fa";
 import { MAX_WIDTH } from "@/lib/enums";
+import { text } from "stream/consumers";
+import { merriweather, poppins, useThemeColors } from "./fontVars";
+import { clipText } from "@/lib/utility";
 
 const MotionBox = motion.create(Box);
 
@@ -30,7 +33,7 @@ export function Dish({ dish, getLocale }: DishProps) {
       ? urlFor(dish.dishImage).width(500).height(300).url()
       : "",
   });
-
+  const { textColor, bgColor } = useThemeColors();
   const { t } = useTranslation(language);
 
   const handleClick = () => {
@@ -93,13 +96,30 @@ export function Dish({ dish, getLocale }: DishProps) {
           variants={overlayVariants}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <Box as="h3" fontSize="xl" fontWeight="bold" mb={2} color="white">
+          <Box
+            as="h3"
+            className={poppins.className}
+            fontSize="xl"
+            fontWeight="bold"
+            mb={2}
+            color={textColor}
+          >
             {dishDetails.name}
           </Box>
-          <Box fontSize="md" mb={2} color="white">
-            {dishDetails.description}
+          <Box
+            className={merriweather.className}
+            fontSize="sm"
+            mb={2}
+            color={textColor}
+          >
+            {clipText(dishDetails.description)}
           </Box>
-          <Box fontSize="xl" fontWeight="bold" color="white">
+          <Box
+            className={merriweather.className}
+            fontSize="xl"
+            fontWeight="bold"
+            color={textColor}
+          >
             {dishDetails.price}
           </Box>
         </MotionBox>
@@ -136,6 +156,7 @@ export function Dish({ dish, getLocale }: DishProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
+            bgColor={bgColor}
           >
             {dishDetails.image && (
               <Box position="relative" w="100%" h="200px" pb={4}>
@@ -150,21 +171,41 @@ export function Dish({ dish, getLocale }: DishProps) {
               </Box>
             )}
 
-            <Box as="h3" fontSize="2xl" fontWeight="bold" mb={2} color="black">
+            <Box
+              as="h3"
+              fontSize="2xl"
+              fontWeight="bold"
+              mb={2}
+              color={textColor}
+            >
               {dishDetails.name}
             </Box>
-            <Box fontSize="md" mb={4} color="black">
+            <Box
+              className={merriweather.className}
+              fontSize="md"
+              mb={4}
+              color={textColor}
+            >
               {dishDetails.description}
             </Box>
 
             {dishDetails.ingredients.length > 0 && (
               <>
-                <Box fontWeight="bold" mb={2} color="black">
+                <Box
+                  className={merriweather.className}
+                  fontWeight="bold"
+                  mb={2}
+                  color={textColor}
+                >
                   {t("menu.ingredients")}:
                 </Box>
                 <Box mb={4}>
                   {dishDetails.ingredients.map((ingredient, index) => (
-                    <Box key={index} color="black">
+                    <Box
+                      className={merriweather.className}
+                      key={index}
+                      color={textColor}
+                    >
                       • {getLocale(ingredient as any)}
                     </Box>
                   ))}
@@ -172,10 +213,19 @@ export function Dish({ dish, getLocale }: DishProps) {
               </>
             )}
 
-            <Box fontWeight="bold" mb={2} color="black">
+            <Box
+              className={merriweather.className}
+              fontWeight="bold"
+              mb={2}
+              color={textColor}
+            >
               {t("menu.spiceLevel")}: {"🌶️".repeat(dishDetails.spiceLevel!)}
             </Box>
-            <Box fontWeight="bold" color="black">
+            <Box
+              className={merriweather.className}
+              fontWeight="bold"
+              color={textColor}
+            >
               {dishDetails.price}
             </Box>
 
