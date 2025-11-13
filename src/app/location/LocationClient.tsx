@@ -1,13 +1,13 @@
 "use client";
 
-import { Box, Heading, Text, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import Footer from "../footer";
 import NavigationComponent from "@/components/NavigationComponent";
 import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { MAX_WIDTH } from "@/lib/enums";
 import { LocationData } from "@/lib/interfaces/locationData";
-import { poppins, useThemeColors } from "@/components/fontVars";
+import { useThemeColors } from "@/components/fontVars";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import { useTranslation } from "@/lib/translations";

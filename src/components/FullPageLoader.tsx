@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Box, VStack, Spinner, Text } from "@chakra-ui/react";
-import { useColorModeValue } from "./ui/color-mode";
 
 type FullPageLoaderProps = {
   message?: string;
@@ -14,7 +13,6 @@ type FullPageLoaderProps = {
 export default function FullPageLoader({
   message = "Loading…",
   spinnerSize = "xl",
-  bg,
 }: FullPageLoaderProps) {
   const color = "whiteAlpha.900";
 

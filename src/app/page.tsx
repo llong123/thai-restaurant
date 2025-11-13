@@ -3,9 +3,7 @@
 import {
   VStack,
   Flex,
-  Heading,
   AspectRatio,
-  Text,
   Button,
   Box,
   Stack,
