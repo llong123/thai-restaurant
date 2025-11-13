@@ -6,14 +6,16 @@
       "spiceLevel": "Tulisuusaste",
       "categories": "Kategoriat",
       "hideMenu": "Piilota Menu",
-      "showMenu": "Näytä Menu"
+      "showMenu": "Näytä Menu",
+      "priceUnavailable": "Hinta ei ole saatavilla"
     },
     "footer": {
       "followUs": "Seuraa meitä"
     },
     "homepage": {
       "viewAllDishes": "Näytä kaikki"
-    }
+    },
+    "loading": "Ladataan..."
   },
   "en": {
     "menu": {
@@ -22,14 +24,16 @@
       "spiceLevel": "Spice Level",
       "categories": "Categories",
       "hideMenu": "Hide Menu",
-      "showMenu": "Show Menu"
+      "showMenu": "Show Menu",
+      "priceUnavailable": "Price Unavailable"
     },
     "footer": {
       "followUs": "Follow us"
     },
     "homepage": {
       "viewAllDishes": "View All"
-    }
+    },
+    "loading": "Loading..."
   },
   "sv": {
     "menu": {
@@ -38,13 +42,15 @@
       "spiceLevel": "Styrka",
       "categories": "Kategorier",
       "hideMenu": "Dölj Meny",
-      "showMenu": "Visa Meny"
+      "showMenu": "Visa Meny",
+      "priceUnavailable": "Pris är inte tillgänglig"
     },
     "footer": {
       "followUs": "Följ oss"
     },
     "homepage": {
       "viewAllDishes": "Visa alla"
-    }
+    },
+    "loading": "Läser in..."
   }
 }
