@@ -27,7 +27,7 @@ export default function NavigationComponent() {
   const pathname = usePathname(); // get current URL path
 
   const { language, setLanguage } = useLanguage();
-  const { bgColor, borderColor, btnBgColor } = useThemeColors();
+  const { bgColor, btnBgColor } = useThemeColors();
 
   // use centralized app data
   const { navigation } = useAppData();

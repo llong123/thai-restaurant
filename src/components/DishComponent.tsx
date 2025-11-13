@@ -9,7 +9,6 @@ import { useTranslation } from "@/lib/translations";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { FaTimes } from "react-icons/fa";
 import { MAX_WIDTH } from "@/lib/enums";
-import { text } from "stream/consumers";
 import { merriweather, poppins, useThemeColors } from "./fontVars";
 import { clipText } from "@/lib/utility";
 

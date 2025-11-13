@@ -2,10 +2,7 @@
 
 import {
   Box,
-  Container,
   SimpleGrid,
-  Heading,
-  Text,
   Flex,
   HStack,
   Badge,
