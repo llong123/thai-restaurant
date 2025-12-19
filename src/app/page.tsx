@@ -29,6 +29,7 @@ import ExtendedText from "@/components/ExtendedText";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
 import { useThemeColors } from "@/components/fontVars";
+import Script from "next/script";
 
 const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
@@ -275,6 +276,46 @@ export default function Page() {
             </SectionComponent>
           </AnimatedSection>
         )}
+
+        <AnimatedSection animation="slideInLeft">
+          <SectionComponent
+            headingTitle={getLocaleString(homeData.reserveTable.title)}
+            description={" "}
+          >
+            <Stack
+              alignItems={"center"}
+              direction={{ base: "column", lg: "row" }}
+              gapX={8}
+              gapY={4}
+              px={8}
+            >
+              <ExtendedFlex maxW={MAX_WIDTH.XL} gap="8">
+                <ExtendedText w={"100%"}>
+                  {getLocaleString(homeData.reserveTable.description)}
+                </ExtendedText>
+              </ExtendedFlex>
+
+              {/* About Image */}
+
+              <Box
+                id="quandoo-booking-widget"
+                w="100%"
+                pt={4}
+                justifyContent="center"
+                display="flex"
+                alignItems="center"
+              >
+                <Script
+                  src="https://booking-widget.quandoo.com/index.js"
+                  strategy="afterInteractive"
+                  data-merchant-id="104667"
+                  data-theme="dark"
+                  data-primary-color="27272a"
+                />
+              </Box>
+            </Stack>
+          </SectionComponent>
+        </AnimatedSection>
 
         <Footer />
       </VStack>

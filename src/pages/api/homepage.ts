@@ -13,6 +13,7 @@ export default async function handler(
       hero,
       signatureDishes,
       about,
+      reserveTable,
       location,
       alertBanner
     }`,
