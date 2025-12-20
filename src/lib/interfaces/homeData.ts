@@ -22,6 +22,11 @@ interface About {
   imageCaption?: LocaleString;
 }
 
+interface ReserveTable {
+  title: LocaleString;
+  description: LocaleString;
+}
+
 interface LocationSection {
   title: LocaleString;
   info: LocaleString[];
@@ -48,6 +53,7 @@ export interface HomepageData {
   hero: Hero;
   signatureDishes: SignatureDishes;
   about: About;
+  reserveTable: ReserveTable;
   location: LocationData;
   alertBanner?: Banner;
 }

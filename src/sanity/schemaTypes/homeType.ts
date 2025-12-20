@@ -117,5 +117,24 @@ export const HomeType = defineType({
         }),
       ],
     }),
+
+    // RESERVE TABLE SECTION
+    defineField({
+      name: "reserveTable",
+      title: "Reserve Table Section",
+      type: "object",
+      fields: [
+        defineField({
+          name: "title",
+          title: "Title",
+          type: "localeString",
+        }),
+        defineField({
+          name: "description",
+          title: "Description",
+          type: "localeString",
+        }),
+      ],
+    }),
   ],
 });
