@@ -155,13 +155,13 @@ export default function Page() {
             <ExtendedText>
               {getLocaleString(homeData.hero.description)}
             </ExtendedText>
-            <ExtendedButton
+            {/* <ExtendedButton
               size="lg"
               mt={{ base: 4, lg: 8 }}
               onClick={() => (window.location.href = homeData.hero.ctaUrl)}
             >
               {getLocaleString(homeData.hero.cta)}
-            </ExtendedButton>
+            </ExtendedButton> */}
           </ExtendedFlex>
         </Box>
 
@@ -277,7 +277,8 @@ export default function Page() {
           </AnimatedSection>
         )}
 
-        <AnimatedSection animation="slideInLeft">
+        {/* Quandoo Booking */}
+        {/* <AnimatedSection animation="slideInLeft">
           <SectionComponent
             headingTitle={getLocaleString(homeData.reserveTable.title)}
             description={" "}
@@ -295,7 +296,6 @@ export default function Page() {
                 </ExtendedText>
               </ExtendedFlex>
 
-              {/* About Image */}
 
               <Box
                 id="quandoo-booking-widget"
@@ -315,7 +315,7 @@ export default function Page() {
               </Box>
             </Stack>
           </SectionComponent>
-        </AnimatedSection>
+        </AnimatedSection> */}
 
         <Footer />
       </VStack>
