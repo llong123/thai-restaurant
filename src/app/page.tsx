@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  VStack,
-  Flex,
-  AspectRatio,
-  Button,
-  Box,
-  Stack,
-} from "@chakra-ui/react";
+import { VStack, Flex, AspectRatio, Box, Stack } from "@chakra-ui/react";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
 import Image from "next/image";
-import { ExtendedButtonProps, ExtendedFlexProps } from "@/lib/types";
+import { ExtendedFlexProps } from "@/lib/types";
 import NavigationComponent from "@/components/NavigationComponent";
 import DishCarousel from "@/components/DishCarouselComponent";
 import AnimatedSection from "@/components/animated-section";
@@ -29,9 +22,8 @@ import ExtendedText from "@/components/ExtendedText";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
 import { useThemeColors } from "@/components/fontVars";
-import Script from "next/script";
 
-const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
+// const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function Page() {
