@@ -126,7 +126,7 @@ export default function NavigationComponent() {
             </Portal>
           </Menu.Root>
 
-          {navData?.button && (
+          {/* {navData?.button && (
             <Link
               className={merriweather.className}
               href={navData.button.href}
@@ -145,7 +145,7 @@ export default function NavigationComponent() {
                 {getLocaleString(navData.button.label)}
               </Button>
             </Link>
-          )}
+          )} */}
         </HStack>
 
         <IconButton
