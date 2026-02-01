@@ -3,7 +3,6 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import Footer from "../footer";
 import NavigationComponent from "@/components/NavigationComponent";
-import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { MAX_WIDTH } from "@/lib/enums";
 import { LocationData } from "@/lib/interfaces/locationData";
@@ -12,6 +11,7 @@ import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 export default function LocationClient({
   locationData,
@@ -25,8 +25,7 @@ export default function LocationClient({
 
   const { bgColor } = useThemeColors();
 
-  const getLocale = (field?: LocaleString) =>
-    field?.[language] || field?.en || "";
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   if (loading) return <FullPageLoader message={t("loading")} />;
 
@@ -45,7 +44,7 @@ export default function LocationClient({
           {/* Title */}
           <Box textAlign="center" pb={12}>
             <ExtendedHeading as={"h2"}>
-              {getLocale(locationData?.title)}
+              {getText(locationData?.title)}
             </ExtendedHeading>
           </Box>
 
@@ -70,10 +69,10 @@ export default function LocationClient({
               {locationData?.sections?.map((section, i) => (
                 <Box key={i} pb={8}>
                   <ExtendedHeading size="lg" pb={4}>
-                    {getLocale(section.title)}
+                    {getText(section.title)}
                   </ExtendedHeading>
                   {section.info.map((line, j) => (
-                    <ExtendedText key={j}>{getLocale(line)}</ExtendedText>
+                    <ExtendedText key={j}>{getText(line)}</ExtendedText>
                   ))}
                 </Box>
               ))}
@@ -85,10 +84,10 @@ export default function LocationClient({
               {locationData?.moreSections?.map((section, i) => (
                 <Box key={i} pb={8}>
                   <ExtendedHeading size="lg" pb={4}>
-                    {getLocale(section.title)}
+                    {getText(section.title)}
                   </ExtendedHeading>
                   {section.info.map((line, j) => (
-                    <ExtendedText key={j}>{getLocale(line)}</ExtendedText>
+                    <ExtendedText key={j}>{getText(line)}</ExtendedText>
                   ))}
                 </Box>
               ))}

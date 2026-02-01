@@ -8,9 +8,8 @@ import { ExtendedFlexProps } from "@/lib/types";
 import NavigationComponent from "@/components/NavigationComponent";
 import DishCarousel from "@/components/DishCarouselComponent";
 import AnimatedSection from "@/components/animated-section";
-import { Key, useEffect, useState } from "react";
+import { useEffect, useState, type Key } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { LocaleString } from "@/lib/interfaces";
 import { urlFor } from "@/sanity/lib/sanityImage";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FaTimes } from "react-icons/fa";
@@ -22,12 +21,11 @@ import ExtendedText from "@/components/ExtendedText";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
 import { useThemeColors } from "@/components/fontVars";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
-// const ExtendedButton = Button as React.ComponentType<ExtendedButtonProps>;
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
 export default function Page() {
-  // use centralized app data
   const { homepage, location, loading } = useAppData();
 
   const homeData = (homepage ?? null) as HomepageData | null;
@@ -38,8 +36,8 @@ export default function Page() {
 
   const { bgColor } = useThemeColors();
 
-  const getLocaleString = (field?: LocaleString) =>
-    field?.[language] || field?.en || "";
+  const getText = (field?: LocaleString) =>
+    getLocaleString(field, language);
 
   // banner state
   const [showBanner, setShowBanner] = useState(false);
@@ -79,7 +77,7 @@ export default function Page() {
             top="64px"
             zIndex={15}
           >
-            {getLocaleString(homeData.alertBanner.message)}
+            {getText(homeData.alertBanner.message)}
 
             <Box
               position="absolute"
@@ -110,7 +108,7 @@ export default function Page() {
           {homeData.hero.image && (
             <Image
               src={urlFor(homeData.hero.image).width(1920).height(1080).url()}
-              alt={getLocaleString(homeData.hero.imageCaption) || "Hero image"}
+              alt={getText(homeData.hero.imageCaption) || "Hero image"}
               fill
               style={{
                 objectFit: "cover",
@@ -142,17 +140,17 @@ export default function Page() {
               size={{ base: "3xl", lg: "5xl" }}
               lineHeight="short"
             >
-              {getLocaleString(homeData.hero.title)}
+              {getText(homeData.hero.title)}
             </ExtendedHeading>
             <ExtendedText>
-              {getLocaleString(homeData.hero.description)}
+              {getText(homeData.hero.description)}
             </ExtendedText>
             {/* <ExtendedButton
               size="lg"
               mt={{ base: 4, lg: 8 }}
               onClick={() => (window.location.href = homeData.hero.ctaUrl)}
             >
-              {getLocaleString(homeData.hero.cta)}
+              {getText(homeData.hero.cta)}
             </ExtendedButton> */}
           </ExtendedFlex>
         </Box>
@@ -160,8 +158,8 @@ export default function Page() {
         {/* Signature Dishes */}
         <AnimatedSection animation="slideUp">
           <SectionComponent
-            headingTitle={getLocaleString(homeData.signatureDishes.title)}
-            description={getLocaleString(homeData.signatureDishes.description)}
+            headingTitle={getText(homeData.signatureDishes.title)}
+            description={getText(homeData.signatureDishes.description)}
           >
             <DishCarousel />
           </SectionComponent>
@@ -170,7 +168,7 @@ export default function Page() {
         {/* About Section */}
         <AnimatedSection animation="slideInLeft">
           <SectionComponent
-            headingTitle={getLocaleString(homeData.about.title)}
+            headingTitle={getText(homeData.about.title)}
             description={" "}
           >
             <Stack
@@ -182,7 +180,7 @@ export default function Page() {
             >
               <ExtendedFlex maxW={MAX_WIDTH.XL} gap="8">
                 <ExtendedText w={"100%"}>
-                  {getLocaleString(homeData.about.description)}
+                  {getText(homeData.about.description)}
                 </ExtendedText>
               </ExtendedFlex>
 
@@ -194,7 +192,7 @@ export default function Page() {
                     .height(720)
                     .url()}
                   alt={
-                    getLocaleString(homeData.about.imageCaption) ||
+                    getText(homeData.about.imageCaption) ||
                     "About image"
                   }
                   width={600}
@@ -210,8 +208,8 @@ export default function Page() {
         {locationData && (
           <AnimatedSection animation="slideUp">
             <SectionComponent
-              headingTitle={getLocaleString(locationData.title)}
-              description={getLocaleString(locationData.description)}
+              headingTitle={getText(locationData.title)}
+              description={getText(locationData.description)}
             >
               <ExtendedFlex
                 maxW={MAX_WIDTH.XL}
@@ -248,7 +246,7 @@ export default function Page() {
                   {locationData.sections.map((section: any, i: number) => (
                     <Box key={i} pb={8}>
                       <ExtendedHeading size="lg">
-                        {getLocaleString(section.title)}
+                        {getText(section.title)}
                       </ExtendedHeading>
 
                       {section.info.map(
@@ -257,7 +255,7 @@ export default function Page() {
                           j: Key | null | undefined,
                         ) => (
                           <ExtendedText key={j}>
-                            {getLocaleString(line)}
+                            {getText(line)}
                           </ExtendedText>
                         ),
                       )}
@@ -272,7 +270,7 @@ export default function Page() {
         {/* Quandoo Booking */}
         {/* <AnimatedSection animation="slideInLeft">
           <SectionComponent
-            headingTitle={getLocaleString(homeData.reserveTable.title)}
+            headingTitle={getText(homeData.reserveTable.title)}
             description={" "}
           >
             <Stack
@@ -284,7 +282,7 @@ export default function Page() {
             >
               <ExtendedFlex maxW={MAX_WIDTH.XL} gap="8">
                 <ExtendedText w={"100%"}>
-                  {getLocaleString(homeData.reserveTable.description)}
+                  {getText(homeData.reserveTable.description)}
                 </ExtendedText>
               </ExtendedFlex>
 

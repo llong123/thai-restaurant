@@ -15,7 +15,7 @@ import NavigationComponent from "@/components/NavigationComponent";
 import { Dish } from "@/components/DishComponent";
 import { useTranslation } from "@/lib/translations";
 
-import { DishData, LocaleString } from "@/lib/interfaces";
+import { DishData } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { MAX_WIDTH } from "@/lib/enums";
 import { MenuPageData } from "@/lib/interfaces/menuData";
@@ -23,6 +23,7 @@ import { useThemeColors } from "@/components/fontVars";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import FullPageLoader from "@/components/FullPageLoader";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 interface MenuClientProps {
   menuPageData: MenuPageData | null;
@@ -43,11 +44,10 @@ export default function MenuClient({
   const { bgColor, borderColor, textColor } = useThemeColors();
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState(false); // toggle for menu view
+  const [showAll, setShowAll] = useState(false);
 
-  // Utility to safely get localized text
-  const getLocaleString = useCallback(
-    (field?: LocaleString) => field?.[language] || field?.en || "",
+  const getText = useCallback(
+    (field?: LocaleString) => getLocaleString(field, language),
     [language],
   );
 
@@ -62,9 +62,9 @@ export default function MenuClient({
     });
     return Array.from(unique.entries()).map(([enCategory, dish]) => ({
       en: enCategory,
-      label: getLocaleString(dish.category),
+      label: getText(dish.category),
     }));
-  }, [dishes, getLocaleString]);
+  }, [dishes, getText]);
 
   // Filtered dishes
   const filteredDishes = useMemo(() => {
@@ -112,18 +112,18 @@ export default function MenuClient({
           pb={16}
         >
           <ExtendedHeading as={"h2"} pb={8} alignSelf="center">
-            {getLocaleString(menuPageData.pageTitle)}
+            {getText(menuPageData.pageTitle)}
           </ExtendedHeading>
 
           <ExtendedText pb={6}>
-            {getLocaleString(menuPageData.pageDescription)}
+            {getText(menuPageData.pageDescription)}
           </ExtendedText>
         </Box>
 
         {/* Filter Chips */}
         <Box mb={8}>
           <Box as="h4" fontSize="lg" fontWeight="bold" mb={3}>
-            {getLocaleString(menuPageData.category)}
+            {getText(menuPageData.category)}
           </Box>
           <Box
             as="p"
@@ -132,7 +132,7 @@ export default function MenuClient({
             fontWeight="light"
             mb={3}
           >
-            {getLocaleString(menuPageData.categoryDescription)}
+            {getText(menuPageData.categoryDescription)}
           </Box>
           <HStack gap={3} flexWrap="wrap">
             {categories.map((category) => (
@@ -241,13 +241,13 @@ export default function MenuClient({
                                 {dish.name}
                               </ExtendedHeading>
                               <ExtendedText color={textColor} mt={2}>
-                                {getLocaleString(dish.description)}
+                                {getText(dish.description)}
                               </ExtendedText>
                               {dish.ingredients?.length && (
                                 <ExtendedText color={textColor} mt={2}>
                                   {t("menu.ingredients")}:{" "}
                                   {dish.ingredients
-                                    ?.map((ing) => getLocaleString(ing))
+                                    ?.map((ing) => getText(ing))
                                     .filter(Boolean)
                                     .join(", ")}
                                 </ExtendedText>
@@ -278,7 +278,7 @@ export default function MenuClient({
           <Flex justify="center" w="full">
             <SimpleGrid columns={[1, 2, 3]} gap={8} maxW="1200px" w="full">
               {filteredDishes.map((dish) => (
-                <Dish key={dish._id} dish={dish} getLocale={getLocaleString} />
+                <Dish key={dish._id} dish={dish} getLocale={getText} />
               ))}
             </SimpleGrid>
           </Flex>

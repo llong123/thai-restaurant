@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 import { Dish } from "./DishComponent";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { DishData, LocaleString } from "@/lib/interfaces";
+import { DishData } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "./FullPageLoader";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 // ---------- 🔹 Component ---------- //
 
@@ -40,8 +41,7 @@ export default function DishCarousel() {
   }, []);
 
   // Utility for localized text
-  const getLocaleString = (field?: LocaleString) =>
-    field?.[language] || field?.en || "";
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
@@ -79,7 +79,7 @@ export default function DishCarousel() {
           width="100%"
         >
           {visibleDishes.map((dish) => (
-            <Dish key={dish._id} dish={dish} getLocale={getLocaleString} />
+            <Dish key={dish._id} dish={dish} getLocale={getText} />
           ))}
         </Box>
 

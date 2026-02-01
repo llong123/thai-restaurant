@@ -15,27 +15,25 @@ import {
 import { LuMenu, LuX, LuChevronsDown } from "react-icons/lu";
 import Link from "next/link";
 import { merriweather, useThemeColors } from "@/components/fontVars";
-import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Language } from "@/lib/types";
 import { usePathname } from "next/navigation";
 import { NavigationData } from "@/lib/interfaces/navigationData";
 import { useAppData } from "@/hooks/AppDataContext";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
-  const pathname = usePathname(); // get current URL path
+  const pathname = usePathname();
 
   const { language, setLanguage } = useLanguage();
   const { bgColor, btnBgColor } = useThemeColors();
 
-  // use centralized app data
   const { navigation } = useAppData();
   const navData = (navigation ?? null) as NavigationData | null;
 
-  // Utility for localized strings
-  const getLocaleString = (field?: LocaleString) =>
-    field?.[language as keyof LocaleString] || field?.en || "";
+  const getText = (field?: LocaleString) =>
+    getLocaleString(field, language);
 
   return (
     <Box
@@ -89,7 +87,7 @@ export default function NavigationComponent() {
                   }}
                   fontSize={{ base: "sm", lg: "md" }}
                 >
-                  {getLocaleString(link.name)}
+                  {getText(link.name)}
                 </Box>
               </Link>
             );
@@ -142,7 +140,7 @@ export default function NavigationComponent() {
                   pathname === navData.button.href ? "bold" : "normal"
                 }
               >
-                {getLocaleString(navData.button.label)}
+                {getText(navData.button.label)}
               </Button>
             </Link>
           )} */}
@@ -194,7 +192,7 @@ export default function NavigationComponent() {
                     cursor: "pointer",
                   }}
                 >
-                  {getLocaleString(link.name)}
+                  {getText(link.name)}
                 </Box>
               </Link>
             );
@@ -214,7 +212,7 @@ export default function NavigationComponent() {
                   pathname === navData.button.href ? "bold" : "normal"
                 }
               >
-                {getLocaleString(navData.button.label)}
+                {getText(navData.button.label)}
               </Button>
             </Link>
           )}

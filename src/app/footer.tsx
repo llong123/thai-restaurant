@@ -4,7 +4,6 @@ import { Flex, HStack, VStack, Image, IconButton, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FooterData } from "@/lib/interfaces/footerData";
@@ -12,6 +11,7 @@ import { useAppData } from "@/hooks/AppDataContext";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import FullPageLoader from "@/components/FullPageLoader";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 export default function Footer() {
   const { language } = useLanguage();
@@ -21,8 +21,7 @@ export default function Footer() {
   const { footer, loading } = useAppData();
   const footerData = (footer ?? null) as FooterData | null;
 
-  const getLocale = (field?: LocaleString) =>
-    field?.[language] || field?.en || "";
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   if (loading) return <FullPageLoader message={t("loading")} />;
   if (!footerData)
@@ -79,7 +78,7 @@ export default function Footer() {
                 <ExtendedHeading as={"h4"}>Quick Links</ExtendedHeading>
                 {footerData.quickLinks?.map((link, index) => (
                   <Link key={index} href={link.url}>
-                    {getLocale(link.label)}
+                    {getText(link.label)}
                   </Link>
                 ))}
               </VStack>
@@ -135,7 +134,7 @@ export default function Footer() {
             mt={8}
             textAlign="center"
           >
-            {getLocale(footerData.copyright)}
+            {getText(footerData.copyright)}
           </ExtendedText>
         </Flex>
       </Flex>
