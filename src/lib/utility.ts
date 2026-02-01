@@ -8,6 +8,6 @@ export const useLocale = (field?: LocaleString) => {
 };
 // Clip long descriptions to `max` characters and append ellipsis
 export const clipText = (text?: string, max = 200) => {
-    if (!text) return "";
-    return text.length > max ? text.slice(0, max) + "..." : text;
-  };
+  if (!text) return "";
+  return text.length > max ? text.slice(0, max) + "..." : text;
+};

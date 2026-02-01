@@ -16,7 +16,7 @@ const MotionBox = motion.create(Box);
 
 interface DishProps {
   dish: DishData;
-  getLocale: (field?: LocaleString) => string;
+  getLocale: (_localeString?: LocaleString) => string;
 }
 
 export function Dish({ dish, getLocale }: DishProps) {
@@ -205,7 +205,7 @@ export function Dish({ dish, getLocale }: DishProps) {
                       key={index}
                       color={textColor}
                     >
-                      • {getLocale(ingredient as any)}
+                      • {getLocale(ingredient)}
                     </Box>
                   ))}
                 </Box>
@@ -218,7 +218,10 @@ export function Dish({ dish, getLocale }: DishProps) {
               mb={2}
               color={textColor}
             >
-              {t("menu.spiceLevel")}: {"🌶️".repeat(dishDetails.spiceLevel!)}
+              {t("menu.spiceLevel")}:{" "}
+              {dishDetails.spiceLevel
+                ? "🌶️".repeat(dishDetails.spiceLevel)
+                : "N/A"}
             </Box>
             <Box
               className={merriweather.className}

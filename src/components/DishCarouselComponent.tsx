@@ -22,12 +22,21 @@ export default function DishCarousel() {
 
   // Fetch signature dishes from Sanity
   useEffect(() => {
+    let mounted = true;
     async function fetchDishes() {
-      const res = await fetch("/api/dish");
-      const data: DishData[] = await res.json();
-      setDishes(data);
+      try {
+        const res = await fetch("/api/dish");
+        if (!mounted) return;
+        const data: DishData[] = await res.json();
+        if (mounted) setDishes(data);
+      } catch (error) {
+        console.error("Failed to fetch dishes:", error);
+      }
     }
     fetchDishes();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Utility for localized text
@@ -36,7 +45,7 @@ export default function DishCarousel() {
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex + slidesToShow >= dishes.length ? 0 : prevIndex + slidesToShow
+      prevIndex + slidesToShow >= dishes.length ? 0 : prevIndex + slidesToShow,
     );
   };
 
@@ -44,7 +53,7 @@ export default function DishCarousel() {
     setCurrentIndex((prevIndex) =>
       prevIndex - slidesToShow < 0
         ? Math.max(0, dishes.length - slidesToShow)
-        : prevIndex - slidesToShow
+        : prevIndex - slidesToShow,
     );
   };
 

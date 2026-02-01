@@ -16,16 +16,16 @@ const DISHES_QUERY = `*[_type == "dish"]{
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<DishData | { error: string }>,
+  res: NextApiResponse<DishData[] | { error: string }>,
 ) {
   try {
-    const dishData: DishData = await client.fetch(
+    const dishData: DishData[] = await client.fetch(
       DISHES_QUERY,
       {},
       { next: { revalidate: 30 } },
     );
 
-    if (!dishData) {
+    if (!dishData || dishData.length === 0) {
       return res.status(404).json({ error: "Dish data not found" });
     }
 

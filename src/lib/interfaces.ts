@@ -14,9 +14,10 @@ export interface DishData {
   pageDescription: LocaleString;
   name: string;
   description?: LocaleString;
-  ingredients?: string[];
+  ingredients?: LocaleString[];
   category?: LocaleString;
   price?: number;
   spiceLevel?: number;
   dishImage?: DishImage;
+  signatureDish?: boolean;
 }

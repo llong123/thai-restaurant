@@ -48,7 +48,7 @@ export default function MenuClient({
   // Utility to safely get localized text
   const getLocaleString = useCallback(
     (field?: LocaleString) => field?.[language] || field?.en || "",
-    [language]
+    [language],
   );
 
   // Unique categories (based on English value)
@@ -70,7 +70,7 @@ export default function MenuClient({
   const filteredDishes = useMemo(() => {
     if (selectedCategories.length === 0) return dishes;
     return dishes.filter((dish) =>
-      selectedCategories.includes(dish.category!.en!)
+      selectedCategories.includes(dish.category!.en!),
     );
   }, [dishes, selectedCategories]);
 
@@ -79,7 +79,7 @@ export default function MenuClient({
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   };
 
@@ -217,7 +217,7 @@ export default function MenuClient({
               .sort() // optional: sort category names alphabetically
               .map((category) => {
                 const dishesInCategory = filteredDishes.filter(
-                  (dish) => dish.category!.en! === category.en
+                  (dish) => dish.category!.en! === category.en,
                 );
                 if (dishesInCategory.length === 0) return null;
 
@@ -246,10 +246,8 @@ export default function MenuClient({
                               {dish.ingredients?.length && (
                                 <ExtendedText color={textColor} mt={2}>
                                   {t("menu.ingredients")}:{" "}
-                                  {(
-                                    dish.ingredients as unknown as LocaleString[]
-                                  )
-                                    .map((ing) => getLocaleString(ing))
+                                  {dish.ingredients
+                                    ?.map((ing) => getLocaleString(ing))
                                     .filter(Boolean)
                                     .join(", ")}
                                 </ExtendedText>

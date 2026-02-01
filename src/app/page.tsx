@@ -254,12 +254,12 @@ export default function Page() {
                       {section.info.map(
                         (
                           line: LocaleString | undefined,
-                          j: Key | null | undefined
+                          j: Key | null | undefined,
                         ) => (
                           <ExtendedText key={j}>
                             {getLocaleString(line)}
                           </ExtendedText>
-                        )
+                        ),
                       )}
                     </Box>
                   ))}

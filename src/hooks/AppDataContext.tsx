@@ -37,23 +37,30 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const fetchAll = async () => {
     setState((s) => ({ ...s, loading: true }));
     try {
-      const [
-        navigation,
-        footer,
-        homepage,
-        dishes,
-        menu,
-        location,
-        about,
-      ] = await Promise.all([
-        fetch("/api/navigation").then((r) => r.json()).catch(() => null),
-        fetch("/api/footer").then((r) => r.json()).catch(() => null),
-        fetch("/api/homepage").then((r) => r.json()).catch(() => null),
-        fetch("/api/dish").then((r) => r.json()).catch(() => null),
-        fetch("/api/menu").then((r) => r.json()).catch(() => null),
-        fetch("/api/location").then((r) => r.json()).catch(() => null),
-        fetch("/api/about").then((r) => r.json()).catch(() => null),
-      ]);
+      const [navigation, footer, homepage, dishes, menu, location, about] =
+        await Promise.all([
+          fetch("/api/navigation")
+            .then((r) => r.json())
+            .catch(() => null),
+          fetch("/api/footer")
+            .then((r) => r.json())
+            .catch(() => null),
+          fetch("/api/homepage")
+            .then((r) => r.json())
+            .catch(() => null),
+          fetch("/api/dish")
+            .then((r) => r.json())
+            .catch(() => null),
+          fetch("/api/menu")
+            .then((r) => r.json())
+            .catch(() => null),
+          fetch("/api/location")
+            .then((r) => r.json())
+            .catch(() => null),
+          fetch("/api/about")
+            .then((r) => r.json())
+            .catch(() => null),
+        ]);
 
       setState({
         navigation,

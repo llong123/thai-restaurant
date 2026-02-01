@@ -42,7 +42,11 @@ export default function AnimatedSection({
   };
 
   return (
-    <Box ref={elementRef as any} {...getAnimationStyle()} {...props}>
+    <Box
+      ref={elementRef as React.RefObject<HTMLDivElement>}
+      {...getAnimationStyle()}
+      {...props}
+    >
       {children}
     </Box>
   );

@@ -10,7 +10,7 @@ import {
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (language: Language) => void;
 }
 
 // Luo Context, alustetaan undefined:lla
@@ -24,10 +24,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const browserLang = navigator.language?.slice(0, 2).toLowerCase(); // e.g. 'en', 'fi', 'sv', 'de'
+      const browserLang = navigator.language?.slice(0, 2).toLowerCase() as Language; // e.g. 'en', 'fi', 'sv', 'de'
       const supportedLangs: Language[] = ["en", "fi", "sv"];
-      if (supportedLangs.includes(browserLang as Language)) {
-        setLanguage(browserLang as Language);
+      if (browserLang && supportedLangs.includes(browserLang)) {
+        setLanguage(browserLang);
       } else {
         setLanguage("en");
       }
