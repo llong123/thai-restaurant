@@ -19,9 +19,9 @@ export default function SectionComponent({
 
   return (
     <Flex
-      width={"100vw"}
-      alignItems={"center"}
-      justifyContent={"center"}
+      width="100%"
+      alignItems="center"
+      justifyContent="center"
       bgColor={bgColor}
     >
       <ExtendedFlex

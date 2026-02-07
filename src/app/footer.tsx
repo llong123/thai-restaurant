@@ -4,7 +4,6 @@ import { Flex, HStack, VStack, Image, IconButton, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { LocaleString } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FooterData } from "@/lib/interfaces/footerData";
@@ -12,17 +11,20 @@ import { useAppData } from "@/hooks/AppDataContext";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import FullPageLoader from "@/components/FullPageLoader";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
+import { useThemeColors } from "@/components/fontVars";
 
 export default function Footer() {
   const { language } = useLanguage();
   const { t } = useTranslation(language);
 
+  const { bgColor } = useThemeColors();
+
   // use centralized app data
   const { footer, loading } = useAppData();
   const footerData = (footer ?? null) as FooterData | null;
 
-  const getLocale = (field?: LocaleString) =>
-    field?.[language] || field?.en || "";
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   if (loading) return <FullPageLoader message={t("loading")} />;
   if (!footerData)
@@ -34,8 +36,8 @@ export default function Footer() {
   return (
     <footer>
       <Flex
-        w="100vw"
-        bgColor="#111827"
+        w="100%"
+        bgColor={bgColor}
         alignItems="center"
         justifyContent="center"
       >
@@ -49,9 +51,9 @@ export default function Footer() {
         >
           <HStack
             w="full"
-            alignItems="flex-start"
+            alignItems="center"
             justifyContent="space-between"
-            px={16}
+            px={{ base: 4, lg: 16 }}
             pt={8}
           >
             <Box>
@@ -79,7 +81,7 @@ export default function Footer() {
                 <ExtendedHeading as={"h4"}>Quick Links</ExtendedHeading>
                 {footerData.quickLinks?.map((link, index) => (
                   <Link key={index} href={link.url}>
-                    {getLocale(link.label)}
+                    {getText(link.label)}
                   </Link>
                 ))}
               </VStack>
@@ -130,12 +132,13 @@ export default function Footer() {
           {/* Copyright */}
           <ExtendedText
             width="full"
-            borderTop="2px solid #1F2937"
+            borderTop="2px solid"
+            borderColor="gray.200"
             py={8}
             mt={8}
             textAlign="center"
           >
-            {getLocale(footerData.copyright)}
+            {getText(footerData.copyright)}
           </ExtendedText>
         </Flex>
       </Flex>

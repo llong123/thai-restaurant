@@ -1,5 +1,5 @@
 import { Merriweather_Sans, Pacifico, Poppins } from "next/font/google";
-import { useColorModeValue } from "./ui/color-mode";
+import { useThemeColors as _useThemeColors } from "@/hooks/useThemeColors";
 
 export const pacifico = Pacifico({
   display: "swap",
@@ -19,11 +19,4 @@ export const merriweather = Merriweather_Sans({
   weight: ["300", "400", "500", "600"],
 });
 
-export function useThemeColors() {
-  const bgColor = useColorModeValue("white", "gray.800");
-  const textColor = useColorModeValue("gray.800", "white");
-  const borderColor = useColorModeValue("gray.900", "white");
-  const btnBgColor = useColorModeValue("gray.200", "gray.900");
-
-  return { bgColor, textColor, borderColor, btnBgColor };
-}
+export { _useThemeColors as useThemeColors };

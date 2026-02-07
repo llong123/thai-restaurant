@@ -29,12 +29,12 @@ export default async function handler(
     );
 
     if (!navigationData) {
-      return res.status(404).json({ error: "About data not found" });
+      return res.status(404).json({ error: "Navigation data not found" });
     }
 
     res.status(200).json(navigationData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch about data" });
+    res.status(500).json({ error: "Failed to fetch navigation data" });
   }
 }

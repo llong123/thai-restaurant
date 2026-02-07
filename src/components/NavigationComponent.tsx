@@ -15,38 +15,27 @@ import {
 import { LuMenu, LuX, LuChevronsDown } from "react-icons/lu";
 import Link from "next/link";
 import { merriweather, useThemeColors } from "@/components/fontVars";
-import { LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Language } from "@/lib/types";
 import { usePathname } from "next/navigation";
 import { NavigationData } from "@/lib/interfaces/navigationData";
 import { useAppData } from "@/hooks/AppDataContext";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
-  const pathname = usePathname(); // get current URL path
+  const pathname = usePathname();
 
   const { language, setLanguage } = useLanguage();
-  const { bgColor, btnBgColor } = useThemeColors();
+  const { bgColor, btnBgColor, textColor } = useThemeColors();
 
-  // use centralized app data
   const { navigation } = useAppData();
   const navData = (navigation ?? null) as NavigationData | null;
 
-  // Utility for localized strings
-  const getLocaleString = (field?: LocaleString) =>
-    field?.[language as keyof LocaleString] || field?.en || "";
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   return (
-    <Box
-      bg={bgColor}
-      position="sticky"
-      top={0}
-      zIndex={10}
-      shadow={{ base: "md", xl: "none" }}
-      w="100%"
-      py={2}
-    >
+    <Box bg={bgColor} position="sticky" top={0} zIndex={10} w="100%" py={2}>
       <Flex h={16} align="center" justify="space-between" px={4}>
         <Box>
           <Link href="/" passHref legacyBehavior>
@@ -89,7 +78,7 @@ export default function NavigationComponent() {
                   }}
                   fontSize={{ base: "sm", lg: "md" }}
                 >
-                  {getLocaleString(link.name)}
+                  {getText(link.name)}
                 </Box>
               </Link>
             );
@@ -142,7 +131,7 @@ export default function NavigationComponent() {
                   pathname === navData.button.href ? "bold" : "normal"
                 }
               >
-                {getLocaleString(navData.button.label)}
+                {getText(navData.button.label)}
               </Button>
             </Link>
           )} */}
@@ -157,10 +146,24 @@ export default function NavigationComponent() {
         </IconButton>
       </Flex>
 
+      {/* Mobile menu backdrop */}
+      {open && (
+        <Box
+          position="fixed"
+          top="4rem"
+          left={0}
+          right={0}
+          bottom={0}
+          bg="blackAlpha.600"
+          zIndex={9}
+          onClick={onClose}
+        />
+      )}
+
       {/* Mobile menu */}
       <Box
         position="fixed"
-        top="64px"
+        top={0}
         left={0}
         right={0}
         bg={bgColor}
@@ -188,13 +191,15 @@ export default function NavigationComponent() {
                   rounded="md"
                   fontWeight={isActive ? "bold" : "normal"}
                   bg={isActive ? "gray.200" : "transparent"}
+                  color={isActive ? "gray.800" : textColor}
                   _hover={{
                     fontWeight: "bold",
-                    bg: "gray.100",
+                    bg: "gray.200",
                     cursor: "pointer",
+                    color: "gray.800",
                   }}
                 >
-                  {getLocaleString(link.name)}
+                  {getText(link.name)}
                 </Box>
               </Link>
             );
@@ -213,8 +218,9 @@ export default function NavigationComponent() {
                 fontWeight={
                   pathname === navData.button.href ? "bold" : "normal"
                 }
+                color={textColor}
               >
-                {getLocaleString(navData.button.label)}
+                {getText(navData.button.label)}
               </Button>
             </Link>
           )}
@@ -228,6 +234,7 @@ export default function NavigationComponent() {
                 borderRadius: "0.375rem",
                 border: "1px solid #ccc",
                 background: "white",
+                color: "black",
               }}
             >
               {navData?.languages?.map((lang: string) => (

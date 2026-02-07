@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 import { Dish } from "./DishComponent";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { DishData, LocaleString } from "@/lib/interfaces";
+import { DishData } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "./FullPageLoader";
+import { getLocaleString, type LocaleString } from "@/lib/utility";
 
 // ---------- 🔹 Component ---------- //
 
@@ -22,21 +23,29 @@ export default function DishCarousel() {
 
   // Fetch signature dishes from Sanity
   useEffect(() => {
+    let mounted = true;
     async function fetchDishes() {
-      const res = await fetch("/api/dish");
-      const data: DishData[] = await res.json();
-      setDishes(data);
+      try {
+        const res = await fetch("/api/dish");
+        if (!mounted) return;
+        const data: DishData[] = await res.json();
+        if (mounted) setDishes(data);
+      } catch (error) {
+        console.error("Failed to fetch dishes:", error);
+      }
     }
     fetchDishes();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Utility for localized text
-  const getLocaleString = (field?: LocaleString) =>
-    field?.[language] || field?.en || "";
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex + slidesToShow >= dishes.length ? 0 : prevIndex + slidesToShow
+      prevIndex + slidesToShow >= dishes.length ? 0 : prevIndex + slidesToShow,
     );
   };
 
@@ -44,7 +53,7 @@ export default function DishCarousel() {
     setCurrentIndex((prevIndex) =>
       prevIndex - slidesToShow < 0
         ? Math.max(0, dishes.length - slidesToShow)
-        : prevIndex - slidesToShow
+        : prevIndex - slidesToShow,
     );
   };
 
@@ -62,7 +71,7 @@ export default function DishCarousel() {
       spaceY="8"
       w="100%"
     >
-      <Box position="relative" width="90%" maxW="1200px" mx="auto">
+      <Box position="relative" width="90%" maxW="75rem" mx="auto">
         <Box
           display="grid"
           gridTemplateColumns={`repeat(${slidesToShow}, 1fr)`}
@@ -70,7 +79,7 @@ export default function DishCarousel() {
           width="100%"
         >
           {visibleDishes.map((dish) => (
-            <Dish key={dish._id} dish={dish} getLocale={getLocaleString} />
+            <Dish key={dish._id} dish={dish} getLocale={getText} />
           ))}
         </Box>
 

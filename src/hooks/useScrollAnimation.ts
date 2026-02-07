@@ -1,22 +1,25 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 export function useScrollAnimation(options = {}) {
   const elementRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsVisible(true);
-        // Once the element is visible, we can unobserve it
-        observer.unobserve(entry.target);
-      }
-    }, {
-      threshold: 0.1,
-      ...options
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Once the element is visible, we can unobserve it
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold: 0.1,
+        ...options,
+      },
+    );
 
     const currentElement = elementRef.current;
     if (currentElement) {
@@ -31,4 +34,4 @@ export function useScrollAnimation(options = {}) {
   }, [options]);
 
   return { elementRef, isVisible };
-} 
+}

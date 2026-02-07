@@ -15,19 +15,19 @@ export default async function handler(
   res: NextApiResponse<FooterData | { error: string }>,
 ) {
   try {
-    const navigationData: FooterData = await client.fetch(
+    const footerData: FooterData = await client.fetch(
       FOOTER_QUERY,
       {},
       { next: { revalidate: 30 } },
     );
 
-    if (!navigationData) {
-      return res.status(404).json({ error: "About data not found" });
+    if (!footerData) {
+      return res.status(404).json({ error: "Footer data not found" });
     }
 
-    res.status(200).json(navigationData);
+    res.status(200).json(footerData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch about data" });
+    res.status(500).json({ error: "Failed to fetch footer data" });
   }
 }

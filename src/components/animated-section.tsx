@@ -1,49 +1,52 @@
 "use client";
 
-import { Box, BoxProps } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { ReactNode } from "react";
+import { motion } from "framer-motion";
+import {
+  fadeInVariants,
+  slideUpVariants,
+  slideInLeftVariants,
+  slideInRightVariants,
+  transitionConfig,
+} from "@/lib/animationVariants";
 
-interface AnimatedSectionProps extends BoxProps {
+interface AnimatedSectionProps {
   children: ReactNode;
   animation?: "fadeIn" | "slideUp" | "slideInLeft" | "slideInRight";
   delay?: number;
+  className?: string;
 }
+
+const animationMap: Record<string, typeof fadeInVariants> = {
+  fadeIn: fadeInVariants,
+  slideUp: slideUpVariants,
+  slideInLeft: slideInLeftVariants,
+  slideInRight: slideInRightVariants,
+};
+
+const MotionBox = motion(Box);
 
 export default function AnimatedSection({
   children,
   animation = "fadeIn",
   delay = 0,
-  ...props
+  className,
 }: AnimatedSectionProps) {
   const { elementRef, isVisible } = useScrollAnimation();
-
-  const getAnimationStyle = () => {
-    if (!isVisible) {
-      switch (animation) {
-        case "fadeIn":
-          return { opacity: 0 };
-        case "slideUp":
-          return { opacity: 0, transform: "translateY(50px)" };
-        case "slideInLeft":
-          return { opacity: 0, transform: "translateX(-50px)" };
-        case "slideInRight":
-          return { opacity: 0, transform: "translateX(50px)" };
-        default:
-          return { opacity: 0 };
-      }
-    }
-
-    return {
-      opacity: 1,
-      transform: "translate(0, 0)",
-      transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s ease-out ${delay}s`,
-    };
-  };
+  const variants = animationMap[animation] || fadeInVariants;
 
   return (
-    <Box ref={elementRef as any} {...getAnimationStyle()} {...props}>
+    <MotionBox
+      ref={elementRef as React.RefObject<HTMLDivElement>}
+      className={className}
+      variants={variants}
+      initial="hidden"
+      animate={isVisible ? "visible" : "hidden"}
+      transition={{ ...transitionConfig, delay } as any}
+    >
       {children}
-    </Box>
+    </MotionBox>
   );
 }
