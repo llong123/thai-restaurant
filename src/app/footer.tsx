@@ -12,10 +12,13 @@ import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
+import { useThemeColors } from "@/components/fontVars";
 
 export default function Footer() {
   const { language } = useLanguage();
   const { t } = useTranslation(language);
+
+  const { bgColor } = useThemeColors();
 
   // use centralized app data
   const { footer, loading } = useAppData();
@@ -33,8 +36,8 @@ export default function Footer() {
   return (
     <footer>
       <Flex
-        w="100vw"
-        bgColor="#111827"
+        w="100%"
+        bgColor={bgColor}
         alignItems="center"
         justifyContent="center"
       >
@@ -48,9 +51,9 @@ export default function Footer() {
         >
           <HStack
             w="full"
-            alignItems="flex-start"
+            alignItems="center"
             justifyContent="space-between"
-            px={16}
+            px={{ base: 4, lg: 16 }}
             pt={8}
           >
             <Box>
@@ -129,7 +132,8 @@ export default function Footer() {
           {/* Copyright */}
           <ExtendedText
             width="full"
-            borderTop="2px solid #1F2937"
+            borderTop="2px solid"
+            borderColor="gray.200"
             py={8}
             mt={8}
             textAlign="center"

@@ -71,7 +71,7 @@ export default function DishCarousel() {
       spaceY="8"
       w="100%"
     >
-      <Box position="relative" width="90%" maxW="1200px" mx="auto">
+      <Box position="relative" width="90%" maxW="75rem" mx="auto">
         <Box
           display="grid"
           gridTemplateColumns={`repeat(${slidesToShow}, 1fr)`}
