@@ -39,11 +39,53 @@ export default function Head() {
         closes: "22:00",
       },
     ],
+    servesCuisine: "Thai",
+    acceptsReservations: true,
     sameAs: [
-      "https://www.facebook.com/yourpage",
-      "https://www.instagram.com/yourpage",
+      "https://www.facebook.com/ChaoPhrayaHelsinki",
+      "https://www.instagram.com/chaophraya.fi/",
     ],
-    priceRange: "€",
+    priceRange: "€€",
+  };
+
+  const menuJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Menu",
+    name: "Chao Phraya Menu",
+    hasMenuSection: [
+      {
+        "@type": "MenuSection",
+        name: "Appetizers",
+        hasMenuItem: [
+          {
+            "@type": "MenuItem",
+            name: "Spring Rolls",
+            offers: { "@type": "Offer", price: "8.50", priceCurrency: "EUR" },
+          },
+          {
+            "@type": "MenuItem",
+            name: "Tom Yum Soup",
+            offers: { "@type": "Offer", price: "7.00", priceCurrency: "EUR" },
+          },
+        ],
+      },
+      {
+        "@type": "MenuSection",
+        name: "Main Courses",
+        hasMenuItem: [
+          {
+            "@type": "MenuItem",
+            name: "Pad Thai",
+            offers: { "@type": "Offer", price: "16.00", priceCurrency: "EUR" },
+          },
+          {
+            "@type": "MenuItem",
+            name: "Green Curry",
+            offers: { "@type": "Offer", price: "17.00", priceCurrency: "EUR" },
+          },
+        ],
+      },
+    ],
   };
 
   return (
@@ -105,6 +147,10 @@ export default function Head() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd) }}
       />
     </>
   );

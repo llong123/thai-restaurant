@@ -2,6 +2,13 @@ import { LocaleString } from "./interfaces";
 
 export type { LocaleString };
 
+export const siteMetadata = {
+  siteUrl: "https://www.chaophraya.fi",
+  title: "Chao Phraya — Authentic Thai Restaurant in Helsinki",
+  description:
+    "Authentic Thai restaurant in Helsinki. See our menu, opening hours and book a table.",
+};
+
 export const getLocaleString = (
   field?: LocaleString,
   language?: string,
