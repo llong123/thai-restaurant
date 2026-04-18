@@ -24,15 +24,14 @@ interface DishProps {
 export function Dish({ dish, getLocale }: DishProps) {
   const { textColor } = useThemeColors();
 
+  const dishImageUrl = dish.dishImage?.asset?.url || "";
   const [dishDetails, setDishDetails] = useState({
     name: dish.name,
     description: getLocale(dish.description),
     ingredients: dish.ingredients || [],
     spiceLevel: dish.spiceLevel,
     price: dish.price ? `${dish.price.toFixed(2)} EUR` : "N/A",
-    image: dish.dishImage
-      ? urlFor(dish.dishImage).width(500).height(300).url()
-      : "",
+    image: dishImageUrl || (dish.dishImage ? urlFor(dish.dishImage).width(500).height(300).url() : ""),
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,9 +43,7 @@ export function Dish({ dish, getLocale }: DishProps) {
       ingredients: dish.ingredients || [],
       spiceLevel: dish.spiceLevel,
       price: dish.price ? `${dish.price.toFixed(2)} EUR` : "N/A",
-      image: dish.dishImage
-        ? urlFor(dish.dishImage).width(500).height(300).url()
-        : "",
+      image: dishImageUrl,
     });
     setIsModalOpen(true);
   };

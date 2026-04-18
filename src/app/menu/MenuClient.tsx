@@ -26,7 +26,7 @@ import { PageLayout } from "@/components/PageLayout";
 import Footer from "@/app/footer";
 
 interface MenuClientProps {
-  menuPageData: MenuPageData | null;
+  menuPageData: MenuPageData;
   dishes: DishData[];
   loading: boolean;
 }
@@ -53,6 +53,7 @@ export default function MenuClient({
 
   // Unique categories (based on English value)
   const categories = useMemo(() => {
+    if (!Array.isArray(dishes) || dishes.length === 0) return [];
     const unique = new Map<string, typeof dishes[0]>();
     dishes.forEach((dish) => {
       const enCategory = dish.category?.en;
@@ -86,7 +87,7 @@ export default function MenuClient({
   const clearFilters = () => setSelectedCategories([]);
   if (loading) return <FullPageLoader message={t("loading")} />;
 
-  if (!dishes?.length || !menuPageData)
+  if (!dishes || !dishes.length)
     return <p className="p-8">No dishes found.</p>;
 
   // ---------- 🔹 Render ---------- //

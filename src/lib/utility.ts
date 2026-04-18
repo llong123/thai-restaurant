@@ -7,6 +7,8 @@ export const siteMetadata = {
   title: "Chao Phraya — Authentic Thai Restaurant in Helsinki",
   description:
     "Authentic Thai restaurant in Helsinki. See our menu, opening hours and book a table.",
+  googleSheetsMenuUrl:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vT9gN22Uc4K-aIaqf7wNwvBwjMKOsbiKw3QY31Rn6ODiqTTS0Bm8poxwowOWrmACjdmad16MXO4xNWV/pub?gid=0&single=true&output=csv",
 };
 
 export const getLocaleString = (

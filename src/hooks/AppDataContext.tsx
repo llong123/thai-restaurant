@@ -48,7 +48,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
           fetch("/api/homepage")
             .then((r) => r.json())
             .catch(() => null),
-          fetch("/api/dish")
+          fetch("/api/menu-sheet")
             .then((r) => r.json())
             .catch(() => null),
           fetch("/api/menu")

@@ -1,11 +1,12 @@
 export interface LocaleString {
-  _type: "localeString";
+  _type?: "localeString";
   en?: string;
   fi?: string;
   sv?: string;
+  th?: string;
 }
 export interface DishImage {
-  asset: { _ref: string; _type: string };
+  asset: { _ref: string; _type: string; url?: string };
 }
 
 export interface DishData {
