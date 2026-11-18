@@ -21,7 +21,7 @@ export default function DishCarousel() {
   const slidesToShow = useBreakpointValue({ base: 1, md: 2, lg: 3 }) || 1;
   const router = useRouter();
 
-  // Fetch signature dishes from Sanity
+  // Fetch featured dishes from the Google Sheets CMS
   useEffect(() => {
     let mounted = true;
     async function fetchDishes() {

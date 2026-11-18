@@ -6,4 +6,6 @@ export interface MenuPageData {
   pageDescription: LocaleString;
   category: LocaleString;
   categoryDescription: LocaleString;
+  dishListTitle?: LocaleString;
+  dishListDescription?: LocaleString;
 }

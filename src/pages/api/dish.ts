@@ -1,37 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { client } from "@/sanity/lib/sanityClient";
-import { DishData } from "@/lib/interfaces";
-
-// ---------- API Handler ---------- //
-const DISHES_QUERY = `*[_type == "dish"]{
-  _id,
-  name,
-  description,
-  ingredients,
-  category,
-  price,
-  spiceLevel,
-  dishImage { asset->{url} }
-}`;
+import { getSheetDishes } from "@/lib/cms/googleSheets";
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<DishData[] | { error: string }>,
+  _req: NextApiRequest,
+  res: NextApiResponse,
 ) {
   try {
-    const dishData: DishData[] = await client.fetch(
-      DISHES_QUERY,
-      {},
-      { next: { revalidate: 30 } },
-    );
-
-    if (!dishData || dishData.length === 0) {
-      return res.status(404).json({ error: "Dish data not found" });
-    }
-
-    res.status(200).json(dishData);
+    const data = (await getSheetDishes()).filter((dish) => dish.signatureDish);
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    res.status(200).json(data);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch dish data" });
+    console.error("Failed to fetch featured dishes from Google Sheets:", error);
+    res.status(500).json({ error: "Failed to fetch dishes" });
   }
 }

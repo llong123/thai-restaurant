@@ -6,7 +6,7 @@ interface Hero {
   description: LocaleString;
   cta: LocaleString;
   ctaUrl: string;
-  image?: any; // Sanity image object
+  image?: string;
   imageCaption?: LocaleString;
 }
 
@@ -18,7 +18,7 @@ interface SignatureDishes {
 interface About {
   title: LocaleString;
   description: LocaleString;
-  image?: any;
+  image?: string;
   imageCaption?: LocaleString;
 }
 

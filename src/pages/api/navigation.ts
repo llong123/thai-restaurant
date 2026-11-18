@@ -1,40 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { client } from "@/sanity/lib/sanityClient";
-import { NavigationData } from "@/lib/interfaces/navigationData";
-
-// ---------- API Handler ---------- //
-
-const NAVIGATION_QUERY = `*[_type == "navigation"][0]{
-      siteTitle,
-      links[]{
-        name,
-        href
-      },
-      button{
-        label,
-        href
-      },
-      languages
-      }`;
+import { getNavigationData } from "@/lib/cms/googleSheets";
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<NavigationData | { error: string }>,
+  _req: NextApiRequest,
+  res: NextApiResponse,
 ) {
   try {
-    const navigationData: NavigationData = await client.fetch(
-      NAVIGATION_QUERY,
-      {},
-      { next: { revalidate: 30 } },
-    );
-
-    if (!navigationData) {
-      return res.status(404).json({ error: "Navigation data not found" });
-    }
-
-    res.status(200).json(navigationData);
+    const data = await getNavigationData();
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    res.status(200).json(data);
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch navigation data from Google Sheets:", error);
     res.status(500).json({ error: "Failed to fetch navigation data" });
   }
 }

@@ -1,29 +1,16 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { client } from "@/sanity/lib/sanityClient";
-import { HomepageData } from "@/lib/interfaces/homeData";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getHomepageData } from "@/lib/cms/googleSheets";
 
-// ------------------ API Handler ------------------ //
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<HomepageData | { error: string }>,
+  _req: NextApiRequest,
+  res: NextApiResponse,
 ) {
   try {
-    const data: HomepageData = await client.fetch(
-      `*[_type == "homepage"][0]{
-      hero,
-      signatureDishes,
-      about,
-      reserveTable,
-      location,
-      alertBanner
-    }`,
-      {},
-      { next: { revalidate: 30 } },
-    );
-
+    const data = await getHomepageData();
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
     res.status(200).json(data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Failed to fetch homepage data from Google Sheets:", error);
     res.status(500).json({ error: "Failed to fetch homepage data" });
   }
 }

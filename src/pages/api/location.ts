@@ -1,37 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { client } from "@/sanity/lib/sanityClient";
-import { LocationData } from "@/lib/interfaces/locationData";
-
-// ---------- API Handler ---------- //
+import { getLocationData } from "@/lib/cms/googleSheets";
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<LocationData | { error: string }>,
+  _req: NextApiRequest,
+  res: NextApiResponse,
 ) {
   try {
-    const query = `
-      *[_type == "visitUs"][0]{
-        title,
-        description,
-        sections,
-        moreSections,
-        map
-      }
-    `;
-
-    const locationData: LocationData = await client.fetch(
-      query,
-      {},
-      { next: { revalidate: 30 } },
-    );
-
-    if (!locationData) {
-      return res.status(404).json({ error: "Location data not found" });
-    }
-
-    res.status(200).json(locationData);
+    const data = await getLocationData();
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    res.status(200).json(data);
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch location data from Google Sheets:", error);
     res.status(500).json({ error: "Failed to fetch location data" });
   }
 }

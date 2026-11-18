@@ -12,6 +12,7 @@ export interface NavButton {
 
 export interface NavigationData {
   siteTitle: string;
+  logoUrl?: string;
   links: NavLink[];
   button?: NavButton;
   languages: string[]; // e.g., ["en", "fi", "sv"]

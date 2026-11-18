@@ -1,15 +1,13 @@
 "use client";
 
-import { Flex, AspectRatio, Box, Stack } from "@chakra-ui/react";
+import { Flex, AspectRatio, Box, Stack, Image } from "@chakra-ui/react";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
-import Image from "next/image";
 import { ExtendedFlexProps } from "@/lib/types";
 import DishCarousel from "@/components/DishCarouselComponent";
 import AnimatedSection from "@/components/animated-section";
 import { useEffect, useState, type Key } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { urlFor } from "@/sanity/lib/sanityImage";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FaTimes } from "react-icons/fa";
 import { HomepageData } from "@/lib/interfaces/homeData";
@@ -96,13 +94,15 @@ export default function Page() {
           {/* Background Image */}
           {homeData.hero.image && (
             <Image
-              src={urlFor(homeData.hero.image).width(1920).height(1080).url()}
+              src={homeData.hero.image}
               alt={getText(homeData.hero.imageCaption) || "Hero image"}
-              fill
-              style={{
-                objectFit: "cover",
-                zIndex: 1,
-              }}
+              position="absolute"
+              top={0}
+              left={0}
+              width="100%"
+              height="100%"
+              objectFit="cover"
+              zIndex={1}
             />
           )}
 
@@ -169,17 +169,15 @@ export default function Page() {
               {/* About Image */}
               {homeData.about.image && (
                 <Image
-                  src={urlFor(homeData.about.image)
-                    .width(1280)
-                    .height(720)
-                    .url()}
+                  src={homeData.about.image}
                   alt={
                     getText(homeData.about.imageCaption) ||
                     "About image"
                   }
                   width={600}
                   height={300}
-                  style={{ borderRadius: "1rem" }}
+                  borderRadius="1rem"
+                  objectFit="cover"
                 />
               )}
             </Stack>

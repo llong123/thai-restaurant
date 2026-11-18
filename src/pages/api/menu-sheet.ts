@@ -1,39 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { fetchMenuFromSheets } from "@/lib/menu/parseMenuCSV";
-import { siteMetadata } from "@/lib/utility";
-
-const MENU_URL = siteMetadata.googleSheetsMenuUrl;
+import { getSheetDishes } from "@/lib/cms/googleSheets";
 
 export default async function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse,
 ) {
   try {
-    const menu = await fetchMenuFromSheets(MENU_URL);
-    
-    const dishes = menu.flatMap((category) =>
-      category.items.map((item, index) => {
-        return {
-        _id: item.id || `dish-${index}`,
-        pageTitle: { en: "" },
-        pageDescription: { en: "" },
-        name: item.name?.en || "",
-        description: item.description,
-        ingredients: item.ingredients,
-        category: { en: item.category },
-        price: item.price,
-        spiceLevel: item.spiceLevel,
-        dishImage: item.imageUrl
-          ? { asset: { _ref: "", _type: "image", url: item.imageUrl } as any }
-          : undefined,
-        signatureDish: item.signatureDish,
-      };
-      }),
-    );
-
-    res.status(200).json(dishes);
+    const data = await getSheetDishes();
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    res.status(200).json(data);
   } catch (error) {
-    console.error("Error fetching menu from sheets:", error);
-    res.status(500).json({ error: "Failed to fetch menu" } as any);
+    console.error("Failed to fetch menu from Google Sheets:", error);
+    res.status(500).json({ error: "Failed to fetch menu" });
   }
 }

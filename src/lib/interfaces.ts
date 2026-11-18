@@ -13,7 +13,7 @@ export interface DishData {
   _id: string;
   pageTitle: LocaleString;
   pageDescription: LocaleString;
-  name: string;
+  name: LocaleString;
   description?: LocaleString;
   ingredients?: LocaleString[];
   category?: LocaleString;

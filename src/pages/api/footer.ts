@@ -1,33 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { client } from "@/sanity/lib/sanityClient";
-import { FooterData } from "@/lib/interfaces/footerData";
-
-// ---------- API Handler ---------- //
-
-const FOOTER_QUERY = `*[_type=="footer"][0]{
-  quickLinks,
-  followUs,
-  copyright
-}`;
+import { getFooterData } from "@/lib/cms/googleSheets";
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<FooterData | { error: string }>,
+  _req: NextApiRequest,
+  res: NextApiResponse,
 ) {
   try {
-    const footerData: FooterData = await client.fetch(
-      FOOTER_QUERY,
-      {},
-      { next: { revalidate: 30 } },
-    );
-
-    if (!footerData) {
-      return res.status(404).json({ error: "Footer data not found" });
-    }
-
-    res.status(200).json(footerData);
+    const data = await getFooterData();
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    res.status(200).json(data);
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch footer data from Google Sheets:", error);
     res.status(500).json({ error: "Failed to fetch footer data" });
   }
 }

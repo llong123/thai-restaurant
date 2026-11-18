@@ -1,18 +1,12 @@
 "use client";
 
-import { Box, Image as ChakraImage } from "@chakra-ui/react";
+import { Box, Image as ChakraImage, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { urlFor } from "@/sanity/lib/sanityImage";
 import { DishData, LocaleString } from "@/lib/interfaces";
 import { useThemeColors } from "./fontVars";
 import { clipText } from "@/lib/utility";
 import { DishModal } from "./DishModal";
-import {
-  cardVariants,
-  overlayVariants,
-  transitionConfig,
-} from "@/lib/animationVariants";
 
 const MotionBox = motion.create(Box);
 
@@ -22,95 +16,93 @@ interface DishProps {
 }
 
 export function Dish({ dish, getLocale }: DishProps) {
-  const { textColor } = useThemeColors();
-
-  const dishImageUrl = dish.dishImage?.asset?.url || "";
-  const [dishDetails, setDishDetails] = useState({
-    name: dish.name,
-    description: getLocale(dish.description),
-    ingredients: dish.ingredients || [],
-    spiceLevel: dish.spiceLevel,
-    price: dish.price ? `${dish.price.toFixed(2)} EUR` : "N/A",
-    image: dishImageUrl || (dish.dishImage ? urlFor(dish.dishImage).width(500).height(300).url() : ""),
-  });
-
+  const { bgColor, borderColor, textColor } = useThemeColors();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dishImageUrl = dish.dishImage?.asset?.url || "";
+  const dishName = getLocale(dish.name);
+  const dishDescription = getLocale(dish.description);
+  const ingredients = dish.ingredients || [];
+  const dishPrice = dish.price != null ? `${dish.price.toFixed(2)} €` : "";
 
-  const handleClick = () => {
-    setDishDetails({
-      name: dish.name,
-      description: getLocale(dish.description),
-      ingredients: dish.ingredients || [],
-      spiceLevel: dish.spiceLevel,
-      price: dish.price ? `${dish.price.toFixed(2)} EUR` : "N/A",
-      image: dishImageUrl,
-    });
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => setIsModalOpen(false);
+  const openDetails = () => setIsModalOpen(true);
 
   return (
     <>
       <MotionBox
-        position="relative"
+        as="article"
+        role="button"
+        tabIndex={0}
+        aria-label={`${dishName}${dishPrice ? `, ${dishPrice}` : ""}. View details`}
+        display="flex"
+        flexDirection="column"
         overflow="hidden"
-        borderRadius="lg"
+        borderWidth="1px"
+        borderColor={borderColor}
+        borderRadius="xl"
+        bg={bgColor}
         cursor="pointer"
-        variants={cardVariants}
-        initial="hidden"
-        animate="visible"
-        whileHover="hover"
-        whileTap={{ scale: 0.95 }}
-        transition={transitionConfig}
-        onClick={handleClick}
+        onClick={openDetails}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDetails();
+          }
+        }}
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.18 }}
+        _hover={{ shadow: "xl", borderColor: "orange.400" }}
+        _focusVisible={{ outline: "3px solid", outlineColor: "orange.400", outlineOffset: "2px" }}
       >
-        {dishDetails.image && (
+        {dishImageUrl ? (
           <ChakraImage
-            src={dishDetails.image}
-            alt={dishDetails.name}
-            w="100%"
-            h="18.75rem"
+            src={dishImageUrl}
+            alt={dishName}
+            width="100%"
+            height={{ base: "13rem", md: "14rem" }}
             objectFit="cover"
+            loading="lazy"
+            decoding="async"
           />
-        )}
-        <MotionBox
-          position="absolute"
-          bottom={0}
-          left={0}
-          right={0}
-          bg="rgba(0, 0, 0, 0.7)"
-          p={4}
-          variants={overlayVariants}
-          transition={transitionConfig}
-        >
+        ) : (
           <Box
-            as="h3"
-            fontSize="xl"
-            fontWeight="bold"
-            mb={2}
+            height={{ base: "13rem", md: "14rem" }}
+            display="grid"
+            placeItems="center"
+            bg="blackAlpha.100"
             color={textColor}
           >
-            {dishDetails.name}
+            <Text fontSize="4xl" aria-hidden="true">🍽️</Text>
           </Box>
-          <Box fontSize="sm" mb={2} color={textColor}>
-            {clipText(dishDetails.description)}
+        )}
+
+        <Box p={4} flex="1">
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start" gap={3}>
+            <Text as="h3" fontSize="lg" fontWeight="bold" lineHeight="short" color={textColor}>
+              {dishName}
+            </Text>
+            {dishPrice && (
+              <Text fontWeight="bold" whiteSpace="nowrap" color="orange.500">
+                {dishPrice}
+              </Text>
+            )}
           </Box>
-          <Box fontSize="xl" fontWeight="bold" color={textColor}>
-            {dishDetails.price}
-          </Box>
-        </MotionBox>
+          {dishDescription && (
+            <Text mt={2} fontSize="sm" lineHeight="tall" color={textColor}>
+              {clipText(dishDescription, 120)}
+            </Text>
+          )}
+        </Box>
       </MotionBox>
 
       <DishModal
         isOpen={isModalOpen}
-        onClose={closeModal}
-        dishName={dishDetails.name}
-        dishDescription={dishDetails.description}
-        dishImage={dishDetails.image}
-        ingredients={dishDetails.ingredients}
-        spiceLevel={dishDetails.spiceLevel}
-        price={dishDetails.price}
+        onClose={() => setIsModalOpen(false)}
+        dishName={dishName}
+        dishDescription={dishDescription}
+        dishImage={dishImageUrl}
+        ingredients={ingredients}
+        spiceLevel={dish.spiceLevel}
+        price={dishPrice || "N/A"}
         getLocale={getLocale}
       />
     </>

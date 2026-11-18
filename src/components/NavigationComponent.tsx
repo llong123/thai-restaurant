@@ -46,7 +46,7 @@ export default function NavigationComponent() {
               px={8}
             >
               <Image
-                src={"/logo.png"}
+                src={navData?.logoUrl || "/logo.png"}
                 alt={navData?.siteTitle || "Site Logo"}
                 width={100}
                 height={40}

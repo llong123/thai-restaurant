@@ -1,6 +1,13 @@
 "use client";
 
-import { Flex, HStack, VStack, Image, IconButton, Box } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  IconButton,
+  Image,
+  VStack,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -35,64 +42,64 @@ export default function Footer() {
 
   return (
     <footer>
-      <Flex
-        w="100%"
-        bgColor={bgColor}
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Flex
-          maxW={MAX_WIDTH.XL}
-          w="full"
-          color="white"
-          justifyContent="center"
-          alignItems="flex-start"
-          direction="column"
-        >
-          <HStack
+      <Flex w="100%" bgColor={bgColor} justifyContent="center">
+        <Box maxW={MAX_WIDTH.XL} w="full" color="white" px={{ base: 6, md: 10 }}>
+          <Flex
             w="full"
-            alignItems="center"
-            justifyContent="space-between"
-            px={{ base: 4, lg: 16 }}
-            pt={8}
+            py={{ base: 8, md: 10 }}
+            direction={{ base: "column", md: "row" }}
+            align={{ base: "center", md: "center" }}
+            justify="space-between"
+            gap={{ base: 8, md: 6 }}
           >
-            <Box>
-              <Link href="/" passHref legacyBehavior>
-                <Box
-                  as="a"
-                  display="inline-block"
-                  aria-label={"Chao Phraya Helsinki"}
-                  px={8}
-                >
-                  <Image
-                    src={"/logo.png"}
-                    alt={"Chao Phraya Helsinki Logo"}
-                    width={160}
-                    height={40}
-                    style={{ objectFit: "contain", display: "block" }}
-                  />
-                </Box>
+            <Box flex="1" display="flex" justifyContent={{ base: "center", md: "flex-start" }}>
+              <Link href="/" aria-label="Chao Phraya home">
+                <Image
+                  src={footerData.logoUrl || "/logo.png"}
+                  alt="Chao Phraya logo"
+                  width={180}
+                  height={100}
+                  objectFit="contain"
+                  maxW="100%"
+                />
               </Link>
             </Box>
 
-            {/* Quick Links */}
-            {footerData.quickLinks && (
-              <VStack alignItems="start">
-                <ExtendedHeading as={"h4"}>Quick Links</ExtendedHeading>
-                {footerData.quickLinks?.map((link, index) => (
-                  <Link key={index} href={link.url}>
-                    {getText(link.label)}
+            {footerData.quickLinks?.length > 0 && (
+              <VStack
+                as="nav"
+                aria-label="Footer navigation"
+                flex="1"
+                alignItems={{ base: "center", md: "flex-start" }}
+                gap={2}
+              >
+                <ExtendedHeading as="h4" size="md" mb={1}>
+                  Quick Links
+                </ExtendedHeading>
+                {footerData.quickLinks.map((link, index) => (
+                  <Link key={`${link.url}-${index}`} href={link.url}>
+                    <Box
+                      as="span"
+                      py={1}
+                      opacity={0.85}
+                      _hover={{ opacity: 1, textDecoration: "underline" }}
+                    >
+                      {getText(link.label)}
+                    </Box>
                   </Link>
                 ))}
               </VStack>
             )}
 
-            {/* Social Links */}
-            <VStack>
-              <ExtendedHeading as={"h6"} size={{ base: "md", lg: "xl" }}>
+            <VStack
+              flex="1"
+              alignItems={{ base: "center", md: "flex-end" }}
+              gap={2}
+            >
+              <ExtendedHeading as="h4" size="md">
                 {t("footer.followUs")}
               </ExtendedHeading>
-              <HStack>
+              <HStack gap={2}>
                 {footerData.followUs?.map((social, index) => {
                   let Icon;
                   switch (social.platform.toLowerCase()) {
@@ -110,16 +117,13 @@ export default function Footer() {
                   }
                   return (
                     <Link
-                      key={index}
+                      key={`${social.platform}-${index}`}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={social.platform}
                     >
-                      <IconButton
-                        aria-label={social.platform}
-                        variant="ghost"
-                        color="white"
-                      >
+                      <IconButton aria-label={social.platform} variant="ghost" color="white">
                         <Icon />
                       </IconButton>
                     </Link>
@@ -127,20 +131,19 @@ export default function Footer() {
                 })}
               </HStack>
             </VStack>
-          </HStack>
+          </Flex>
 
-          {/* Copyright */}
           <ExtendedText
             width="full"
-            borderTop="2px solid"
-            borderColor="gray.200"
-            py={8}
-            mt={8}
+            borderTop="1px solid"
+            borderColor="whiteAlpha.300"
+            py={5}
             textAlign="center"
+            opacity={0.8}
           >
             {getText(footerData.copyright)}
           </ExtendedText>
-        </Flex>
+        </Box>
       </Flex>
     </footer>
   );

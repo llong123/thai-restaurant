@@ -9,7 +9,5 @@ export default function LocationPage() {
   const locationData: LocationData | null = (location ??
     null) as LocationData | null;
 
-  if (!locationData) return <p>Location content is not available.</p>;
-
-  return <LocationClient loading={loading} locationData={locationData} />;
+  return <LocationClient loading={loading} locationData={locationData ?? undefined} />;
 }

@@ -9,7 +9,5 @@ export default function AboutPage() {
   const { about, loading } = useAppData();
   const aboutData: AboutData | null = (about ?? null) as AboutData | null;
 
-  if (!aboutData) return <p>About content is not available.</p>;
-
-  return <AboutClient loading={loading} about={aboutData} />;
+  return <AboutClient loading={loading} about={aboutData as AboutData} />;
 }

@@ -15,10 +15,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-      },
     ],
   },
 };
