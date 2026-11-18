@@ -4,9 +4,10 @@ import {
   Box,
   Button,
   Flex,
-  HStack,
+  Skeleton,
   SimpleGrid,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { useCallback, useMemo, useState } from "react";
 import { Dish } from "@/components/DishComponent";
@@ -17,10 +18,12 @@ import type { MenuPageData } from "@/lib/interfaces/menuData";
 import { useThemeColors } from "@/components/fontVars";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
-import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString } from "@/lib/utility";
 import { PageLayout } from "@/components/PageLayout";
 import Footer from "@/app/footer";
+import { BRAND_ORANGE, BRAND_ORANGE_HOVER, BRAND_ORANGE_TEXT } from "@/lib/colors";
+import { RichText } from "@/components/RichText";
+import { PageContainer } from "@/components/PageContainer";
 
 interface MenuClientProps {
   menuPageData: MenuPageData;
@@ -55,12 +58,18 @@ export default function MenuClient({
     return Array.from(categoryMap, ([key, label]) => ({ key, label: getText(label) }));
   }, [dishes, getText]);
 
-  const visibleDishes = useMemo(
+  const photoSections = useMemo(
     () =>
-      activeCategory === ALL_CATEGORIES
-        ? dishes
-        : dishes.filter((dish) => dish.category?.en === activeCategory),
-    [activeCategory, dishes],
+      categories
+        .filter((category) =>
+          activeCategory === ALL_CATEGORIES || category.key === activeCategory,
+        )
+        .map((category) => ({
+          ...category,
+          dishes: dishes.filter((dish) => dish.category?.en === category.key),
+        }))
+        .filter((category) => category.dishes.length > 0),
+    [activeCategory, categories, dishes],
   );
 
   const fullMenuSections = useMemo(
@@ -74,7 +83,50 @@ export default function MenuClient({
     [categories, dishes],
   );
 
-  if (loading) return <FullPageLoader message={t("loading")} />;
+  const visibleFullMenuSections = useMemo(
+    () =>
+      activeCategory === ALL_CATEGORIES
+        ? fullMenuSections
+        : fullMenuSections.filter((category) => category.key === activeCategory),
+    [activeCategory, fullMenuSections],
+  );
+
+  if (loading) {
+    return (
+      <PageLayout>
+        <Box textAlign="center" pb={8}>
+          <Skeleton height="3rem" maxW="16rem" mx="auto" mb={4} />
+          <Skeleton height="1.25rem" maxW="38rem" mx="auto" />
+          <Skeleton height="1rem" maxW="28rem" mx="auto" mt={3} />
+        </Box>
+        <Flex justify="center" wrap="wrap" gap={2} mb={8}>
+          {Array.from({ length: 6 }, (_, index) => (
+            <Skeleton key={index} height="2.25rem" width="6rem" borderRadius="md" />
+          ))}
+        </Flex>
+        <PageContainer contentWidth="80rem" gutter={0}>
+          <SimpleGrid columns={[1, 2, 3]} gap={{ base: 5, md: 7 }}>
+            {Array.from({ length: 6 }, (_, index) => (
+              <Box
+                key={index}
+                overflow="hidden"
+                borderRadius="xl"
+                borderWidth="1px"
+                borderColor={borderColor}
+              >
+                <Skeleton height={{ base: "13rem", md: "14rem" }} />
+                <Box p={4}>
+                  <Skeleton height="1.5rem" mb={3} />
+                  <Skeleton height="1rem" mb={2} />
+                  <Skeleton height="1rem" width="70%" />
+                </Box>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </PageContainer>
+      </PageLayout>
+    );
+  }
   if (!dishes.length) return <p className="p-8">No dishes found.</p>;
 
   return (
@@ -83,7 +135,7 @@ export default function MenuClient({
         <ExtendedHeading as="h2" pb={4}>
           {getText(menuPageData.pageTitle)}
         </ExtendedHeading>
-        <ExtendedText>{getText(menuPageData.pageDescription)}</ExtendedText>
+        <RichText text={getText(menuPageData.pageDescription)} />
       </Box>
 
       {menuPageData.dishListTitle && (
@@ -92,67 +144,110 @@ export default function MenuClient({
             {getText(menuPageData.dishListTitle)}
           </ExtendedHeading>
           {menuPageData.dishListDescription && (
-            <ExtendedText>{getText(menuPageData.dishListDescription)}</ExtendedText>
+            <RichText text={getText(menuPageData.dishListDescription)} />
           )}
         </Box>
       )}
 
-      {!showFullMenu && (
-        <Box mb={6} overflowX="auto" pb={2}>
-          <HStack minW="max-content" justify={{ base: "flex-start", md: "center" }} gap={2}>
-            <Button
-              type="button"
-              aria-pressed={activeCategory === ALL_CATEGORIES}
-              onClick={() => setActiveCategory(ALL_CATEGORIES)}
-              size="sm"
-              borderRadius="full"
-              borderWidth="1px"
-              borderColor={activeCategory === ALL_CATEGORIES ? "orange.500" : borderColor}
-              bg={activeCategory === ALL_CATEGORIES ? "orange.500" : "transparent"}
-              color={activeCategory === ALL_CATEGORIES ? "white" : textColor}
-              _hover={{ bg: "orange.600", color: "white", borderColor: "orange.600" }}
+      <PageContainer
+        contentWidth="80rem"
+        gutter={0}
+        mb={8}
+        gap={{ base: 4, lg: 6 }}
+        display="flex"
+        flexDirection={{ base: "column", lg: "row" }}
+        alignItems={{ base: "stretch", lg: "flex-end" }}
+        justifyContent={showFullMenu ? { base: "center", lg: "flex-end" } : "space-between"}
+      >
+        <Box flex="1" minW={0}>
+            <Text
+              textAlign={{ base: "center", lg: "left" }}
+              fontSize="xs"
+              fontWeight="bold"
+              letterSpacing="0.12em"
+              textTransform="uppercase"
+              opacity={0.65}
+              mb={2}
             >
-              {language === "fi" ? "Kaikki" : language === "sv" ? "Alla" : "All dishes"}
-            </Button>
-            {categories.map((category) => {
-              const isActive = activeCategory === category.key;
-              return (
-                <Button
-                  key={category.key}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => setActiveCategory(category.key)}
-                  size="sm"
-                  borderRadius="full"
-                  borderWidth="1px"
-                  borderColor={isActive ? "orange.500" : borderColor}
-                  bg={isActive ? "orange.500" : "transparent"}
-                  color={isActive ? "white" : textColor}
-                  _hover={{ bg: "orange.600", color: "white", borderColor: "orange.600" }}
-                >
-                  {category.label}
-                </Button>
-              );
-            })}
-          </HStack>
+              {t("menu.browseCategories")}
+            </Text>
+            <Flex
+              width="full"
+              justify={{ base: "center", lg: "flex-start" }}
+              wrap="wrap"
+              columnGap={{ base: 1, md: 3 }}
+              borderBottomWidth="1px"
+              borderColor="whiteAlpha.200"
+            >
+              <Button
+                type="button"
+                aria-pressed={activeCategory === ALL_CATEGORIES}
+                onClick={() => setActiveCategory(ALL_CATEGORIES)}
+                size="sm"
+                variant="ghost"
+                borderRadius="none"
+                borderBottomWidth="2px"
+                borderBottomColor={activeCategory === ALL_CATEGORIES ? BRAND_ORANGE : "transparent"}
+                color={activeCategory === ALL_CATEGORIES ? BRAND_ORANGE : textColor}
+                fontWeight={activeCategory === ALL_CATEGORIES ? "bold" : "medium"}
+                px={{ base: 2, md: 3 }}
+                mb="-1px"
+                _hover={{ bg: "transparent", color: BRAND_ORANGE, borderBottomColor: BRAND_ORANGE }}
+              >
+                {t("menu.allDishes")}
+              </Button>
+              {categories.map((category) => {
+                const isActive = activeCategory === category.key;
+                return (
+                  <Button
+                    key={category.key}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => setActiveCategory(category.key)}
+                    size="sm"
+                    variant="ghost"
+                    borderRadius="none"
+                    borderBottomWidth="2px"
+                    borderBottomColor={isActive ? BRAND_ORANGE : "transparent"}
+                    color={isActive ? BRAND_ORANGE : textColor}
+                    fontWeight={isActive ? "bold" : "medium"}
+                    px={{ base: 2, md: 3 }}
+                    mb="-1px"
+                    _hover={{ bg: "transparent", color: BRAND_ORANGE, borderBottomColor: BRAND_ORANGE }}
+                  >
+                    {category.label}
+                  </Button>
+                );
+              })}
+            </Flex>
         </Box>
-      )}
 
-      <Flex justify="center" mb={8}>
         <Button
           type="button"
-          colorPalette="orange"
           variant={showFullMenu ? "outline" : "solid"}
           size="md"
+          borderRadius="md"
+          minW={{ base: "auto", lg: "11rem" }}
+          alignSelf={{ base: "center", lg: "auto" }}
+          bg={showFullMenu ? "transparent" : BRAND_ORANGE}
+          color={showFullMenu ? textColor : BRAND_ORANGE_TEXT}
+          borderColor={showFullMenu ? "gray.500" : "transparent"}
+          _hover={{ bg: showFullMenu ? "whiteAlpha.100" : BRAND_ORANGE_HOVER }}
           onClick={() => setShowFullMenu((showing) => !showing)}
         >
           {showFullMenu ? t("menu.hideMenu") : t("menu.showMenu")}
         </Button>
-      </Flex>
+      </PageContainer>
 
       {showFullMenu ? (
-        <Stack gap={10}>
-          {fullMenuSections.map((category) => (
+        <PageContainer
+          contentWidth="80rem"
+          gutter={0}
+          display="flex"
+          flexDirection="column"
+          gap={10}
+        >
+          {visibleFullMenuSections.map((category) => (
             <Box key={category.key}>
               <ExtendedHeading size="lg" mb={4}>
                 {category.label}
@@ -181,9 +276,7 @@ export default function MenuClient({
                           {getText(dish.name)}
                         </ExtendedHeading>
                         {getText(dish.description) && (
-                          <ExtendedText color={textColor} mt={2}>
-                            {getText(dish.description)}
-                          </ExtendedText>
+                          <RichText text={getText(dish.description)} color={textColor} mt={2} />
                         )}
                         {ingredients && (
                           <Box as="p" color={textColor} mt={2} fontSize="sm">
@@ -209,13 +302,34 @@ export default function MenuClient({
               </Stack>
             </Box>
           ))}
-        </Stack>
+        </PageContainer>
       ) : (
-        <SimpleGrid columns={[1, 2, 3]} gap={{ base: 5, md: 7 }} maxW="80rem" mx="auto" w="full">
-          {visibleDishes.map((dish) => (
-            <Dish key={dish._id} dish={dish} getLocale={getText} />
+        <PageContainer
+          contentWidth="80rem"
+          gutter={0}
+          display="flex"
+          flexDirection="column"
+          gap={{ base: 8, md: 12 }}
+        >
+          {photoSections.map((category) => (
+            <Box key={category.key} as="section" aria-labelledby={`category-${category.key}`}>
+              <Flex align="center" gap={4} mb={4}>
+                <ExtendedHeading id={`category-${category.key}`} size="lg">
+                  {category.label}
+                </ExtendedHeading>
+                <Box flex="1" h="1px" bg={borderColor} opacity={0.45} />
+                <Box as="span" fontSize="sm" opacity={0.7}>
+                  {category.dishes.length}
+                </Box>
+              </Flex>
+              <SimpleGrid columns={[1, 2, 3]} gap={{ base: 5, md: 7 }}>
+                {category.dishes.map((dish) => (
+                  <Dish key={dish._id} dish={dish} getLocale={getText} />
+                ))}
+              </SimpleGrid>
+            </Box>
           ))}
-        </SimpleGrid>
+        </PageContainer>
       )}
 
       <Footer />

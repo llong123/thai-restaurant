@@ -1,12 +1,14 @@
 "use client";
 
-import { Box, Image as ChakraImage, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { DishData, LocaleString } from "@/lib/interfaces";
 import { useThemeColors } from "./fontVars";
 import { clipText } from "@/lib/utility";
 import { DishModal } from "./DishModal";
+import { ImageWithSkeleton } from "./ImageWithSkeleton";
+import { BRAND_ORANGE } from "@/lib/colors";
 
 const MotionBox = motion.create(Box);
 
@@ -23,6 +25,7 @@ export function Dish({ dish, getLocale }: DishProps) {
   const dishDescription = getLocale(dish.description);
   const ingredients = dish.ingredients || [];
   const dishPrice = dish.price != null ? `${dish.price.toFixed(2)} €` : "";
+  const chiliCount = Math.min(Math.max(dish.spiceLevel ?? 0, 0), 3);
 
   const openDetails = () => setIsModalOpen(true);
 
@@ -32,7 +35,7 @@ export function Dish({ dish, getLocale }: DishProps) {
         as="article"
         role="button"
         tabIndex={0}
-        aria-label={`${dishName}${dishPrice ? `, ${dishPrice}` : ""}. View details`}
+        aria-label={`${dishName}${chiliCount ? `, spice level ${chiliCount}` : ""}${dishPrice ? `, ${dishPrice}` : ""}. View details`}
         display="flex"
         flexDirection="column"
         overflow="hidden"
@@ -50,18 +53,15 @@ export function Dish({ dish, getLocale }: DishProps) {
         }}
         whileHover={{ y: -4 }}
         transition={{ duration: 0.18 }}
-        _hover={{ shadow: "xl", borderColor: "orange.400" }}
-        _focusVisible={{ outline: "3px solid", outlineColor: "orange.400", outlineOffset: "2px" }}
+        _hover={{ shadow: "xl", borderColor: BRAND_ORANGE }}
+        _focusVisible={{ outline: "3px solid", outlineColor: BRAND_ORANGE, outlineOffset: "2px" }}
       >
         {dishImageUrl ? (
-          <ChakraImage
+          <ImageWithSkeleton
             src={dishImageUrl}
             alt={dishName}
-            width="100%"
-            height={{ base: "13rem", md: "14rem" }}
-            objectFit="cover"
-            loading="lazy"
-            decoding="async"
+            containerProps={{ height: { base: "13rem", md: "14rem" } }}
+            imageProps={{ objectFit: "cover", loading: "lazy", decoding: "async" }}
           />
         ) : (
           <Box
@@ -77,11 +77,25 @@ export function Dish({ dish, getLocale }: DishProps) {
 
         <Box p={4} flex="1">
           <Box display="flex" justifyContent="space-between" alignItems="flex-start" gap={3}>
-            <Text as="h3" fontSize="lg" fontWeight="bold" lineHeight="short" color={textColor}>
-              {dishName}
-            </Text>
+            <Box display="flex" alignItems="flex-start" gap={2} minW={0}>
+              <Text as="h3" fontSize="lg" fontWeight="bold" lineHeight="short" color={textColor}>
+                {dishName}
+              </Text>
+              {chiliCount > 0 && (
+                <Text
+                  as="span"
+                  role="img"
+                  aria-label={`Spice level ${chiliCount} out of 3`}
+                  fontSize="sm"
+                  lineHeight="short"
+                  whiteSpace="nowrap"
+                >
+                  {"🌶️".repeat(chiliCount)}
+                </Text>
+              )}
+            </Box>
             {dishPrice && (
-              <Text fontWeight="bold" whiteSpace="nowrap" color="orange.500">
+              <Text fontWeight="bold" whiteSpace="nowrap" color={BRAND_ORANGE}>
                 {dishPrice}
               </Text>
             )}

@@ -1,10 +1,10 @@
 "use client";
 
-import { Box, VStack } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { Box } from "@chakra-ui/react";
+import type { ReactNode } from "react";
 import NavigationComponent from "@/components/NavigationComponent";
 import { useThemeColors } from "@/components/fontVars";
-import { MAX_WIDTH } from "@/lib/enums";
+import { PageContainer } from "@/components/PageContainer";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -18,22 +18,18 @@ export function PageLayout({
   const { bgColor } = useThemeColors();
 
   return (
-    <Box bg={bgColor} minH="100vh" w="100%" pt={4}>
-      <VStack
-        w="100%"
-        alignItems="center"
-        maxW={MAX_WIDTH.XL}
-        mx="auto"
-        gap={0}
+    <Box bg={bgColor} minH="100vh" w="100%" display="flex" flexDirection="column">
+      <NavigationComponent />
+      <PageContainer
+        as="main"
+        flex="1"
+        display="flex"
+        flexDirection="column"
+        gutter={contentPadding}
+        pt={{ base: 4, md: 6 }}
       >
-        <NavigationComponent />
-        <Box
-          w="100%"
-          px={contentPadding}
-        >
-          {children}
-        </Box>
-      </VStack>
+        {children}
+      </PageContainer>
     </Box>
   );
 }

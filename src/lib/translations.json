@@ -5,15 +5,19 @@
       "description": "Meidän Menu",
       "spiceLevel": "Tulisuusaste",
       "categories": "Kategoriat",
-      "hideMenu": "Piilota Menu",
-      "showMenu": "Näytä Menu",
+      "browseCategories": "Selaa kategorioittain",
+      "allDishes": "Kaikki annokset",
+      "hideMenu": "Takaisin annoskuviin",
+      "showMenu": "Näytä listana",
       "priceUnavailable": "Hinta ei ole saatavilla"
     },
     "footer": {
-      "followUs": "Seuraa meitä"
+      "followUs": "Seuraa meitä",
+      "quickLinks": "Pikalinkit"
     },
     "homepage": {
-      "viewAllDishes": "Näytä kaikki"
+      "viewAllDishes": "Tutustu koko ruokalistaan",
+      "readOurStory": "Lue tarinamme"
     },
     "loading": "Ladataan..."
   },
@@ -23,15 +27,19 @@
       "description": "Our Menu",
       "spiceLevel": "Spice Level",
       "categories": "Categories",
-      "hideMenu": "Hide Menu",
-      "showMenu": "Show Menu",
+      "browseCategories": "Browse by category",
+      "allDishes": "All dishes",
+      "hideMenu": "Back to photo cards",
+      "showMenu": "View as list",
       "priceUnavailable": "Price Unavailable"
     },
     "footer": {
-      "followUs": "Follow us"
+      "followUs": "Follow us",
+      "quickLinks": "Quick Links"
     },
     "homepage": {
-      "viewAllDishes": "View All"
+      "viewAllDishes": "Explore the full menu",
+      "readOurStory": "Read our story"
     },
     "loading": "Loading..."
   },
@@ -41,16 +49,42 @@
       "description": "Vår meny",
       "spiceLevel": "Styrka",
       "categories": "Kategorier",
-      "hideMenu": "Dölj Meny",
-      "showMenu": "Visa Meny",
+      "browseCategories": "Bläddra efter kategori",
+      "allDishes": "Alla rätter",
+      "hideMenu": "Tillbaka till bildkorten",
+      "showMenu": "Visa som lista",
       "priceUnavailable": "Pris är inte tillgänglig"
     },
     "footer": {
-      "followUs": "Följ oss"
+      "followUs": "Följ oss",
+      "quickLinks": "Snabblänkar"
     },
     "homepage": {
-      "viewAllDishes": "Visa alla"
+      "viewAllDishes": "Se hela menyn",
+      "readOurStory": "Läs vår historia"
     },
     "loading": "Läser in..."
+  },
+  "th": {
+    "menu": {
+      "ingredients": "ส่วนผสม",
+      "description": "เมนูของเรา",
+      "spiceLevel": "ระดับความเผ็ด",
+      "categories": "หมวดหมู่",
+      "browseCategories": "เลือกตามหมวดหมู่",
+      "allDishes": "อาหารทั้งหมด",
+      "hideMenu": "กลับไปดูรูปอาหาร",
+      "showMenu": "ดูแบบรายการ",
+      "priceUnavailable": "ไม่มีราคา"
+    },
+    "footer": {
+      "followUs": "ติดตามเรา",
+      "quickLinks": "ลิงก์ด่วน"
+    },
+    "homepage": {
+      "viewAllDishes": "ดูเมนูทั้งหมด",
+      "readOurStory": "อ่านเรื่องราวของเรา"
+    },
+    "loading": "กำลังโหลด..."
   }
 }

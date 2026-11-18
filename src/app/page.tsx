@@ -1,15 +1,12 @@
 "use client";
 
-import { Flex, AspectRatio, Box, Stack, Image } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
 import { ExtendedFlexProps } from "@/lib/types";
 import DishCarousel from "@/components/DishCarouselComponent";
 import AnimatedSection from "@/components/animated-section";
-import { useEffect, useState, type Key } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { MAX_WIDTH } from "@/lib/enums";
-import { FaTimes } from "react-icons/fa";
 import { HomepageData } from "@/lib/interfaces/homeData";
 import { LocationData } from "@/lib/interfaces/locationData";
 import { useAppData } from "@/hooks/AppDataContext";
@@ -19,6 +16,13 @@ import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
 import { PageLayout } from "@/components/PageLayout";
+import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
+import { LocationContent } from "@/components/LocationContent";
+import { RichText } from "@/components/RichText";
+import { useRouter } from "next/navigation";
+import { LuArrowRight } from "react-icons/lu";
+import { BRAND_ORANGE, BRAND_ORANGE_HOVER, BRAND_ORANGE_TEXT } from "@/lib/colors";
+import { PageContainer } from "@/components/PageContainer";
 
 const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
 
@@ -30,18 +34,10 @@ export default function Page() {
 
   const { language } = useLanguage();
   const { t } = useTranslation(language);
+  const router = useRouter();
 
   const getText = (field?: LocaleString) =>
     getLocaleString(field, language);
-
-  // banner state
-  const [showBanner, setShowBanner] = useState(false);
-
-  useEffect(() => {
-    if (homeData?.alertBanner?.showBanner) {
-      setShowBanner(true);
-    }
-  }, [homeData]);
 
   if (loading) return <FullPageLoader message={t("loading")} />;
   if (!homeData || !locationData)
@@ -49,40 +45,9 @@ export default function Page() {
 
   return (
       <PageLayout>
-        {homeData?.alertBanner && showBanner && (
-          <Box
-            width="100%"
-            bg={homeData.alertBanner.backgroundColor}
-            color={homeData.alertBanner.textColor}
-            textAlign="center"
-            py={6}
-            px={4}
-            borderRadius={2}
-            fontWeight="bold"
-            position="sticky"
-            top="4rem"
-            zIndex={15}
-          >
-            {getText(homeData.alertBanner.message)}
-
-            <Box
-              position="absolute"
-              right={2}
-              top={2}
-              p={4}
-              cursor="pointer"
-              onClick={() => setShowBanner(false)}
-            >
-              <FaTimes />
-            </Box>
-          </Box>
-        )}
-
         {/* Hero Section */}
         <Box
           w="100%"
-          maxW={MAX_WIDTH.XL}
-          mx="auto"
           height={{ base: "25rem", lg: "37.5rem" }}
           position="relative"
           display="flex"
@@ -93,17 +58,31 @@ export default function Page() {
         >
           {/* Background Image */}
           {homeData.hero.image && (
-            <Image
+            <ImageWithSkeleton
               src={homeData.hero.image}
               alt={getText(homeData.hero.imageCaption) || "Hero image"}
-              position="absolute"
-              top={0}
-              left={0}
-              width="100%"
-              height="100%"
-              objectFit="cover"
-              zIndex={1}
+              containerProps={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 1,
+              }}
+              imageProps={{ objectFit: "cover", loading: "eager" }}
             />
+          )}
+          {!homeData.hero.image && (
+            <Box
+              position="absolute"
+              inset={0}
+              zIndex={1}
+              display="grid"
+              placeItems="center"
+              bg="gray.700"
+            >
+              <Text fontSize="6xl" aria-hidden="true">🍽️</Text>
+            </Box>
           )}
 
           {/* Overlay */}
@@ -113,7 +92,7 @@ export default function Page() {
             left={0}
             width="100%"
             height="100%"
-            bg="rgba(0,0,0,0.6)"
+            bg="rgba(0,0,0,0.35)"
             zIndex={2}
           />
 
@@ -132,9 +111,7 @@ export default function Page() {
             >
               {getText(homeData.hero.title)}
             </ExtendedHeading>
-            <ExtendedText>
-              {getText(homeData.hero.description)}
-            </ExtendedText>
+            <RichText text={getText(homeData.hero.description)} color="white" />
           </ExtendedFlex>
         </Box>
 
@@ -150,38 +127,67 @@ export default function Page() {
 
         {/* About Section */}
         <AnimatedSection animation="slideInLeft">
-          <SectionComponent
-            headingTitle={getText(homeData.about.title)}
-            description={" "}
-          >
-            <Stack
-              alignItems={"center"}
-              direction={{ base: "column", lg: "row" }}
-              gapX={8}
-              gapY={4}
+          <Box w="full" py={{ base: 12, md: 20 }}>
+            <PageContainer
+              contentWidth="full"
+              gutter={0}
+              display="flex"
+              alignItems="center"
+              flexDirection={{ base: "column-reverse", lg: "row" }}
+              gap={{ base: 8, lg: 16 }}
             >
-              <ExtendedFlex maxW={MAX_WIDTH.XL} gap="8">
-                <ExtendedText w={"100%"}>
-                  {getText(homeData.about.description)}
-                </ExtendedText>
-              </ExtendedFlex>
-
-              {/* About Image */}
-              {homeData.about.image && (
-                <Image
-                  src={homeData.about.image}
-                  alt={
-                    getText(homeData.about.imageCaption) ||
-                    "About image"
-                  }
-                  width={600}
-                  height={300}
-                  borderRadius="1rem"
-                  objectFit="cover"
+              <Box flex="1" minW={0} textAlign={{ base: "center", lg: "left" }}>
+                <ExtendedHeading as="h2" pb={4}>
+                  {getText(homeData.about.title)}
+                </ExtendedHeading>
+                <RichText
+                  text={getText(homeData.about.description)}
+                  textAlign={{ base: "center", lg: "left" }}
                 />
-              )}
-            </Stack>
-          </SectionComponent>
+                <Button
+                  mt={5}
+                  bg={BRAND_ORANGE}
+                  color={BRAND_ORANGE_TEXT}
+                  borderRadius="md"
+                  fontWeight="semibold"
+                  px={5}
+                  onClick={() => router.push("/about")}
+                  _hover={{ bg: BRAND_ORANGE_HOVER, transform: "translateY(-1px)" }}
+                >
+                  {t("homepage.readOurStory")}
+                  <LuArrowRight aria-hidden="true" />
+                </Button>
+              </Box>
+
+              <Box flex="1" w="full" display="flex" justifyContent="center">
+                {homeData.about.image ? (
+                  <ImageWithSkeleton
+                    src={homeData.about.image}
+                    alt={getText(homeData.about.imageCaption) || getText(homeData.about.title)}
+                    containerProps={{
+                      width: "full",
+                      maxWidth: "40rem",
+                      height: { base: "18rem", lg: "25rem" },
+                      borderRadius: "2xl",
+                    }}
+                    imageProps={{ objectFit: "cover", loading: "lazy" }}
+                  />
+                ) : (
+                  <Box
+                    width="full"
+                    maxWidth="40rem"
+                    height={{ base: "18rem", lg: "25rem" }}
+                    borderRadius="2xl"
+                    bg="blackAlpha.100"
+                    display="grid"
+                    placeItems="center"
+                  >
+                    <Text fontSize="5xl" aria-hidden="true">🍽️</Text>
+                  </Box>
+                )}
+              </Box>
+            </PageContainer>
+          </Box>
         </AnimatedSection>
 
         {/* Location Section */}
@@ -191,57 +197,7 @@ export default function Page() {
               headingTitle={getText(locationData.title)}
               description={getText(locationData.description)}
             >
-              <ExtendedFlex
-                maxW={MAX_WIDTH.XL}
-                width={"100%"}
-                gap={16}
-                direction={{ base: "column-reverse", lg: "row" }}
-                align={{ base: "center", lg: "flex-start" }}
-              >
-                <AspectRatio
-                  borderRadius={16}
-                  overflow={"hidden"}
-                  width={"100%"}
-                  maxH={"18.75rem"}
-                  ratio={1 / 1}
-                  flexBasis={"50%"}
-                >
-                  {/* Map iframe */}
-                  {locationData.map?.embedUrl && (
-                    <iframe
-                      src={locationData.map.embedUrl}
-                      width="600"
-                      height="200"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                  )}
-                </AspectRatio>
-                <ExtendedFlex
-                  direction="column"
-                  flexBasis={"50%"}
-                  textAlign={"left"}
-                >
-                  {locationData.sections.map((section: any, i: number) => (
-                    <Box key={i} pb={8}>
-                      <ExtendedHeading size="lg">
-                        {getText(section.title)}
-                      </ExtendedHeading>
-
-                      {section.info.map(
-                        (
-                          line: LocaleString | undefined,
-                          j: Key | null | undefined,
-                        ) => (
-                          <ExtendedText key={j}>
-                            {getText(line)}
-                          </ExtendedText>
-                        ),
-                      )}
-                    </Box>
-                  ))}
-                </ExtendedFlex>
-              </ExtendedFlex>
+              <LocationContent locationData={locationData} layout="side-by-side" />
             </SectionComponent>
           </AnimatedSection>
         )}

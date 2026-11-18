@@ -5,7 +5,6 @@ import type { FooterData } from "@/lib/interfaces/footerData";
 import type { LocationData } from "@/lib/interfaces/locationData";
 import type { MenuPageData } from "@/lib/interfaces/menuData";
 import type { NavigationData } from "@/lib/interfaces/navigationData";
-import { fallbackSiteImages, getDefaultDishImage } from "@/lib/cms/imageFallbacks";
 
 const SHEET_ID = "1itLRp1amEGWnwEktgMLzqyZxUZF1-6x-otRN-V7v1mk";
 const LANGUAGES = ["en", "fi", "sv", "th"] as const;
@@ -114,19 +113,59 @@ function websiteLocale(row?: Row): LocaleString {
 
 async function replacementImage(page: string, where: string): Promise<string | undefined> {
   const rows = await websiteImageRows();
-  const url = rows.find((row) => row.Page === page && row["Where the photo appears"] === where)?.[
-    "Replace with photo link"
-  ];
-  return isHttpUrl(url) ? url : undefined;
+  const imageRow = rows.find(
+    (row) => row.Page === page && row["Where the photo appears"] === where,
+  );
+  const url =
+    imageRow?.["Replace with photo link"]?.trim() ||
+    imageRow?.["Current photo (click to view)"]?.trim();
+  if (!isHttpUrl(url)) return undefined;
+  const width = where === "Hero › Image" ? 1920 : where === "Logo Image" ? 500 : 1200;
+  return optimizeRemoteImageUrl(url, width);
 }
 
 function isHttpUrl(value?: string): value is string {
   return Boolean(value && /^https?:\/\//i.test(value));
 }
 
+function optimizeRemoteImageUrl(source: string, width: number): string {
+  try {
+    const url = new URL(source);
+    if (url.hostname !== "res.cloudinary.com") return source;
+
+    const segments = url.pathname.split("/");
+    const uploadIndex = segments.indexOf("upload");
+    if (uploadIndex < 0) return source;
+
+    const nextSegment = segments[uploadIndex + 1] || "";
+    const hasTransformations =
+      !/^v\d+$/.test(nextSegment) &&
+      /^(?:a|b|c|dpr|e|f|fl|g|h|q|r|t|w)_[^/]+/.test(nextSegment);
+
+    if (hasTransformations) {
+      const transformations = new Set(nextSegment.split(","));
+      transformations.add("f_auto");
+      transformations.add("q_auto");
+      if (![...transformations].some((value) => value.startsWith("w_"))) {
+        transformations.add(`w_${width}`);
+      }
+      segments[uploadIndex + 1] = [...transformations].join(",");
+    } else {
+      segments.splice(uploadIndex + 1, 0, `f_auto,q_auto,w_${width}`);
+    }
+
+    url.pathname = segments.join("/");
+    return url.toString();
+  } catch {
+    return source;
+  }
+}
+
 function imageFromMenuRow(row: Row): string | undefined {
-  const url = row["Replace with photo link"];
-  return isHttpUrl(url) ? url : undefined;
+  const replacement = row["Replace with photo link"]?.trim();
+  const currentPhoto = row["Current photo (click to view)"]?.trim();
+  const url = isHttpUrl(replacement) ? replacement : currentPhoto;
+  return isHttpUrl(url) ? optimizeRemoteImageUrl(url, 900) : undefined;
 }
 
 export async function getSheetDishes(): Promise<DishData[]> {
@@ -142,6 +181,8 @@ export async function getSheetDishes(): Promise<DishData[]> {
 
     const category: LocaleString = {
       en: row.Category || undefined,
+      fi: row["Category — Fi"] || undefined,
+      sv: row["Category — Sv"] || undefined,
       th: row["Category — Thai"] || undefined,
     };
     const ingredients = localized(row, {
@@ -156,6 +197,7 @@ export async function getSheetDishes(): Promise<DishData[]> {
       sv: "Description — Swedish",
       th: "Description — Thai",
     });
+    const imageUrl = imageFromMenuRow(row);
     const price = Number.parseFloat((row["Price (€)"] || "0").replace(",", "."));
     const spiceLevel = Number.parseInt(row["Spice level (0–3)"] || row["Spice level (0-3)"] || "0", 10);
 
@@ -169,12 +211,12 @@ export async function getSheetDishes(): Promise<DishData[]> {
       category,
       price: Number.isFinite(price) ? price : 0,
       spiceLevel: Number.isFinite(spiceLevel) ? spiceLevel : 0,
-      dishImage: imageFromMenuRow(row) || getDefaultDishImage(name)
+      dishImage: imageUrl
         ? {
             asset: {
               _ref: "",
               _type: "image",
-              url: imageFromMenuRow(row) || getDefaultDishImage(name),
+              url: imageUrl,
             },
           }
         : undefined,
@@ -190,9 +232,11 @@ export async function getHomepageData(): Promise<HomepageData> {
   const aboutRows = textRows(rows, "Home page", "Home page — about section");
   const announcementRows = textRows(rows, "Home page", "Announcement");
   const announcement = rowForChange(announcementRows, "Announcement text");
-  const showAnnouncement = rowForChange(announcementRows, "Show announcement?")?.[
+  const announcementToggle = rowForChange(announcementRows, "Show announcement?");
+  const announcementSetting = announcementToggle?.[
     "Current value (if applicable)"
-  ];
+  ]?.trim();
+  const showAnnouncement = /^yes$/i.test(announcementSetting || "");
 
   const [heroImage, aboutImage] = await Promise.all([
     replacementImage("Home page", "Hero › Image"),
@@ -205,7 +249,7 @@ export async function getHomepageData(): Promise<HomepageData> {
       description: websiteLocale(rowForChange(heroRows, "Short introduction")),
       cta: {},
       ctaUrl: "/menu",
-      image: heroImage || fallbackSiteImages.hero,
+      image: heroImage,
       imageCaption: websiteLocale(rowForChange(heroRows, "Photo description")),
     },
     signatureDishes: {
@@ -215,7 +259,7 @@ export async function getHomepageData(): Promise<HomepageData> {
     about: {
       title: websiteLocale(rowForChange(aboutRows, "Section heading")),
       description: websiteLocale(rowForChange(aboutRows, "Introduction")),
-      image: aboutImage || fallbackSiteImages.homeAbout,
+      image: aboutImage,
     },
     reserveTable: { title: {}, description: {} },
     location: {
@@ -225,9 +269,9 @@ export async function getHomepageData(): Promise<HomepageData> {
       map: {},
     },
     alertBanner: {
-      showBanner: /^yes$/i.test(showAnnouncement || ""),
+      showBanner: showAnnouncement,
       message: websiteLocale(announcement),
-      backgroundColor: "#8B1E1E",
+      backgroundColor: "#E5484D",
       textColor: "#FFFFFF",
     },
   };
@@ -244,9 +288,7 @@ export async function getAboutData(): Promise<AboutData> {
     valueTitle: websiteLocale(rowForChange(valueRows, `Value ${number} heading`)),
     valueDescription: websiteLocale(rowForChange(valueRows, `Value ${number} description`)),
   }));
-  const image =
-    (await replacementImage("About page", "Main Image")) ||
-    fallbackSiteImages.aboutPage;
+  const image = await replacementImage("About page", "Main Image");
 
   return {
     title: websiteLocale(rowForChange(pageRows, "Page heading")),
@@ -258,7 +300,7 @@ export async function getAboutData(): Promise<AboutData> {
     }],
     paragraphInBoxTitle: websiteLocale(rowForChange(valueRows, "Section heading")),
     paragraphInBox: values,
-    mainImage: { asset: { url: image } },
+    mainImage: image ? { asset: { url: image } } : undefined,
   };
 }
 

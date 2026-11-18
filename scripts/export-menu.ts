@@ -8,7 +8,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/4204dd8a6b011c20c4d52a93839ae6bf35ede4a2-5284x6604.jpg",
+        url: "",
       },
     },
   },
@@ -21,7 +21,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/52132db99266840aa1f0ed322397abc4ff9a7fc3-4894x6118.jpg",
+        url: "",
       },
     },
   },
@@ -34,7 +34,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/d52546357009920943848dedf8d44077c05ced7c-5122x6403.jpg",
+        url: "",
       },
     },
   },
@@ -47,7 +47,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/04712c67752a16ca21f9f1b1e30b1e2312652bdf-5284x6604.jpg",
+        url: "",
       },
     },
   },
@@ -70,7 +70,7 @@ const DISHES = [
     spiceLevel: 2,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/c8909ec0f42d6b1be6f72acdd1166b6d783c9680-5284x6604.jpg",
+        url: "",
       },
     },
   },
@@ -93,7 +93,7 @@ const DISHES = [
     spiceLevel: 0,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/6e987a2eb468288b7fbe73204acdfdab3b5151ef-8011x5343.jpg",
+        url: "",
       },
     },
   },
@@ -116,7 +116,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/3131cae0c5d4f0a7368097902f64519abf2e7dca-8032x5357.jpg",
+        url: "",
       },
     },
   },
@@ -129,7 +129,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/bad81a72a14b4f3a0d00027b27c3fb62e427b624-4894x6118.jpg",
+        url: "",
       },
     },
   },
@@ -152,7 +152,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/7460a0c154e0b2eec5582629171f5bc3221f1e0a-4894x6118.jpg",
+        url: "",
       },
     },
   },
@@ -175,7 +175,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/f5cd677569d5dd1287742b4906f77397fe8d9dc2-8011x5343.jpg",
+        url: "",
       },
     },
   },
@@ -193,7 +193,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/6cc2f2755db1c068074058c7af1d9dc6c1cecaf1-4894x6118.jpg",
+        url: "",
       },
     },
   },
@@ -206,7 +206,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/f286c72961a18f111c8fe84cf80d38d608f260dc-5284x6604.jpg",
+        url: "",
       },
     },
   },
@@ -229,7 +229,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/943f9560b263d9b6014ebdf4920df5c5fe4e32b6-5284x6604.jpg",
+        url: "",
       },
     },
   },
@@ -242,7 +242,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/629fee7c1cc4acf99a2a510e783fc936e383d5c0-4894x6118.jpg",
+        url: "",
       },
     },
   },
@@ -260,7 +260,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/a70dcf2f9a19935fecffb703b7c5d046b3cc80c2-8192x5464.jpg",
+        url: "",
       },
     },
   },
@@ -273,7 +273,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/e73ec2e60a066c38d21e12bd2ccd0dfa530787a9-5284x6604.jpg",
+        url: "",
       },
     },
   },
@@ -291,7 +291,7 @@ const DISHES = [
     spiceLevel: null,
     dishImage: {
       asset: {
-        url: "https://cdn.sanity.io/images/uqmxroum/production/b5e225e864b2ed265c5248807b00b9d6fa01501d-4894x6118.jpg",
+        url: "",
       },
     },
   },

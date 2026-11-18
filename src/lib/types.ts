@@ -52,4 +52,4 @@ export type ExtendedFlexProps = FlexProps & {
   textAlign?: string;
 };
 
-export type Language = "en" | "fi" | "sv";
+export type Language = "en" | "fi" | "sv" | "th";

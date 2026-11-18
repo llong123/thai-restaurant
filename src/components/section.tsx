@@ -1,10 +1,8 @@
 import { Flex } from "@chakra-ui/react";
-import { ExtendedFlexProps } from "@/lib/types";
 import { useThemeColors } from "./fontVars";
 import ExtendedHeading from "./ExtendedHeading";
-import ExtendedText from "./ExtendedText";
-
-const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
+import { RichText } from "./RichText";
+import { PageContainer } from "@/components/PageContainer";
 
 export default function SectionComponent({
   children,
@@ -24,29 +22,29 @@ export default function SectionComponent({
       justifyContent="center"
       bgColor={bgColor}
     >
-      <ExtendedFlex
-        direction={"column"}
+      <PageContainer
+        contentWidth="6xl"
+        gutter={0}
+        display="flex"
+        flexDirection="column"
         alignItems={"center"}
         justifyContent={"center"}
         textAlign={"center"}
-        width={"100%"}
-        maxW={"6xl"}
         py={16}
       >
         <ExtendedHeading pb={1} color={textColor}>
           {headingTitle}
         </ExtendedHeading>
-        <ExtendedText
+        <RichText
+          text={description}
           fontSize={{ base: 10, lg: 12 }}
           fontStyle="italic"
           pb={12}
           maxW={"2xl"}
           color={textColor}
-        >
-          {description}
-        </ExtendedText>
+        />
         {children}
-      </ExtendedFlex>
+      </PageContainer>
     </Flex>
   );
 }

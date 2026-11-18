@@ -5,7 +5,6 @@ import {
   Flex,
   HStack,
   IconButton,
-  Image,
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -20,6 +19,8 @@ import ExtendedText from "@/components/ExtendedText";
 import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
 import { useThemeColors } from "@/components/fontVars";
+import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
+import { PageContainer } from "@/components/PageContainer";
 
 export default function Footer() {
   const { language } = useLanguage();
@@ -41,9 +42,13 @@ export default function Footer() {
     return <ExtendedText p={8}>Footer data not available.</ExtendedText>;
 
   return (
-    <footer>
+    <footer style={{ marginTop: "auto" }}>
       <Flex w="100%" bgColor={bgColor} justifyContent="center">
-        <Box maxW={MAX_WIDTH.XL} w="full" color="white" px={{ base: 6, md: 10 }}>
+        <PageContainer
+          contentWidth={MAX_WIDTH.XL}
+          gutter={{ base: 6, md: 10 }}
+          color="white"
+        >
           <Flex
             w="full"
             py={{ base: 8, md: 10 }}
@@ -54,41 +59,50 @@ export default function Footer() {
           >
             <Box flex="1" display="flex" justifyContent={{ base: "center", md: "flex-start" }}>
               <Link href="/" aria-label="Chao Phraya home">
-                <Image
+                <ImageWithSkeleton
                   src={footerData.logoUrl || "/logo.png"}
                   alt="Chao Phraya logo"
-                  width={180}
-                  height={100}
-                  objectFit="contain"
-                  maxW="100%"
+                  containerProps={{ width: 200, height: 112, maxWidth: "100%" }}
+                  imageProps={{ objectFit: "contain", loading: "lazy" }}
                 />
               </Link>
             </Box>
 
             {footerData.quickLinks?.length > 0 && (
-              <VStack
+              <Box
                 as="nav"
                 aria-label="Footer navigation"
-                flex="1"
-                alignItems={{ base: "center", md: "flex-start" }}
-                gap={2}
+                flex={{ base: "1", md: "2" }}
               >
-                <ExtendedHeading as="h4" size="md" mb={1}>
-                  Quick Links
+                <ExtendedHeading
+                  as="h4"
+                  size="md"
+                  mb={3}
+                  textAlign={{ base: "center", md: "left" }}
+                >
+                  {t("footer.quickLinks")}
                 </ExtendedHeading>
-                {footerData.quickLinks.map((link, index) => (
-                  <Link key={`${link.url}-${index}`} href={link.url}>
-                    <Box
-                      as="span"
-                      py={1}
-                      opacity={0.85}
-                      _hover={{ opacity: 1, textDecoration: "underline" }}
-                    >
-                      {getText(link.label)}
-                    </Box>
-                  </Link>
-                ))}
-              </VStack>
+                <Flex
+                  direction={{ base: "column", md: "row" }}
+                  align={{ base: "center", md: "center" }}
+                  justify={{ base: "center", md: "flex-start" }}
+                  gap={{ base: 2, md: 6 }}
+                >
+                  {footerData.quickLinks.map((link, index) => (
+                    <Link key={`${link.url}-${index}`} href={link.url}>
+                      <Box
+                        as="span"
+                        py={1}
+                        opacity={0.85}
+                        whiteSpace="nowrap"
+                        _hover={{ opacity: 1, textDecoration: "underline" }}
+                      >
+                        {getText(link.label)}
+                      </Box>
+                    </Link>
+                  ))}
+                </Flex>
+              </Box>
             )}
 
             <VStack
@@ -143,7 +157,7 @@ export default function Footer() {
           >
             {getText(footerData.copyright)}
           </ExtendedText>
-        </Box>
+        </PageContainer>
       </Flex>
     </footer>
   );

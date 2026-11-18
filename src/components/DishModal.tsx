@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Image as ChakraImage } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
 import { MAX_WIDTH } from "@/lib/enums";
@@ -13,6 +13,8 @@ import {
   modalContentVariants,
   transitionConfig,
 } from "@/lib/animationVariants";
+import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
+import { RichText } from "@/components/RichText";
 
 const MotionBox = motion.create(Box);
 
@@ -78,24 +80,24 @@ export function DishModal({
         bgColor={bgColor}
       >
         {dishImage && (
-          <Box position="relative" w="100%" h="12.5rem" pb={4}>
-            <ChakraImage
-              src={dishImage}
-              alt={dishName}
-              w="100%"
-              h="100%"
-              objectFit="cover"
-              borderRadius="md"
-            />
-          </Box>
+          <ImageWithSkeleton
+            src={dishImage}
+            alt={dishName}
+            containerProps={{ w: "100%", h: "12.5rem", mb: 4, borderRadius: "md" }}
+            imageProps={{ objectFit: "cover", loading: "lazy" }}
+          />
         )}
 
         <Box as="h3" fontSize="2xl" fontWeight="bold" mb={2} color={textColor}>
           {dishName}
         </Box>
-        <Box className={merriweather.className} fontSize="md" mb={4} color={textColor}>
-          {dishDescription}
-        </Box>
+        <RichText
+          text={dishDescription}
+          className={merriweather.className}
+          fontSize="md"
+          mb={4}
+          color={textColor}
+        />
 
         {ingredients.length > 0 && (
           <>
@@ -112,10 +114,16 @@ export function DishModal({
           </>
         )}
 
-        <Box className={merriweather.className} fontWeight="bold" mb={2} color={textColor}>
-          {t("menu.spiceLevel")}:{" "}
-          {spiceLevel ? "🌶️".repeat(spiceLevel) : "N/A"}
-        </Box>
+        {spiceLevel != null && spiceLevel > 0 && (
+          <Box
+            className={merriweather.className}
+            fontWeight="bold"
+            mb={2}
+            color={textColor}
+          >
+            {t("menu.spiceLevel")}: {"🌶️".repeat(Math.min(spiceLevel, 3))}
+          </Box>
+        )}
         <Box className={merriweather.className} fontWeight="bold" color={textColor}>
           {price}
         </Box>

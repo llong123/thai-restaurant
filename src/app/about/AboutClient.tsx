@@ -1,19 +1,20 @@
 "use client";
 
-import { Box, Heading, Text, SimpleGrid, Image } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
 import Footer from "../footer";
-import { ExtendedTextProps, ExtendedHeadingProps } from "@/lib/types";
+import { ExtendedHeadingProps } from "@/lib/types";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { MAX_WIDTH } from "@/lib/enums";
 import { AboutData } from "@/lib/interfaces/aboutData";
 import { useThemeColors } from "@/components/fontVars";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
 import { PageLayout } from "@/components/PageLayout";
+import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
+import { RichText } from "@/components/RichText";
+import { PageContainer } from "@/components/PageContainer";
 
 // Extended Chakra components
-const ExtendedText = Text as React.ComponentType<ExtendedTextProps>;
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 
 interface AboutClientProps {
@@ -34,16 +35,15 @@ export default function AboutClient({ about, loading }: AboutClientProps) {
 
   return (
     <PageLayout>
-      <Box maxWidth={MAX_WIDTH.XL} mx="auto" w="100%">
+      <PageContainer contentWidth="full" gutter={0}>
         {/* Main Image */}
         {about.mainImage?.asset?.url && (
           <Box pb={16} position="relative" height="25rem">
-            <Image
+            <ImageWithSkeleton
               src={about.mainImage.asset.url}
               alt={getText(about.title)}
-              objectFit="cover"
-              width="100%"
-              height="100%"
+              containerProps={{ width: "100%", height: "100%" }}
+              imageProps={{ objectFit: "cover", loading: "lazy" }}
             />
           </Box>
         )}
@@ -62,9 +62,7 @@ export default function AboutClient({ about, loading }: AboutClientProps) {
               {getText(group.paragraphTitle)}
             </ExtendedHeading>
 
-            <ExtendedText pb={2}>
-              {getText(group.paragraphDescription)}
-            </ExtendedText>
+            <RichText text={getText(group.paragraphDescription)} pb={2} />
           </Box>
         ))}
 
@@ -85,14 +83,15 @@ export default function AboutClient({ about, loading }: AboutClientProps) {
                 <ExtendedHeading as="h6" size="md" pb={4}>
                   {getText(valueGroup.valueTitle)}
                 </ExtendedHeading>
-                <ExtendedText fontSize={{ base: 12, lg: 14 }}>
-                  {getText(valueGroup.valueDescription)}
-                </ExtendedText>
+                <RichText
+                  text={getText(valueGroup.valueDescription)}
+                  fontSize={{ base: 12, lg: 14 }}
+                />
               </Box>
             ))}
           </SimpleGrid>
         </Box>
-      </Box>
+      </PageContainer>
 
       <Box mt="auto">
         <Footer />
