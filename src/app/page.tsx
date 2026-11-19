@@ -1,9 +1,8 @@
 "use client";
 
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import Footer from "./footer";
 import SectionComponent from "@/components/section";
-import { ExtendedFlexProps } from "@/lib/types";
 import DishCarousel from "@/components/DishCarouselComponent";
 import AnimatedSection from "@/components/animated-section";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -20,11 +19,9 @@ import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
 import { LocationContent } from "@/components/LocationContent";
 import { RichText } from "@/components/RichText";
 import { useRouter } from "next/navigation";
-import { LuArrowRight } from "react-icons/lu";
-import { BRAND_ORANGE, BRAND_ORANGE_HOVER, BRAND_ORANGE_TEXT } from "@/lib/colors";
+import { LuArrowRight, LuMapPin } from "react-icons/lu";
 import { PageContainer } from "@/components/PageContainer";
-
-const ExtendedFlex = Flex as React.ComponentType<ExtendedFlexProps>;
+import { ActionButton } from "@/components/ActionButton";
 
 export default function Page() {
   const { homepage, location, loading } = useAppData();
@@ -48,12 +45,12 @@ export default function Page() {
         {/* Hero Section */}
         <Box
           w="100%"
-          height={{ base: "25rem", lg: "37.5rem" }}
+          height={{ base: "29rem", lg: "37.5rem" }}
           position="relative"
           display="flex"
           alignItems="center"
           justifyContent={{ base: "center", lg: "flex-start" }}
-          borderRadius="0.25rem"
+          borderRadius={{ base: "xl", md: "2xl" }}
           overflow="hidden"
         >
           {/* Background Image */}
@@ -92,27 +89,69 @@ export default function Page() {
             left={0}
             width="100%"
             height="100%"
-            bg="rgba(0,0,0,0.35)"
+            background="linear-gradient(90deg, rgba(0,0,0,0.76) 0%, rgba(0,0,0,0.48) 52%, rgba(0,0,0,0.12) 100%)"
             zIndex={2}
           />
 
           {/* Hero Text */}
-          <ExtendedFlex
+          <Flex
             direction="column"
             gap={4}
-            maxW={{ base: "90%", lg: "50%" }}
+            maxW={{ base: "92%", lg: "56%" }}
             color="white"
             zIndex={5}
             px={4}
+            textAlign={{ base: "center", lg: "left" }}
           >
+            <Text
+              fontSize="xs"
+              fontWeight="bold"
+              letterSpacing="0.16em"
+              textTransform="uppercase"
+              color="#F1C27D"
+            >
+              Hietalahti Market Hall · Helsinki
+            </Text>
             <ExtendedHeading
+              as="h1"
               size={{ base: "3xl", lg: "5xl" }}
               lineHeight="short"
             >
               {getText(homeData.hero.title)}
             </ExtendedHeading>
             <RichText text={getText(homeData.hero.description)} color="white" />
-          </ExtendedFlex>
+            <Flex
+              mt={2}
+              gap={3}
+              wrap="wrap"
+              justify={{ base: "center", lg: "flex-start" }}
+            >
+              <ActionButton
+                type="button"
+                fontWeight="bold"
+                size="lg"
+                px={6}
+                onClick={() => router.push(homeData.hero.ctaUrl || "/menu")}
+              >
+                {getText(homeData.hero.cta)}
+                <LuArrowRight aria-hidden="true" />
+              </ActionButton>
+              <ActionButton
+                type="button"
+                appearance="outline"
+                borderColor="whiteAlpha.800"
+                color="white"
+                fontWeight="semibold"
+                size="lg"
+                px={6}
+                onClick={() => router.push(homeData.hero.locationCtaUrl || "/location")}
+                _hover={{ bg: "whiteAlpha.200" }}
+              >
+                <LuMapPin aria-hidden="true" />
+                {getText(homeData.hero.locationCta)}
+              </ActionButton>
+            </Flex>
+          </Flex>
         </Box>
 
         {/* Signature Dishes */}
@@ -144,19 +183,15 @@ export default function Page() {
                   text={getText(homeData.about.description)}
                   textAlign={{ base: "center", lg: "left" }}
                 />
-                <Button
+                <ActionButton
                   mt={5}
-                  bg={BRAND_ORANGE}
-                  color={BRAND_ORANGE_TEXT}
-                  borderRadius="md"
                   fontWeight="semibold"
                   px={5}
                   onClick={() => router.push("/about")}
-                  _hover={{ bg: BRAND_ORANGE_HOVER, transform: "translateY(-1px)" }}
                 >
                   {t("homepage.readOurStory")}
                   <LuArrowRight aria-hidden="true" />
-                </Button>
+                </ActionButton>
               </Box>
 
               <Box flex="1" w="full" display="flex" justifyContent="center">

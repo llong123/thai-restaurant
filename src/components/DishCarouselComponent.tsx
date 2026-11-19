@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Button,
   Flex,
   IconButton,
   Skeleton,
@@ -10,6 +9,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { LuArrowRight, LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Dish } from "./DishComponent";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import { DishData } from "@/lib/interfaces";
 import { useTranslation } from "@/lib/translations";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
-import { BRAND_ORANGE, BRAND_ORANGE_HOVER, BRAND_ORANGE_TEXT } from "@/lib/colors";
+import { ActionButton } from "@/components/ActionButton";
 
 // ---------- 🔹 Component ---------- //
 
@@ -27,6 +27,9 @@ export default function DishCarousel() {
   const [dishes, setDishes] = useState<DishData[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hasFocus, setHasFocus] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const slidesToShow = useBreakpointValue({ base: 1, md: 2, lg: 3 }) || 1;
   const router = useRouter();
   const maxIndex = Math.max(0, dishes.length - slidesToShow);
@@ -52,6 +55,41 @@ export default function DishCarousel() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+    return () => mediaQuery.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    if (
+      loading ||
+      isHovered ||
+      hasFocus ||
+      prefersReducedMotion ||
+      dishes.length <= slidesToShow
+    ) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      setCurrentIndex((index) => (index >= maxIndex ? 0 : index + 1));
+    }, 5000);
+
+    return () => window.clearInterval(timer);
+  }, [
+    dishes.length,
+    hasFocus,
+    isHovered,
+    loading,
+    maxIndex,
+    prefersReducedMotion,
+    slidesToShow,
+  ]);
 
   // Utility for localized text
   const getText = (field?: LocaleString) => getLocaleString(field, language);
@@ -95,7 +133,13 @@ export default function DishCarousel() {
             </Box>
           ))}
         </Box>
-        <Skeleton height="3rem" width="10rem" mx="auto" mt={8} borderRadius="md" />
+        <Skeleton
+          height="3rem"
+          width="10rem"
+          mx="auto"
+          mt={8}
+          borderRadius="md"
+        />
       </Box>
     );
   }
@@ -111,7 +155,25 @@ export default function DishCarousel() {
       spaceY="8"
       w="100%"
     >
-      <Box w="full" maxW="80rem" mx="auto" px={{ base: 4, md: 0 }}>
+      <Box
+        w="full"
+        maxW="80rem"
+        mx="auto"
+        px={{ base: 4, md: 0 }}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Featured dishes carousel"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocusCapture={() => setHasFocus(true)}
+        onBlurCapture={(event) => {
+          if (
+            !event.currentTarget.contains(event.relatedTarget as Node | null)
+          ) {
+            setHasFocus(false);
+          }
+        }}
+      >
         <Flex align="center" gap={4}>
           {dishes.length > slidesToShow && (
             <IconButton
@@ -126,16 +188,27 @@ export default function DishCarousel() {
             </IconButton>
           )}
 
-          <Box
-            flex="1"
-            minW={0}
-            display="grid"
-            gridTemplateColumns={`repeat(${slidesToShow}, minmax(0, 1fr))`}
-            gap={{ base: 4, md: 6 }}
-          >
-            {visibleDishes.map((dish) => (
-              <Dish key={dish._id} dish={dish} getLocale={getText} />
-            ))}
+          <Box flex="1" minW={0} overflow="hidden">
+            <motion.div
+              key={currentIndex}
+              initial={prefersReducedMotion ? false : { x: 36 }}
+              animate={{ x: 0 }}
+              transition={{
+                duration: prefersReducedMotion ? 0 : 0.65,
+                ease: "easeOut",
+              }}
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${slidesToShow}, minmax(0, 1fr))`,
+                gap: slidesToShow === 1 ? "1rem" : "1.5rem",
+                width: "100%",
+              }}
+              aria-live="off"
+            >
+              {visibleDishes.map((dish) => (
+                <Dish key={dish._id} dish={dish} getLocale={getText} />
+              ))}
+            </motion.div>
           </Box>
 
           {dishes.length > slidesToShow && (
@@ -182,21 +255,16 @@ export default function DishCarousel() {
           </Flex>
         )}
       </Box>
-      <Button
+      <ActionButton
         aria-label={t("homepage.viewAllDishes")}
-        bg={BRAND_ORANGE}
-        color={BRAND_ORANGE_TEXT}
-        borderRadius="md"
         size="lg"
         fontWeight="bold"
         px={6}
         onClick={() => router.push("/menu")}
-        _hover={{ bg: BRAND_ORANGE_HOVER, transform: "translateY(-1px)", shadow: "md" }}
-        _active={{ transform: "translateY(0)" }}
       >
         {t("homepage.viewAllDishes")}
         <LuArrowRight aria-hidden="true" />
-      </Button>
+      </ActionButton>
     </Box>
   );
 }

@@ -247,8 +247,10 @@ export async function getHomepageData(): Promise<HomepageData> {
     hero: {
       title: websiteLocale(rowForChange(heroRows, "Main heading")),
       description: websiteLocale(rowForChange(heroRows, "Short introduction")),
-      cta: {},
+      cta: websiteLocale(rowForChange(heroRows, "heroMenuCta")),
       ctaUrl: "/menu",
+      locationCta: websiteLocale(rowForChange(heroRows, "heroLocationCta")),
+      locationCtaUrl: "/location",
       image: heroImage,
       imageCaption: websiteLocale(rowForChange(heroRows, "Photo description")),
     },

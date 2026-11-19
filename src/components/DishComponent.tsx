@@ -52,7 +52,6 @@ export function Dish({ dish, getLocale }: DishProps) {
           }
         }}
         whileHover={{ y: -4 }}
-        transition={{ duration: 0.18 }}
         _hover={{ shadow: "xl", borderColor: BRAND_ORANGE }}
         _focusVisible={{ outline: "3px solid", outlineColor: BRAND_ORANGE, outlineOffset: "2px" }}
       >

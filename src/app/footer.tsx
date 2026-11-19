@@ -4,8 +4,7 @@ import {
   Box,
   Flex,
   HStack,
-  IconButton,
-  VStack,
+  Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuFacebook, LuInstagram, LuX } from "react-icons/lu";
@@ -14,7 +13,6 @@ import { useTranslation } from "@/lib/translations";
 import { MAX_WIDTH } from "@/lib/enums";
 import { FooterData } from "@/lib/interfaces/footerData";
 import { useAppData } from "@/hooks/AppDataContext";
-import ExtendedHeading from "@/components/ExtendedHeading";
 import ExtendedText from "@/components/ExtendedText";
 import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
@@ -38,9 +36,6 @@ export default function Footer() {
   if (!footerData)
     return <ExtendedText p={8}>Footer data not available.</ExtendedText>;
 
-  if (!footerData.quickLinks && !footerData.followUs)
-    return <ExtendedText p={8}>Footer data not available.</ExtendedText>;
-
   return (
     <footer style={{ marginTop: "auto" }}>
       <Flex w="100%" bgColor={bgColor} justifyContent="center">
@@ -51,112 +46,92 @@ export default function Footer() {
         >
           <Flex
             w="full"
-            py={{ base: 8, md: 10 }}
+            py={{ base: 4, md: 5 }}
             direction={{ base: "column", md: "row" }}
-            align={{ base: "center", md: "center" }}
+            align="center"
             justify="space-between"
-            gap={{ base: 8, md: 6 }}
+            gap={{ base: 3, md: 5 }}
           >
-            <Box flex="1" display="flex" justifyContent={{ base: "center", md: "flex-start" }}>
+            <Box flex="1" display="flex" justifyContent={{ base: "center", md: "flex-start" }} minW={0}>
               <Link href="/" aria-label="Chao Phraya home">
                 <ImageWithSkeleton
                   src={footerData.logoUrl || "/logo.png"}
                   alt="Chao Phraya logo"
-                  containerProps={{ width: 200, height: 112, maxWidth: "100%" }}
+                  containerProps={{ width: 145, height: 76, maxWidth: "100%" }}
                   imageProps={{ objectFit: "contain", loading: "lazy" }}
                 />
               </Link>
             </Box>
 
-            {footerData.quickLinks?.length > 0 && (
-              <Box
-                as="nav"
-                aria-label="Footer navigation"
-                flex={{ base: "1", md: "2" }}
-              >
-                <ExtendedHeading
-                  as="h4"
-                  size="md"
-                  mb={3}
-                  textAlign={{ base: "center", md: "left" }}
-                >
-                  {t("footer.quickLinks")}
-                </ExtendedHeading>
-                <Flex
-                  direction={{ base: "column", md: "row" }}
-                  align={{ base: "center", md: "center" }}
-                  justify={{ base: "center", md: "flex-start" }}
-                  gap={{ base: 2, md: 6 }}
-                >
-                  {footerData.quickLinks.map((link, index) => (
-                    <Link key={`${link.url}-${index}`} href={link.url}>
-                      <Box
-                        as="span"
-                        py={1}
-                        opacity={0.85}
-                        whiteSpace="nowrap"
-                        _hover={{ opacity: 1, textDecoration: "underline" }}
-                      >
-                        {getText(link.label)}
-                      </Box>
-                    </Link>
-                  ))}
-                </Flex>
-              </Box>
-            )}
-
-            <VStack
+            <Text
               flex="1"
-              alignItems={{ base: "center", md: "flex-end" }}
-              gap={2}
+              textAlign="center"
+              fontSize="sm"
+              opacity={0.75}
+              whiteSpace="nowrap"
+              order={{ base: 3, md: 2 }}
             >
-              <ExtendedHeading as="h4" size="md">
-                {t("footer.followUs")}
-              </ExtendedHeading>
-              <HStack gap={2}>
-                {footerData.followUs?.map((social, index) => {
-                  let Icon;
-                  switch (social.platform.toLowerCase()) {
-                    case "facebook":
-                      Icon = LuFacebook;
-                      break;
-                    case "instagram":
-                      Icon = LuInstagram;
-                      break;
-                    case "x":
-                      Icon = LuX;
-                      break;
-                    default:
-                      Icon = LuFacebook;
-                  }
-                  return (
-                    <Link
-                      key={`${social.platform}-${index}`}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.platform}
-                    >
-                      <IconButton aria-label={social.platform} variant="ghost" color="white">
-                        <Icon />
-                      </IconButton>
-                    </Link>
-                  );
-                })}
-              </HStack>
-            </VStack>
-          </Flex>
+              {getText(footerData.copyright)}
+            </Text>
 
-          <ExtendedText
-            width="full"
-            borderTop="1px solid"
-            borderColor="whiteAlpha.300"
-            py={5}
-            textAlign="center"
-            opacity={0.8}
-          >
-            {getText(footerData.copyright)}
-          </ExtendedText>
+            <Box flex="1" order={{ base: 2, md: 3 }}>
+              <Text
+                fontSize="xs"
+                fontWeight="bold"
+                letterSpacing="0.08em"
+                textTransform="uppercase"
+                textAlign={{ base: "center", md: "right" }}
+                opacity={0.75}
+                mb={2}
+              >
+                {t("footer.followUs")}
+              </Text>
+            <HStack gap={2} justify={{ base: "center", md: "flex-end" }}>
+              {footerData.followUs?.map((social, index) => {
+                let Icon;
+                switch (social.platform.toLowerCase()) {
+                  case "facebook":
+                    Icon = LuFacebook;
+                    break;
+                  case "instagram":
+                    Icon = LuInstagram;
+                    break;
+                  case "x":
+                    Icon = LuX;
+                    break;
+                  default:
+                    Icon = LuFacebook;
+                }
+                return (
+                  <Link
+                    key={`${social.platform}-${index}`}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.platform}
+                  >
+                    <Flex
+                      as="span"
+                      align="center"
+                      gap={2}
+                      px={3}
+                      py={2}
+                      borderWidth="1px"
+                      borderColor="whiteAlpha.300"
+                      borderRadius="md"
+                      fontSize="sm"
+                      opacity={0.9}
+                      _hover={{ bg: "whiteAlpha.100", opacity: 1 }}
+                    >
+                      <Icon aria-hidden="true" />
+                      <Text as="span">{social.platform}</Text>
+                    </Flex>
+                  </Link>
+                );
+              })}
+            </HStack>
+            </Box>
+          </Flex>
         </PageContainer>
       </Flex>
     </footer>

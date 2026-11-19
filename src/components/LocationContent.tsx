@@ -7,6 +7,7 @@ import type { LocaleString } from "@/lib/interfaces";
 import { getLocaleString } from "@/lib/utility";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import { RichText } from "@/components/RichText";
+import { AccentDivider } from "@/components/AccentDivider";
 
 interface LocationContentProps {
   locationData: LocationData;
@@ -57,11 +58,17 @@ export function LocationContent({
     </AspectRatio>
   ) : null;
 
-  const renderSections = (sections: LocationData["sections"]) => (
+  const renderSections = (
+    sections: LocationData["sections"],
+    addGuideDividers = false,
+  ) => (
     <Stack gap={6} flex="1" minW={0} textAlign="left">
       {sections.map((section, sectionIndex) => (
-        <Box key={`${getText(section.title)}-${sectionIndex}`}>
-          <ExtendedHeading size="lg" pb={3}>
+        <Box key={`${getText(section.title)}-${sectionIndex}`} pb={2}>
+          {addGuideDividers && (
+            <AccentDivider my={3} />
+          )}
+          <ExtendedHeading size="lg" pb={4}>
             {getText(section.title)}
           </ExtendedHeading>
 
@@ -122,7 +129,10 @@ export function LocationContent({
               ))}
             </Stack>
           ) : (
-            <RichText text={section.info.map(getText).join("\n")} />
+            <RichText
+              text={section.info.map(getText).join("\n")}
+              showTipDivider={addGuideDividers}
+            />
           )}
         </Box>
       ))}
@@ -131,6 +141,7 @@ export function LocationContent({
   const mainDetails = renderSections(locationData.sections);
   const moreDetails = renderSections(
     includeMoreSections ? locationData.moreSections || [] : [],
+    true,
   );
 
   if (layout === "directions") {

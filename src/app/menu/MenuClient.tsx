@@ -14,15 +14,18 @@ import { Dish } from "@/components/DishComponent";
 import { useTranslation } from "@/lib/translations";
 import type { DishData, LocaleString } from "@/lib/interfaces";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useAppData } from "@/hooks/AppDataContext";
 import type { MenuPageData } from "@/lib/interfaces/menuData";
 import { useThemeColors } from "@/components/fontVars";
 import ExtendedHeading from "@/components/ExtendedHeading";
 import { getLocaleString } from "@/lib/utility";
 import { PageLayout } from "@/components/PageLayout";
 import Footer from "@/app/footer";
-import { BRAND_ORANGE, BRAND_ORANGE_HOVER, BRAND_ORANGE_TEXT } from "@/lib/colors";
+import { BRAND_ORANGE } from "@/lib/colors";
 import { RichText } from "@/components/RichText";
 import { PageContainer } from "@/components/PageContainer";
+import { DishModal } from "@/components/DishModal";
+import { ActionButton } from "@/components/ActionButton";
 
 interface MenuClientProps {
   menuPageData: MenuPageData;
@@ -39,14 +42,21 @@ export default function MenuClient({
 }: MenuClientProps) {
   const { language } = useLanguage();
   const { t } = useTranslation(language);
-  const { borderColor, textColor } = useThemeColors();
-  const [showFullMenu, setShowFullMenu] = useState(false);
+  const { bgColor, borderColor, textColor } = useThemeColors();
+  const { homepage } = useAppData();
+  const [showFullMenu, setShowFullMenu] = useState(true);
   const [activeCategory, setActiveCategory] = useState(ALL_CATEGORIES);
+  const [selectedDish, setSelectedDish] = useState<DishData | null>(null);
 
   const getText = useCallback(
     (field?: LocaleString) => getLocaleString(field, language),
     [language],
   );
+  const showAnnouncement = Boolean(
+    homepage?.alertBanner?.showBanner &&
+      getLocaleString(homepage.alertBanner.message, language).trim(),
+  );
+  const filterStickyTop = showAnnouncement ? "7.5rem" : "4.5rem";
 
   const categories = useMemo(() => {
     const categoryMap = new Map<string, LocaleString>();
@@ -153,28 +163,37 @@ export default function MenuClient({
         </Box>
       </Box>
 
+      <PageContainer contentWidth="80rem" gutter={0} mb={2}>
+        <Text
+          textAlign={{ base: "center", lg: "left" }}
+          fontSize="xs"
+          fontWeight="bold"
+          letterSpacing="0.12em"
+          textTransform="uppercase"
+          opacity={0.65}
+        >
+          {t("menu.browseCategories")}
+        </Text>
+      </PageContainer>
+
       <PageContainer
         contentWidth="80rem"
         gutter={0}
+        position="sticky"
+        top={filterStickyTop}
+        zIndex={9}
+        bg={bgColor}
+        py={2}
         mb={8}
         gap={{ base: 4, lg: 6 }}
         display="flex"
         flexDirection={{ base: "column", lg: "row" }}
         alignItems={{ base: "stretch", lg: "flex-end" }}
         justifyContent={showFullMenu ? { base: "center", lg: "flex-end" } : "space-between"}
+        borderBottomWidth="1px"
+        borderColor="whiteAlpha.200"
       >
         <Box flex="1" minW={0}>
-            <Text
-              textAlign={{ base: "center", lg: "left" }}
-              fontSize="xs"
-              fontWeight="bold"
-              letterSpacing="0.12em"
-              textTransform="uppercase"
-              opacity={0.65}
-              mb={2}
-            >
-              {t("menu.browseCategories")}
-            </Text>
             <Flex
               width="full"
               justify={{ base: "center", lg: "flex-start" }}
@@ -226,21 +245,16 @@ export default function MenuClient({
             </Flex>
         </Box>
 
-        <Button
+        <ActionButton
           type="button"
-          variant={showFullMenu ? "outline" : "solid"}
+          appearance={showFullMenu ? "outline" : "primary"}
           size="md"
-          borderRadius="md"
           minW={{ base: "auto", lg: "11rem" }}
           alignSelf={{ base: "center", lg: "auto" }}
-          bg={showFullMenu ? "transparent" : BRAND_ORANGE}
-          color={showFullMenu ? textColor : BRAND_ORANGE_TEXT}
-          borderColor={showFullMenu ? "gray.500" : "transparent"}
-          _hover={{ bg: showFullMenu ? "whiteAlpha.100" : BRAND_ORANGE_HOVER }}
           onClick={() => setShowFullMenu((showing) => !showing)}
         >
-          {showFullMenu ? t("menu.hideMenu") : t("menu.showMenu")}
-        </Button>
+          {showFullMenu ? t("menu.viewCards") : t("menu.viewList")}
+        </ActionButton>
       </PageContainer>
 
       {showFullMenu ? (
@@ -273,9 +287,24 @@ export default function MenuClient({
                       <Box
                         key={dish._id}
                         as="article"
+                        role="button"
+                        tabIndex={0}
+                        aria-haspopup="dialog"
+                        aria-label={`View details for ${getText(dish.name)}`}
+                        onClick={() => setSelectedDish(dish)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            setSelectedDish(dish);
+                          }
+                        }}
+                        cursor="pointer"
                         pb={3}
                         borderBottomWidth="1px"
                         borderColor="whiteAlpha.200"
+                        borderRadius="sm"
+                        _hover={{ bg: "whiteAlpha.50", borderColor: "whiteAlpha.400" }}
+                        _focusVisible={{ outline: "2px solid", outlineColor: BRAND_ORANGE }}
                       >
                         <Flex align="baseline" gap={2}>
                           <Flex align="baseline" gap={2} minW={0}>
@@ -358,6 +387,20 @@ export default function MenuClient({
             </Box>
           ))}
         </PageContainer>
+      )}
+
+      {selectedDish && (
+        <DishModal
+          isOpen
+          onClose={() => setSelectedDish(null)}
+          dishName={getText(selectedDish.name)}
+          dishDescription={getText(selectedDish.description)}
+          dishImage={selectedDish.dishImage?.asset?.url || ""}
+          ingredients={selectedDish.ingredients || []}
+          spiceLevel={selectedDish.spiceLevel}
+          price={selectedDish.price != null ? `${selectedDish.price.toFixed(2)} €` : "N/A"}
+          getLocale={getText}
+        />
       )}
 
       <Footer />

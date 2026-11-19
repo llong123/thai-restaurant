@@ -6,6 +6,8 @@ interface Hero {
   description: LocaleString;
   cta: LocaleString;
   ctaUrl: string;
+  locationCta: LocaleString;
+  locationCtaUrl: string;
   image?: string;
   imageCaption?: LocaleString;
 }

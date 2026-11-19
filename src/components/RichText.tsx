@@ -1,5 +1,6 @@
 import { Box, Text, type BoxProps } from "@chakra-ui/react";
 import { Fragment, type ReactNode } from "react";
+import { AccentDivider } from "@/components/AccentDivider";
 
 type Block = { type: "paragraph" | "unordered" | "ordered"; lines: string[] };
 
@@ -82,14 +83,19 @@ function renderInline(source: string): ReactNode[] {
   });
 }
 
-function renderParagraph(text: string, key: number): ReactNode {
+function renderParagraph(text: string, key: number, showTipDivider: boolean): ReactNode {
   // The workbook currently marks tips with an opening asterisk only ("*Tip:").
-  const tip = text.match(/^\*(Tip:)\s*(.*)$/i);
+  const tip = text.match(/^\*(Tip:)\s*\*?\s*(.*)$/i);
   if (tip) {
     return (
-      <Text as="p" key={key} mb={3} lineHeight="tall">
-        <em>{tip[1]}</em> {renderInline(tip[2])}
-      </Text>
+      <Fragment key={key}>
+        {showTipDivider && (
+          <AccentDivider my={3} />
+        )}
+        <Text as="p" mb={3} lineHeight="tall">
+          <em>{tip[1]}</em> {renderInline(tip[2])}
+        </Text>
+      </Fragment>
     );
   }
   return (
@@ -101,15 +107,16 @@ function renderParagraph(text: string, key: number): ReactNode {
 
 export function RichText({
   text,
+  showTipDivider = false,
   ...boxProps
-}: { text?: string } & Omit<BoxProps, "children">) {
+}: { text?: string; showTipDivider?: boolean } & Omit<BoxProps, "children">) {
   if (!text?.trim()) return null;
 
   return (
     <Box {...boxProps}>
       {parseBlocks(text).map((block, index) => {
         if (block.type === "paragraph") {
-          return renderParagraph(block.lines[0], index);
+          return renderParagraph(block.lines[0], index, showTipDivider);
         }
 
         const isOrdered = block.type === "ordered";

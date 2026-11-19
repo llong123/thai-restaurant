@@ -7,8 +7,8 @@
       "categories": "Kategoriat",
       "browseCategories": "Selaa kategorioittain",
       "allDishes": "Kaikki annokset",
-      "hideMenu": "Takaisin annoskuviin",
-      "showMenu": "Näytä listana",
+      "viewCards": "Näytä kuvakortit",
+      "viewList": "Näytä lista",
       "priceUnavailable": "Hinta ei ole saatavilla"
     },
     "footer": {
@@ -29,8 +29,8 @@
       "categories": "Categories",
       "browseCategories": "Browse by category",
       "allDishes": "All dishes",
-      "hideMenu": "Back to photo cards",
-      "showMenu": "View as list",
+      "viewCards": "View photo cards",
+      "viewList": "View list",
       "priceUnavailable": "Price Unavailable"
     },
     "footer": {
@@ -51,8 +51,8 @@
       "categories": "Kategorier",
       "browseCategories": "Bläddra efter kategori",
       "allDishes": "Alla rätter",
-      "hideMenu": "Tillbaka till bildkorten",
-      "showMenu": "Visa som lista",
+      "viewCards": "Visa bildkort",
+      "viewList": "Visa lista",
       "priceUnavailable": "Pris är inte tillgänglig"
     },
     "footer": {
@@ -73,8 +73,8 @@
       "categories": "หมวดหมู่",
       "browseCategories": "เลือกตามหมวดหมู่",
       "allDishes": "อาหารทั้งหมด",
-      "hideMenu": "กลับไปดูรูปอาหาร",
-      "showMenu": "ดูแบบรายการ",
+      "viewCards": "ดูการ์ดรูปภาพ",
+      "viewList": "ดูแบบรายการ",
       "priceUnavailable": "ไม่มีราคา"
     },
     "footer": {

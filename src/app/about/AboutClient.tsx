@@ -1,11 +1,10 @@
 "use client";
 
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import Footer from "../footer";
-import { ExtendedHeadingProps } from "@/lib/types";
+import type { ExtendedHeadingProps } from "@/lib/types";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { AboutData } from "@/lib/interfaces/aboutData";
-import { useThemeColors } from "@/components/fontVars";
+import type { AboutData } from "@/lib/interfaces/aboutData";
 import { useTranslation } from "@/lib/translations";
 import FullPageLoader from "@/components/FullPageLoader";
 import { getLocaleString, type LocaleString } from "@/lib/utility";
@@ -13,8 +12,8 @@ import { PageLayout } from "@/components/PageLayout";
 import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
 import { RichText } from "@/components/RichText";
 import { PageContainer } from "@/components/PageContainer";
+import { BRAND_ORANGE } from "@/lib/colors";
 
-// Extended Chakra components
 const ExtendedHeading = Heading as React.ComponentType<ExtendedHeadingProps>;
 
 interface AboutClientProps {
@@ -25,72 +24,93 @@ interface AboutClientProps {
 export default function AboutClient({ about, loading }: AboutClientProps) {
   const { language } = useLanguage();
   const { t } = useTranslation(language);
-
-  const { borderColor } = useThemeColors();
+  const getText = (field?: LocaleString) => getLocaleString(field, language);
 
   if (loading) return <FullPageLoader message={t("loading")} />;
   if (!about) return <p className="p-8">About content is not available.</p>;
 
-  const getText = (field?: LocaleString) => getLocaleString(field, language);
-
   return (
     <PageLayout>
-      <PageContainer contentWidth="full" gutter={0}>
-        {/* Main Image */}
+      <PageContainer contentWidth="full" gutter={0} display="flex" flexDirection="column" flex="1">
         {about.mainImage?.asset?.url && (
-          <Box pb={16} position="relative" height="25rem">
+          <Box pb={{ base: 8, md: 12 }} position="relative" height={{ base: "16rem", md: "24rem" }}>
             <ImageWithSkeleton
               src={about.mainImage.asset.url}
               alt={getText(about.title)}
-              containerProps={{ width: "100%", height: "100%" }}
+              containerProps={{ width: "100%", height: "100%", borderRadius: "2xl" }}
               imageProps={{ objectFit: "cover", loading: "lazy" }}
             />
           </Box>
         )}
 
-        {/* Title */}
-        <Box pb={12} textAlign="center">
-          <ExtendedHeading as="h2">
-            {getText(about.title)}
-          </ExtendedHeading>
-        </Box>
-
-        {/* Paragraphs */}
         {about.paragraph?.map((group) => (
-          <Box key={group._key} pb={6}>
-            <ExtendedHeading as="h4" size="2xl" pb={4}>
-              {getText(group.paragraphTitle)}
-            </ExtendedHeading>
-
-            <RichText text={getText(group.paragraphDescription)} pb={2} />
-          </Box>
+          <Flex
+            key={group._key}
+            direction={{ base: "column", lg: "row" }}
+            align="flex-start"
+            gap={{ base: 4, lg: 12 }}
+            maxW="68rem"
+            mx="auto"
+            w="full"
+            py={{ base: 8, md: 12 }}
+          >
+            <Box flex={{ base: "none", lg: "0 0 18rem" }}>
+              <ExtendedHeading as="h1" size="3xl">
+                {getText(group.paragraphTitle)}
+              </ExtendedHeading>
+            </Box>
+            <RichText
+              text={getText(group.paragraphDescription)}
+              flex="1"
+              maxW="48rem"
+              fontSize="md"
+              lineHeight="tall"
+            />
+          </Flex>
         ))}
 
-        {/* Values Section */}
-        <Box pb={16}>
-          <ExtendedHeading as="h4" size="lg" pb={6}>
-            {getText(about.paragraphInBoxTitle)}
-          </ExtendedHeading>
-          <SimpleGrid columns={[1, null, 3]} gap={8}>
-            {about.paragraphInBox?.map((valueGroup) => (
-              <Box
-                key={valueGroup._key}
-                p={6}
-                borderWidth="1px"
-                borderRadius="lg"
-                borderColor={borderColor}
-              >
-                <ExtendedHeading as="h6" size="md" pb={4}>
-                  {getText(valueGroup.valueTitle)}
-                </ExtendedHeading>
-                <RichText
-                  text={getText(valueGroup.valueDescription)}
-                  fontSize={{ base: 12, lg: 14 }}
-                />
-              </Box>
-            ))}
-          </SimpleGrid>
-        </Box>
+        {about.paragraphInBox?.length ? (
+          <Box pb={{ base: 10, md: 16 }}>
+            <Flex align="center" gap={4} mb={6}>
+              <ExtendedHeading as="h2" size="xl">
+                {getText(about.paragraphInBoxTitle)}
+              </ExtendedHeading>
+              <Box flex="1" h="1px" bg="whiteAlpha.300" />
+            </Flex>
+            <SimpleGrid columns={[1, null, 3]} gap={{ base: 4, md: 6 }}>
+              {about.paragraphInBox.map((valueGroup, index) => (
+                <Box
+                  key={valueGroup._key}
+                  p={{ base: 5, md: 6 }}
+                  borderWidth="1px"
+                  borderTopWidth="3px"
+                  borderColor="whiteAlpha.300"
+                  borderTopColor={BRAND_ORANGE}
+                  borderRadius="lg"
+                  bg="whiteAlpha.50"
+                  minH="100%"
+                >
+                  <Text
+                    fontSize="xs"
+                    fontWeight="bold"
+                    letterSpacing="0.1em"
+                    color={BRAND_ORANGE}
+                    mb={3}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </Text>
+                  <ExtendedHeading as="h3" size="lg" pb={3}>
+                    {getText(valueGroup.valueTitle)}
+                  </ExtendedHeading>
+                  <RichText
+                    text={getText(valueGroup.valueDescription)}
+                    fontSize={{ base: 12, lg: 14 }}
+                  />
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Box>
+        ) : null}
       </PageContainer>
 
       <Box mt="auto">

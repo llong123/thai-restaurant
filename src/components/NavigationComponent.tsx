@@ -12,7 +12,14 @@ import {
   Menu,
   Portal,
 } from "@chakra-ui/react";
-import { LuChevronRight, LuMenu, LuX, LuChevronsDown } from "react-icons/lu";
+import {
+  LuChevronDown,
+  LuChevronRight,
+  LuCheck,
+  LuGlobe,
+  LuMenu,
+  LuX,
+} from "react-icons/lu";
 import Link from "next/link";
 import { merriweather, useThemeColors } from "@/components/fontVars";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -24,14 +31,20 @@ import { getLocaleString, type LocaleString } from "@/lib/utility";
 import { ImageWithSkeleton } from "@/components/ImageWithSkeleton";
 import { BRAND_ORANGE, BRAND_ORANGE_HOVER, BRAND_ORANGE_TEXT } from "@/lib/colors";
 
-const MOBILE_HEADER_HEIGHT = "5rem";
+const MOBILE_HEADER_HEIGHT = "4.5rem";
+const LANGUAGE_NAMES: Record<Language, string> = {
+  en: "English",
+  fi: "Suomi",
+  sv: "Svenska",
+  th: "ไทย",
+};
 
 export default function NavigationComponent() {
   const { open, onOpen, onClose } = useDisclosure();
   const pathname = usePathname();
 
   const { language, setLanguage } = useLanguage();
-  const { bgColor, btnBgColor, borderColor, textColor } = useThemeColors();
+  const { bgColor, textColor } = useThemeColors();
 
   const { navigation, homepage } = useAppData();
   const navData = (navigation ?? null) as NavigationData | null;
@@ -40,14 +53,23 @@ export default function NavigationComponent() {
   const announcement = homepage?.alertBanner;
   const announcementText = announcement ? getText(announcement.message).trim() : "";
   const showAnnouncement = Boolean(announcement?.showBanner && announcementText);
-  const mobileMenuTop = showAnnouncement ? "8rem" : MOBILE_HEADER_HEIGHT;
+  const mobileMenuTop = showAnnouncement ? "7.5rem" : MOBILE_HEADER_HEIGHT;
 
   return (
-    <Box bg={bgColor} position="sticky" top={0} zIndex={20} w="100%" py={2}>
+    <Box
+      bg={bgColor}
+      position="sticky"
+      top={0}
+      zIndex={20}
+      w="100%"
+      py={1}
+      borderBottomWidth="1px"
+      borderColor="whiteAlpha.100"
+    >
       <Flex
         maxW="80rem"
         mx="auto"
-        h={{ base: 16, md: 20 }}
+        h={16}
         align="center"
         justify="space-between"
         gap={{ base: 2, md: 6 }}
@@ -68,7 +90,7 @@ export default function NavigationComponent() {
                   imageProps={{ objectFit: "contain", loading: "eager" }}
                 />
                 <Text
-                  fontSize={{ base: "sm", md: "lg" }}
+                  fontSize={{ base: "sm", md: "md" }}
                   fontWeight="bold"
                   letterSpacing="-0.02em"
                   whiteSpace="nowrap"
@@ -86,6 +108,7 @@ export default function NavigationComponent() {
           justify="flex-end"
           gap={{ base: 1, lg: 3 }}
           align="center"
+          h="full"
           display={["none", null, "flex"]}
         >
           {navData?.links?.map((link: any) => {
@@ -99,14 +122,17 @@ export default function NavigationComponent() {
               >
                 <Box
                   px={{ base: 3, lg: 4 }}
-                  py={2}
-                  rounded="md"
+                  h="full"
+                  display="flex"
+                  alignItems="center"
+                  borderBottomWidth="2px"
+                  borderColor={isActive ? BRAND_ORANGE : "transparent"}
                   fontWeight={isActive ? "bold" : "medium"}
-                  bg={isActive ? BRAND_ORANGE : "transparent"}
-                  color={isActive ? BRAND_ORANGE_TEXT : textColor}
+                  color={isActive ? BRAND_ORANGE : textColor}
                   _hover={{
-                    bg: isActive ? BRAND_ORANGE_HOVER : btnBgColor,
-                    color: isActive ? BRAND_ORANGE_TEXT : textColor,
+                    bg: "transparent",
+                    borderColor: BRAND_ORANGE,
+                    color: BRAND_ORANGE,
                     cursor: "pointer",
                   }}
                   fontSize={{ base: "sm", lg: "md" }}
@@ -122,43 +148,61 @@ export default function NavigationComponent() {
               <Button
                 variant="outline"
                 borderWidth="1px"
-                borderColor={borderColor}
-                borderRadius="md"
+                borderColor="whiteAlpha.300"
+                borderRadius="full"
                 color={textColor}
-                fontWeight="semibold"
+                fontWeight="medium"
+                fontSize="sm"
                 size="sm"
+                h="2.75rem"
                 px={4}
+                gap={2.5}
+                aria-label="Choose language"
+                _hover={{ bg: "whiteAlpha.100", borderColor: "whiteAlpha.500" }}
               >
-                {language.toUpperCase()}&nbsp;
-                <LuChevronsDown />
+                <LuGlobe aria-hidden="true" />
+                {LANGUAGE_NAMES[language]}
+                <LuChevronDown aria-hidden="true" />
               </Button>
             </Menu.Trigger>
             <Portal>
               <Menu.Positioner>
                 <Menu.Content
-                  minW="9rem"
-                  p={1}
+                  minW="12rem"
+                  w="12rem"
+                  p={2}
                   bg={bgColor}
                   color={textColor}
                   borderWidth="1px"
-                  borderColor={borderColor}
+                  borderColor="whiteAlpha.300"
                   borderRadius="lg"
                   boxShadow="xl"
                 >
-                  {navData?.languages?.map((lang: string) => (
-                    <Menu.Item
-                      className={merriweather.className}
-                      key={lang}
-                      value={lang}
-                      onClick={() => setLanguage(lang as Language)}
-                      bg={language === lang ? BRAND_ORANGE : "transparent"}
-                      color={language === lang ? BRAND_ORANGE_TEXT : textColor}
-                      borderRadius="md"
-                    _hover={{ bg: BRAND_ORANGE_HOVER, color: BRAND_ORANGE_TEXT }}
-                    >
-                      {lang.toUpperCase()}
-                    </Menu.Item>
-                  ))}
+                  {navData?.languages?.map((lang: string) => {
+                    const code = lang as Language;
+                    const isSelected = language === code;
+                    return (
+                      <Menu.Item
+                        key={lang}
+                        value={lang}
+                        onClick={() => setLanguage(code)}
+                        minH="2.5rem"
+                        px={3}
+                        py={2}
+                        fontSize="sm"
+                        fontWeight={isSelected ? "semibold" : "medium"}
+                        bg={isSelected ? "whiteAlpha.100" : "transparent"}
+                        color={isSelected ? BRAND_ORANGE : textColor}
+                        borderRadius="md"
+                        _hover={{ bg: "whiteAlpha.100", color: BRAND_ORANGE }}
+                      >
+                        <Flex w="full" align="center" justify="space-between" gap={3}>
+                          <Text>{LANGUAGE_NAMES[code] || lang.toUpperCase()}</Text>
+                          {isSelected && <LuCheck aria-hidden="true" />}
+                        </Flex>
+                      </Menu.Item>
+                    );
+                  })}
                 </Menu.Content>
               </Menu.Positioner>
             </Portal>
