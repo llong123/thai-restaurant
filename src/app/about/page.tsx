@@ -1,13 +1,30 @@
-"use client";
+import type { Metadata } from "next";
+import AboutPageClient from "./AboutPageClient";
+import { getAboutData } from "@/lib/cms/googleSheets";
+import { createPageMetadata } from "@/lib/seo";
+import { getLocaleString, siteMetadata } from "@/lib/utility";
 
-import AboutClient from "./AboutClient";
-import { AboutData } from "@/lib/interfaces/aboutData";
-import { useAppData } from "@/hooks/AppDataContext";
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const data = await getAboutData();
+    const description = data.paragraph
+      ?.map((group) => getLocaleString(group.paragraphDescription, "en"))
+      .filter(Boolean)
+      .join(" ");
+    return createPageMetadata({
+      title: getLocaleString(data.title, "en") || "Our Story",
+      description: description || siteMetadata.description,
+      path: "/about",
+    });
+  } catch {
+    return createPageMetadata({
+      title: "Our Story",
+      description: siteMetadata.description,
+      path: "/about",
+    });
+  }
+}
 
 export default function AboutPage() {
-  // call hook at top level of component (fixes invalid hook call)
-  const { about, loading } = useAppData();
-  const aboutData: AboutData | null = (about ?? null) as AboutData | null;
-
-  return <AboutClient loading={loading} about={aboutData as AboutData} />;
+  return <AboutPageClient />;
 }

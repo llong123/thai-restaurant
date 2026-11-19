@@ -4,9 +4,11 @@ export type { LocaleString };
 
 export const siteMetadata = {
   siteUrl: "https://www.chaophraya.fi",
-  title: "Chao Phraya — Authentic Thai Restaurant in Helsinki",
+  title: "Chao Phraya | Thai Restaurant in Helsinki",
   description:
-    "Authentic Thai restaurant in Helsinki. See our menu, opening hours and book a table.",
+    "Family-recipe Thai food at Hietalahti Market Hall in Helsinki. Explore the menu, opening hours and location of Chao Phraya.",
+  openGraphImage:
+    "https://res.cloudinary.com/dn1bjdgjf/image/upload/f_auto,q_auto,w_1200/v1795038934/menu_photo_203.jpg",
 };
 
 export const getLocaleString = (

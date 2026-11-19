@@ -4,8 +4,12 @@ import { LanguageProvider } from "@/hooks/LanguageContext";
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import { ThemeProvider } from "next-themes";
 import { AppDataProvider } from "@/hooks/AppDataContext";
+import type { AppDataInitialData } from "@/hooks/AppDataContext";
 
-export default function Provider(props: { children: React.ReactNode }) {
+export default function Provider(props: {
+  children: React.ReactNode;
+  initialData?: AppDataInitialData;
+}) {
   return (
     <ChakraProvider value={defaultSystem}>
       <ThemeProvider
@@ -15,7 +19,7 @@ export default function Provider(props: { children: React.ReactNode }) {
         enableSystem={true}
         disableTransitionOnChange
       >
-        <AppDataProvider>
+          <AppDataProvider initialData={props.initialData}>
           <LanguageProvider>{props.children}</LanguageProvider>
         </AppDataProvider>
       </ThemeProvider>
