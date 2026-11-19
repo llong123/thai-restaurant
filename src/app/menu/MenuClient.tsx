@@ -17,7 +17,6 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import type { MenuPageData } from "@/lib/interfaces/menuData";
 import { useThemeColors } from "@/components/fontVars";
 import ExtendedHeading from "@/components/ExtendedHeading";
-import ExtendedText from "@/components/ExtendedText";
 import { getLocaleString } from "@/lib/utility";
 import { PageLayout } from "@/components/PageLayout";
 import Footer from "@/app/footer";
@@ -130,24 +129,29 @@ export default function MenuClient({
   if (!dishes.length) return <p className="p-8">No dishes found.</p>;
 
   return (
-    <PageLayout>
+      <PageLayout>
       <Box textAlign="center" pb={{ base: 8, md: 12 }}>
         <ExtendedHeading as="h2" pb={4}>
           {getText(menuPageData.pageTitle)}
         </ExtendedHeading>
-        <RichText text={getText(menuPageData.pageDescription)} />
-      </Box>
-
-      {menuPageData.dishListTitle && (
-        <Box textAlign="center" pb={8}>
-          <ExtendedHeading as="h3" pb={3}>
-            {getText(menuPageData.dishListTitle)}
-          </ExtendedHeading>
+        <Box maxW="56rem" mx="auto">
+          <RichText
+            text={getText(menuPageData.pageDescription)}
+            fontSize="md"
+            lineHeight="tall"
+          />
           {menuPageData.dishListDescription && (
-            <RichText text={getText(menuPageData.dishListDescription)} />
+            <>
+              <Box w="2.5rem" h="2px" bg={BRAND_ORANGE} mx="auto" my={4} />
+              <RichText
+                text={getText(menuPageData.dishListDescription)}
+                fontSize="sm"
+                opacity={0.78}
+              />
+            </>
           )}
         </Box>
-      )}
+      </Box>
 
       <PageContainer
         contentWidth="80rem"
@@ -240,68 +244,92 @@ export default function MenuClient({
       </PageContainer>
 
       {showFullMenu ? (
-        <PageContainer
-          contentWidth="80rem"
-          gutter={0}
-          display="flex"
-          flexDirection="column"
-          gap={10}
-        >
-          {visibleFullMenuSections.map((category) => (
-            <Box key={category.key}>
-              <ExtendedHeading size="lg" mb={4}>
-                {category.label}
-              </ExtendedHeading>
-              <Stack gap={3}>
-                {category.dishes.map((dish) => {
-                  const ingredients = dish.ingredients
-                    ?.map(getText)
-                    .filter(Boolean)
-                    .join(", ");
-                  return (
-                    <Flex
-                      key={dish._id}
-                      as="article"
-                      justify="space-between"
-                      align="flex-start"
-                      gap={5}
-                      p={{ base: 4, md: 5 }}
-                      borderWidth="1px"
-                      borderColor={borderColor}
-                      borderRadius="lg"
-                      bg={{ base: "transparent", _dark: "whiteAlpha.50" }}
-                    >
-                      <Box flex="1" minW={0}>
-                        <ExtendedHeading size="md">
-                          {getText(dish.name)}
-                        </ExtendedHeading>
+        <PageContainer contentWidth="80rem" gutter={0}>
+          <SimpleGrid
+            columns={visibleFullMenuSections.length > 1 ? [1, 2] : [1]}
+            columnGap={{ base: 0, md: 10 }}
+            rowGap={{ base: 8, md: 10 }}
+          >
+            {visibleFullMenuSections.map((category) => (
+              <Box key={category.key} as="section" minW={0}>
+                <Box
+                  pb={3}
+                  mb={4}
+                  borderBottomWidth="2px"
+                  borderColor={BRAND_ORANGE}
+                >
+                  <ExtendedHeading size="xl">{category.label}</ExtendedHeading>
+                </Box>
+
+                <Stack gap={4}>
+                  {category.dishes.map((dish) => {
+                    const ingredients = dish.ingredients
+                      ?.map(getText)
+                      .filter(Boolean)
+                      .join(", ");
+                    const chiliCount = Math.min(Math.max(dish.spiceLevel ?? 0, 0), 3);
+
+                    return (
+                      <Box
+                        key={dish._id}
+                        as="article"
+                        pb={3}
+                        borderBottomWidth="1px"
+                        borderColor="whiteAlpha.200"
+                      >
+                        <Flex align="baseline" gap={2}>
+                          <Flex align="baseline" gap={2} minW={0}>
+                            <Text as="h3" fontWeight="bold" lineHeight="short">
+                              {getText(dish.name)}
+                            </Text>
+                            {chiliCount > 0 && (
+                              <Text
+                                as="span"
+                                role="img"
+                                aria-label={`${chiliCount} chili spice level`}
+                                whiteSpace="nowrap"
+                                fontSize="sm"
+                              >
+                                {"🌶️".repeat(chiliCount)}
+                              </Text>
+                            )}
+                          </Flex>
+                          <Box
+                            flex="1"
+                            minW={3}
+                            borderBottomWidth="1px"
+                            borderBottomStyle="dotted"
+                            borderColor="whiteAlpha.500"
+                            alignSelf="baseline"
+                            mb="0.3em"
+                          />
+                          <Text fontWeight="bold" whiteSpace="nowrap" color={BRAND_ORANGE}>
+                            {dish.price != null
+                              ? `${dish.price.toFixed(2)} €`
+                              : t("menu.priceUnavailable")}
+                          </Text>
+                        </Flex>
+
                         {getText(dish.description) && (
-                          <RichText text={getText(dish.description)} color={textColor} mt={2} />
+                          <RichText
+                            text={getText(dish.description)}
+                            color={textColor}
+                            mt={2}
+                            fontSize="sm"
+                          />
                         )}
                         {ingredients && (
-                          <Box as="p" color={textColor} mt={2} fontSize="sm">
+                          <Box as="p" color={textColor} mt={1} fontSize="sm">
                             {t("menu.ingredients")}: {ingredients}
                           </Box>
                         )}
                       </Box>
-                      <Box flexShrink={0} textAlign="right">
-                        <ExtendedText fontWeight="bold" whiteSpace="nowrap">
-                          {dish.price != null
-                            ? `${dish.price.toFixed(2)} €`
-                            : t("menu.priceUnavailable")}
-                        </ExtendedText>
-                        {dish.spiceLevel != null && dish.spiceLevel > 0 && (
-                          <ExtendedText mt={1} aria-label={`${dish.spiceLevel} spice level`}>
-                            {"🌶️".repeat(dish.spiceLevel)}
-                          </ExtendedText>
-                        )}
-                      </Box>
-                    </Flex>
-                  );
-                })}
-              </Stack>
-            </Box>
-          ))}
+                    );
+                  })}
+                </Stack>
+              </Box>
+            ))}
+          </SimpleGrid>
         </PageContainer>
       ) : (
         <PageContainer
